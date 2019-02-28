@@ -36,7 +36,5 @@ class Video:
             self.frames.append(Frame(image, ground_truths))
 
             num += 1
-            if num % 100 == 0:
-                print(num)
 
         cap.release()

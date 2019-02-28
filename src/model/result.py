@@ -8,14 +8,12 @@ class Result:
     fp: float
     tn: float
     fn: float
-    time: float
 
-    def __init__(self, tp=0, fp=0, tn=0, fn=0, time=0):
+    def __init__(self, tp=0, fp=0, tn=0, fn=0):
         self.tp = tp
         self.fp = fp
         self.tn = tn
         self.fn = fn
-        self.time = time
 
     def get_precision(self):
         return float(self.tp) / float(self.tp + self.fp)

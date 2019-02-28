@@ -1,11 +1,11 @@
 from typing import List
-#from model import Frame
+# from model import Frame
 import ffmpeg
 import numpy as np
 
 
 class Video:
-    #frames: List[Frame]
+    # frames: List[Frame]
 
     def __init__(self, video_path: str, annotation_path: str):
         probe = ffmpeg.probe(video_path)
@@ -24,7 +24,7 @@ class Video:
                 .reshape([-1, height, width, 3])
         )
         print(video.shape)
-        # TODO
+
 
 
 video = Video("../../datasets/AICity_data/train/S03/c010/vdo.avi", "")

@@ -25,4 +25,3 @@ scipy
 six
 tabulate
 toolz
-functional

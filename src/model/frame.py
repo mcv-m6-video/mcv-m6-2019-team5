@@ -14,7 +14,7 @@ class Frame:
         self.detections = []
         self.ground_truth = ground_truth
 
-    def to_result(self):
+    def to_result(self) -> Result:
         tp = 0
         fp = 0
         for detection in self.detections:

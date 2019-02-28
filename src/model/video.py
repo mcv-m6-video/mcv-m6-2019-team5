@@ -1,39 +1,42 @@
-# from model import Frame
+from typing import List
+
+from model import Frame, Detection
 import cv2
 import xml.etree.ElementTree as ET
 
 
 class Video:
-    # frames: List[Frame]
+    frames: List[Frame]
 
     def __init__(self, video_path: str, annotation_path: str):
+        self.frames = []
+
         cap = cv2.VideoCapture(video_path)
         root = ET.parse(annotation_path).getroot()
 
         num = 0
         while cap.isOpened():
-            _, frame = cap.read()
+            valid, image = cap.read()
+            if not valid:
+                break
 
+            ground_truths = []
             for track in root.findall('track'):
                 id = track.attrib['id']
                 label = track.attrib['label']
                 box = track.find("box[@frame='{0}']".format(str(num)))
-                xtl = box.attrib['xtl']
-                ytl = box.attrib['ytl']
-                xbr = box.attrib['xbr']
-                ybr = box.attrib['ybr']
+                if box is not None:
+                    xtl = int(float(box.attrib['xtl']))
+                    ytl = int(float(box.attrib['ytl']))
+                    xbr = int(float(box.attrib['xbr']))
+                    ybr = int(float(box.attrib['ybr']))
 
-            # TODO create frame list
+                    ground_truths.append(Detection(id, label, (xtl, ytl), xbr - xtl + 1, ybr - ytl + 1))
 
-            cv2.imshow('frame', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            self.frames.append(Frame(image, ground_truths))
 
             num += 1
+            if num % 100 == 0:
+                print(num)
+
         cap.release()
-        cv2.destroyAllWindows()
-        # TODO
-
-
-video = Video("../../datasets/AICity_data/train/S03/c010/vdo.avi",
-              "../../datasets/AICity_data/train/S03/c010/Anotation_40secs_AICITY_S03_C010.xml")

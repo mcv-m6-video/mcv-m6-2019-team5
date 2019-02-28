@@ -1,4 +1,5 @@
-from .picture import Picture
+from .video import Video
 from .data import Data
 from .frame import Frame
+from .detection import Detection
 from .rectangle import Rectangle

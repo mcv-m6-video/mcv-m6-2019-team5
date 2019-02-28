@@ -64,9 +64,6 @@ class Rectangle:
     def iou(self, other: 'Rectangle') -> float:
         return self.intersection(other).get_area() / self.union(other).get_area()
 
-    def to_result(self):
-        return [self.top_left[0], self.top_left[1], self.get_bottom_right()[0], self.get_bottom_right()[1]]
-
     def __str__(self):
         return str(self.top_left) + ', ' + str(self.width) + 'x' + str(self.height)
 

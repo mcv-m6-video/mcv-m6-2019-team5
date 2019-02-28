@@ -2,15 +2,13 @@ import fnmatch
 import os
 from typing import List
 
-from model import Picture
+from model import Video
 
 
 class Data:
-    pictures = List[Picture]
+    videos = List[Video]
 
-    def __init__(self, directory: str):
-        self.pictures = []
-
-        file_names = fnmatch.filter(os.listdir(directory), '*.jpg')
-        for file_name in file_names:
-            self.pictures.append(Picture(directory, file_name))
+    def __init__(self, video_names: List[str]):
+        self.videos = []
+        for video_name in video_names:
+            self.videos.append(Video(video_name))

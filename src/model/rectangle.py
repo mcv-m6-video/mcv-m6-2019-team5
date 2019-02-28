@@ -61,7 +61,7 @@ class Rectangle:
 
         return rec
 
-    def ioi(self, other: 'Rectangle') -> float:
+    def iou(self, other: 'Rectangle') -> float:
         return self.intersection(other).get_area() / self.union(other).get_area()
 
     def to_result(self):

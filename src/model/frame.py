@@ -5,12 +5,12 @@ from model import Result
 
 
 class Frame:
-    image: np.ndarray
+    id: int
     detections: List[Detection]
     ground_truth: List[Detection]
 
-    def __init__(self, image: np.ndarray, ground_truth):
-        self.image = image
+    def __init__(self, id: int, ground_truth):
+        self.id = id
         self.detections = []
         self.ground_truth = ground_truth
 

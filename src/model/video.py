@@ -1,18 +1,23 @@
-from typing import List
+import xml.etree.ElementTree as ET
+from typing import Generator, Iterator, Tuple
+
+import cv2
+import numpy as np
 
 from model import Frame, Detection
-import cv2
-import xml.etree.ElementTree as ET
 
 
 class Video:
-    frames: List[Frame]
+    video_path: str
+    annotation_path: str
 
     def __init__(self, video_path: str, annotation_path: str):
-        self.frames = []
+        self.video_path = video_path
+        self.annotation_path = annotation_path
 
-        cap = cv2.VideoCapture(video_path)
-        root = ET.parse(annotation_path).getroot()
+    def get_frames(self) -> Iterator[Tuple[np.ndarray, Frame]]:
+        cap = cv2.VideoCapture(self.video_path)
+        root = ET.parse(self.annotation_path).getroot()
 
         num = 0
         while cap.isOpened():
@@ -33,7 +38,7 @@ class Video:
 
                     ground_truths.append(Detection(id, label, (xtl, ytl), xbr - xtl + 1, ybr - ytl + 1))
 
-            self.frames.append(Frame(image, ground_truths))
+            yield image, Frame(num, ground_truths)
 
             num += 1
 

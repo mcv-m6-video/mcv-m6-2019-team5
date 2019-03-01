@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from typing import Generator, Iterator, Tuple
+from typing import Iterator, Tuple
 
 import cv2
 import numpy as np

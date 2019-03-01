@@ -1,5 +1,5 @@
 from typing import List
-import numpy as np
+
 from model import Detection
 from model import Result
 
@@ -9,10 +9,22 @@ class Frame:
     detections: List[Detection]
     ground_truth: List[Detection]
 
-    def __init__(self, id: int, ground_truth):
+    def __init__(self, id: int, ground_truth: List[Detection]):
         self.id = id
         self.detections = []
         self.ground_truth = ground_truth
+
+    def get_detection_iou(self) -> List[float]:
+        ret = []
+        for ground_truth in self.ground_truth:
+            max_iou = 0
+            for detection in self.detections:
+                iou = detection.iou(ground_truth)
+                if detection.label == ground_truth.label and iou > max_iou:
+                    max_iou = iou
+
+            ret.append(max_iou)
+        return ret
 
     def to_result(self) -> Result:
         tp = 0

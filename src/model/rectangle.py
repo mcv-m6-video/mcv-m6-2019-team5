@@ -66,4 +66,3 @@ class Rectangle:
 
     def __str__(self):
         return str(self.top_left) + ', ' + str(self.width) + 'x' + str(self.height)
-

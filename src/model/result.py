@@ -1,5 +1,4 @@
 class Result:
-
     """
     We define and initialize the different variables for the evaluation
     of the results
@@ -28,4 +27,4 @@ class Result:
         return float(self.tp) / float(self.tp + self.fn)
 
     def get_f1(self):
-        return 2 * ((self.get_precision()*self.get_recall()) / (self.get_precision() + self.get_recall()))
+        return 2 * ((self.get_precision() * self.get_recall()) / (self.get_precision() + self.get_recall()))

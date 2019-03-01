@@ -16,13 +16,12 @@ class Frame:
 
     def to_result(self) -> Result:
         tp = 0
-        fp = 0
-        for detection in self.detections:
-            for ground_truth in self.ground_truth:
-                if detection.iou(ground_truth) > 0.5:
-                    if detection.label == ground_truth.label:
-                        tp += 1
-                    else:
-                        fp += 1
+        for ground_truth in self.ground_truth:
+            for detection in self.detections:
+                if detection.iou(ground_truth) > 0.5 and detection.label == ground_truth.label:
+                    tp += 1
+                    break
+
+        fp = len(self.detections) - tp
         fn = len(self.ground_truth) - tp
         return Result(tp, fp, 0, fn)

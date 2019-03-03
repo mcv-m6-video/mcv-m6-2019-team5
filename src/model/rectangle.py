@@ -65,4 +65,4 @@ class Rectangle:
         return self.intersection(other).get_area() / self.union(other).get_area()
 
     def __str__(self):
-        return str(self.top_left) + ', ' + str(self.width) + 'x' + str(self.height)
+        return 'Rectangle(top_left={0}, width={1}, height={2})'.format(self.top_left, self.width, self.height)

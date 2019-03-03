@@ -28,3 +28,6 @@ class Result:
 
     def get_f1(self):
         return 2 * ((self.get_precision() * self.get_recall()) / (self.get_precision() + self.get_recall()))
+
+    def __str__(self):
+        return 'Result(tp={0}, fp={1}, tn={2}, fn={3})'.format(self.tp, self.fp, self.tn, self.fn)

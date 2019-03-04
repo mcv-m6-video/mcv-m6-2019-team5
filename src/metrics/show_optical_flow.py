@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 
 
 def show_optical_flow(optical_flow: np.ndarray):
+
     # Apply the coloring (for OpenCV, set convert_to_bgr=True)
     flow_color = _flow_to_color(optical_flow[:, :, 0:2], convert_to_bgr=True)
+
     # Display the image
     plt.imshow(flow_color)
     plt.show()

@@ -10,10 +10,12 @@ from model import Frame, Detection
 class Video:
     video_path: str
     annotation_path: str
+    car_only: bool
 
-    def __init__(self, video_path: str, annotation_path: str):
+    def __init__(self, video_path: str, annotation_path: str, car_only: bool = False):
         self.video_path = video_path
         self.annotation_path = annotation_path
+        self.car_only = car_only
 
     def get_frames(self) -> Iterator[Tuple[np.ndarray, Frame]]:
         cap = cv2.VideoCapture(self.video_path)
@@ -30,6 +32,10 @@ class Video:
                 id = track.attrib['id']
                 label = track.attrib['label']
                 box = track.find("box[@frame='{0}']".format(str(num)))
+
+                if self.car_only and label != 'car':
+                    continue
+
                 if box is not None:
                     xtl = int(float(box.attrib['xtl']))
                     ytl = int(float(box.attrib['ytl']))

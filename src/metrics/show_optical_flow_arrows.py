@@ -1,12 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2 as cv
 
-def show_optical_flow_arrows(optical_flow: np.ndarray):
+def show_optical_flow_arrows(frame, optical_flow: np.ndarray):
     _, ax = plt.subplots()
     
+    ax.imshow(cv.cvtColor(frame,cv.COLOR_BGR2RGB))
+
     ax = _flow_to_arrows(optical_flow[:,:,0:2], ax)
     
-    # plt.imshow(flow_arrows)
+    plt.axis('off')
+
     plt.show()
 
 
@@ -31,11 +35,15 @@ def _flow_to_arrows(flow_uv, ax):
             u[i,j] = block[inx[0],iny[0],0]
             v[i,j] = block[inx[0],iny[0],1]
 
+    print(u.shape)
 
     max_u_value = np.amax(u)
     max_v_value = np.amax(v)
     max_uv_value = max(max_u_value, max_v_value)
+    
+    X = [[i for _ in range(0,vert_size,step)] for i in range(0,hor_size,step)]
+    Y = [[i for i in range(0,vert_size,step)] for _ in range(0,hor_size,step)]
 
-    ax.quiver(u[0::step,0::step], v[0::step, 0::step], width=0.002, scale=max_uv_value*50)
-
+    ax.quiver(Y, X, u[::step,::step], v[::step,::step], width=0.002, scale=max_uv_value*50, color=(0,0.1,0.8))
+    
     return ax

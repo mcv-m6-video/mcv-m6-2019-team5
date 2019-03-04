@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 amount_frames = 40
-make_video = True
+make_video = False
 
 
 def main():
@@ -20,19 +20,21 @@ def main():
     """
         YOLO DETECTIONS
     """
-    detections = read_detections('../datasets/AICity_data/train/S03/c010/det/det_ssd512.txt')
-    frames = []
+    det_algs = ['mask_rcnn', 'ssd512', 'yolo3']
+    for alg in det_algs:
+        detections = read_detections('../datasets/AICity_data/train/S03/c010/det/det_{0}.txt'.format(alg))
+        frames = []
 
-    # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
+        # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
 
-    for im, f in seq(video.get_frames()).take(40):
-        f.detections = detections[f.id]
-        frames.append(f)
+        for im, f in seq(video.get_frames()).take(40):
+            f.detections = detections[f.id]
+            frames.append(f)
 
-        if make_video:
-            make_video_frame(im, f, frames)
+            if make_video:
+                make_video_frame(im, f, frames)
 
-    iou_over_time(frames)
+        iou_over_time(frames)
 
     """
         DETECTIONS FROM ALTERED GROUND TRUTH 
@@ -81,7 +83,6 @@ def make_video_frame(im, frame, frames):
                       (int(d.get_bottom_right()[0]), int(d.get_bottom_right()[1])), (0, 0, 255), thickness=5)
 
     plt.subplot(2, 1, 1)
-    plt.title('Ground truth')
     plt.imshow(cv2.cvtColor(im1, cv2.COLOR_BGR2RGB))
     plt.axis('off')
     plt.legend([

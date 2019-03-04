@@ -1,42 +1,35 @@
 import cv2
-from functional import seq
+import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_precision
-from model import Video
-from utils import read_detections, read_optical_flow, alter_detections
-
-import matplotlib.pyplot as plt
-import numpy as np
+from model import Frame, Detection
+from utils import alter_detections
 
 amount_frames = 40
 make_video = True
 
 
 def main():
-    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi",
-                  "../datasets/AICity_data/train/S03/c010/Anotation_40secs_AICITY_S03_C010.xml",
-                  car_only=False)
+    im_1440 = cv2.imread("../datasets/AICity_data_S03_c010_1440/frame_1440.jpeg")
+    top_left = [995, 410]
+    width = 1241 - 995
+    height = 605 - 410
+    ground_truth = [Detection('', 'car', top_left, width, height)]
 
     """
         DETECTIONS FROM ALTERED GROUND TRUTH 
     """
-    frames = []
+    frame = Frame(0, ground_truth)
+    frame.detections = alter_detections(ground_truth)
 
-    for im, f in seq(video.get_frames()).take(40):
-        f.detections = alter_detections(f.ground_truth)
-        frames.append(f)
-
-        if make_video:
-            make_video_frame(im, f, frames)
-
-    iou_over_time(frames)
+    plot_frame(im_1440, frame)
+    iou = frame.get_detection_iou()
+    iou_mean = frame.get_detection_iou_mean()
+    print("IOU: ", iou, "IOU mean", iou_mean)
 
 
-
-def make_video_frame(im, frame, frames):
+def plot_frame(im, frame):
     im1 = im.copy()
-    im2 = im.copy()
 
     for d in frame.ground_truth:
         cv2.rectangle(im1, (int(d.top_left[0]), int(d.top_left[1])),
@@ -46,7 +39,6 @@ def make_video_frame(im, frame, frames):
         cv2.rectangle(im1, (int(d.top_left[0]), int(d.top_left[1])),
                       (int(d.get_bottom_right()[0]), int(d.get_bottom_right()[1])), (0, 0, 255), thickness=5)
 
-    plt.subplot(2, 1, 1)
     plt.title('Ground truth')
     plt.imshow(cv2.cvtColor(im1, cv2.COLOR_BGR2RGB))
     plt.axis('off')
@@ -54,24 +46,6 @@ def make_video_frame(im, frame, frames):
         Line2D([0], [0], color=(0, 0, 1)),
         Line2D([0], [0], color=(1, 0, 0)),
     ], ['Ground truth', 'Detection'])
-
-    plt.subplot(2, 1, 2)
-    plt.plot(range(frame.id + 1),
-             seq(frames)
-             .map(lambda fr: fr.get_detection_iou_mean())
-             .to_list(),
-             'b-', label='IoU'
-             )
-    plt.plot(range(frame.id + 1),
-             seq(range(frame.id + 1))
-             .map(lambda i: mean_average_precision(seq(frames).take(i).to_list()))
-             .to_list(),
-             'r-', label='mAP'
-             )
-    axes = plt.gca()
-    axes.set_xlim((0, amount_frames))
-    axes.set_ylim((0, 1))
-    plt.legend()
 
     plt.show()
 

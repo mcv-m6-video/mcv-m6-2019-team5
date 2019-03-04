@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from functional import seq
 from matplotlib.lines import Line2D
 
-from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_precision
+from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_precision, show_optical_flow_arrows
 from model import Video
 from utils import read_detections, read_optical_flow, alter_detections
 
@@ -63,6 +63,17 @@ def main():
 
     of_gt_1 = read_optical_flow('../datasets/optical_flow/gt/000045_10.png')
     of_gt_2 = read_optical_flow('../datasets/optical_flow/gt/000157_10.png')
+
+    img_1 = cv2.imread('../datasets/optical_flow/img/000045_10.png')
+    img_2 = cv2.imread('../datasets/optical_flow/img/000157_10.png')
+    
+
+    msen_of = msen(of_det_2, of_gt_2)
+    pepn_of = pepn(of_det_2, of_gt_2)
+
+    print(msen_of, pepn_of)
+    show_optical_flow(of_gt_1)
+    show_optical_flow_arrows.show_optical_flow_arrows(img_1, of_gt_1)
 
     msen_45 = msen(of_det_1, of_gt_1, plot=True)
     pepn_45 = pepn(of_det_1, of_gt_1)

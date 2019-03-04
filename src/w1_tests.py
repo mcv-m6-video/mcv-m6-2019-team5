@@ -17,7 +17,7 @@ def main():
     # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
 
     for im, f in seq(video.get_frames()).take(40):
-        f.detections = detections[f.id]
+        f.detections = f.ground_truth
         frames.append(f)
 
         """""for d in detections[f.id]:
@@ -29,8 +29,8 @@ def main():
         
         cv2.imshow('frame', im)
         cv2.waitKey()"""
-    iou_over_time(frames)
 
+    iou_over_time(frames)
 
 
     of_det_1 = read_optical_flow('../datasets/optical_flow/detection/LKflow_000045_10.png')

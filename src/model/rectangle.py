@@ -43,8 +43,8 @@ class Rectangle:
         bottom_right = (max(self.get_bottom_right()[0], other.get_bottom_right()[0]),
                         max(self.get_bottom_right()[1], other.get_bottom_right()[1]))
 
-        rec.width = (bottom_right[1] - self.top_left[1]) + 1
-        rec.height = (bottom_right[0] - self.top_left[0]) + 1
+        rec.width = (bottom_right[0] - self.top_left[0])
+        rec.height = (bottom_right[1] - self.top_left[1])
 
         return rec
 
@@ -52,12 +52,12 @@ class Rectangle:
         rec = Rectangle()
         if self.contains_point(other.top_left):
             rec.top_left = other.top_left
-            rec.height = (other.top_left[0] - self.get_bottom_right()[0]) + 1
-            rec.width = (other.top_left[1] - self.get_bottom_right()[1]) + 1
+            rec.height = (other.top_left[0] - self.get_bottom_right()[0])
+            rec.width = (other.top_left[1] - self.get_bottom_right()[1])
         elif other.contains_point(self.top_left):
             rec.top_left = self.top_left
-            rec.height = (self.top_left[0] - other.get_bottom_right()[0]) + 1
-            rec.width = (self.top_left[1] - other.get_bottom_right()[1]) + 1
+            rec.height = (self.top_left[0] - other.get_bottom_right()[0])
+            rec.width = (self.top_left[1] - other.get_bottom_right()[1])
 
         return rec
 

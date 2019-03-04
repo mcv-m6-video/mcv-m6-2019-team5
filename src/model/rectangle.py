@@ -43,21 +43,19 @@ class Rectangle:
         bottom_right = (max(self.get_bottom_right()[0], other.get_bottom_right()[0]),
                         max(self.get_bottom_right()[1], other.get_bottom_right()[1]))
 
-        rec.width = (bottom_right[0] - self.top_left[0])
-        rec.height = (bottom_right[1] - self.top_left[1])
+        rec.width = (bottom_right[0] - rec.top_left[0])
+        rec.height = (bottom_right[1] - rec.top_left[1])
 
         return rec
 
     def intersection(self, other: 'Rectangle') -> Optional['Rectangle']:
         rec = Rectangle()
-        if self.contains_point(other.top_left):
-            rec.top_left = other.top_left
-            rec.height = (other.top_left[0] - self.get_bottom_right()[0])
-            rec.width = (other.top_left[1] - self.get_bottom_right()[1])
-        elif other.contains_point(self.top_left):
-            rec.top_left = self.top_left
-            rec.height = (self.top_left[0] - other.get_bottom_right()[0])
-            rec.width = (self.top_left[1] - other.get_bottom_right()[1])
+        rec.top_left = (max(self.top_left[0], other.top_left[0]), max(self.top_left[1], other.top_left[1]))
+        bottom_right = (min(self.get_bottom_right()[0], other.get_bottom_right()[0]),
+                        min(self.get_bottom_right()[1], other.get_bottom_right()[1]))
+
+        rec.width = (bottom_right[0] - rec.top_left[0])
+        rec.height = (bottom_right[1] - rec.top_left[1])
 
         return rec
 
@@ -66,3 +64,17 @@ class Rectangle:
 
     def __str__(self):
         return 'Rectangle(top_left={0}, width={1}, height={2})'.format(self.top_left, self.width, self.height)
+
+
+rec1 = Rectangle()
+rec2 = Rectangle()
+
+rec1.height = 100
+rec1.width = 100
+rec1.top_left = 0, 0
+
+rec2.height = 50
+rec2.width = 50
+rec2.top_left = 25, 25
+
+print(rec1.iou(rec2))

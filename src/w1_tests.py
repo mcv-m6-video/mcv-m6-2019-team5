@@ -1,7 +1,7 @@
 import cv2
 from functional import seq
 
-from metrics import msen, show_optical_flow, pepn, iou_over_time
+from metrics import msen, show_optical_flow, pepn, iou_over_time, show_optical_flow_arrows
 from model import Video
 from utils import read_detections, read_optical_flow
 
@@ -19,7 +19,7 @@ def main():
     for im, f in seq(video.get_frames()).take(40):
         f.detections = f.ground_truth
         frames.append(f)
-
+		
         """""for d in detections[f.id]:
     
     
@@ -43,7 +43,8 @@ def main():
     pepn_of = pepn(of_det_2, of_gt_2)
 
     print(msen_of, pepn_of)
-    show_optical_flow(of_det_1)
+    show_optical_flow(of_gt_1)
+    show_optical_flow_arrows.show_optical_flow_arrows(of_gt_1)
 
 
 if __name__ == '__main__':

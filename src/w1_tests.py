@@ -1,6 +1,7 @@
 import cv2
 from functional import seq
 
+from metrics import msen, show_optical_flow, pepn
 from model import Video
 from utils import read_detections, read_optical_flow
 
@@ -32,6 +33,12 @@ def main():
 
     of_gt_1 = read_optical_flow('../datasets/optical_flow/gt/000045_10.png')
     of_gt_2 = read_optical_flow('../datasets/optical_flow/gt/000157_10.png')
+
+    msen_of = msen(of_det_2, of_gt_2)
+    pepn_of = pepn(of_det_2, of_gt_2)
+
+    print(msen_of, pepn_of)
+    show_optical_flow(of_det_1)
 
 
 if __name__ == '__main__':

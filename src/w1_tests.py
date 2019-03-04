@@ -15,6 +15,9 @@ def main():
     video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi",
                   "../datasets/AICity_data/train/S03/c010/Anotation_40secs_AICITY_S03_C010.xml",
                   car_only=False)
+
+    gt = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
+
     """
         YOLO3 DETECTIONS
     """
@@ -25,9 +28,12 @@ def main():
 
         # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
 
-        for im, f in seq(video.get_frames()).take(40):
+        for im, f in video.get_frames():
+            f.ground_truth = gt[f.id]
             f.detections = detections[f.id]
             frames.append(f)
+
+            print(f.id)
 
             if make_video:
                 make_video_frame(im, f, frames)
@@ -40,7 +46,8 @@ def main():
     """
     frames = []
 
-    for im, f in seq(video.get_frames()).take(40):
+    for im, f in seq(video.get_frames()):
+        f.ground_truth = gt[f.id]
         f.detections = alter_detections(f.ground_truth)
         frames.append(f)
 

@@ -3,7 +3,8 @@ import numpy as np
 
 
 def read_optical_flow(path: str):
-    im = cv2.imread(path)
+    im = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    im = np.flip(im, axis=2).astype(np.uint16)
 
     f_u = (im[:, :, 0] - 2 ^ 15) / 64
     f_v = (im[:, :, 1] - 2 ^ 15) / 64

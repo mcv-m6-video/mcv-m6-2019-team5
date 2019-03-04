@@ -12,8 +12,7 @@ def msen(flow: np.ndarray, gt: np.ndarray) -> float:
     flow_uv = flow[:, :, 0:2]
     gt_uv = gt[:, :, 0:2]
 
-    gt_val = gt[:, :, 2]
-    idx_zeros = np.argwhere(gt_val == 0)
+    idx_zeros = gt[:, :, 2] == 0
 
     err = np.linalg.norm(flow_uv - gt_uv, axis=2)
     sen = np.power(err, 2)

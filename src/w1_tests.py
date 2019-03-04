@@ -1,7 +1,7 @@
 import cv2
 from functional import seq
 
-from metrics import msen, show_optical_flow, pepn
+from metrics import msen, show_optical_flow, pepn, iou_over_time
 from model import Video
 from utils import read_detections, read_optical_flow
 
@@ -20,13 +20,18 @@ def main():
         f.detections = detections[f.id]
         frames.append(f)
 
-        """for d in detections[f.id]:
+        """""for d in detections[f.id]:
+    
+    
             cv2.rectangle(im, d.top_left, d.get_bottom_right(), (255, 0, 0))
 
         im = cv2.bitwise_and(im, roi)
         
         cv2.imshow('frame', im)
         cv2.waitKey()"""
+    iou_over_time(frames)
+
+
 
     of_det_1 = read_optical_flow('../datasets/optical_flow/detection/LKflow_000045_10.png')
     of_det_2 = read_optical_flow('../datasets/optical_flow/detection/LKflow_000157_10.png')

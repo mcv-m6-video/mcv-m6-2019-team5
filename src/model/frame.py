@@ -1,5 +1,5 @@
 from typing import List
-
+import numpy as np
 from model import Detection
 from model import Result
 
@@ -25,6 +25,13 @@ class Frame:
 
             ret.append(max_iou)
         return ret
+
+    def get_detection_iou_mean(self) -> float:
+        iou_list = self.get_detection_iou()
+        if len(iou_list) > 0:
+            return float(np.mean(iou_list))
+        else:
+            return 0
 
     def to_result(self) -> Result:
         tp = 0

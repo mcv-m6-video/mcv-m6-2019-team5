@@ -59,11 +59,11 @@ def main():
     of_gt_1 = read_optical_flow('../datasets/optical_flow/gt/000045_10.png')
     of_gt_2 = read_optical_flow('../datasets/optical_flow/gt/000157_10.png')
 
-    msen_45 = msen(of_det_1, of_gt_1)
+    msen_45 = msen(of_det_1, of_gt_1, plot=True)
     pepn_45 = pepn(of_det_1, of_gt_1)
     print("Sequence 045: MSEN", msen_45, "PEPN", pepn_45)
 
-    msen_157 = msen(of_det_2, of_gt_2)
+    msen_157 = msen(of_det_2, of_gt_2, plot=True)
     pepn_157 = pepn(of_det_2, of_gt_2)
     print("Sequence 157: MSEN", msen_157, "PEPN", pepn_157)
 

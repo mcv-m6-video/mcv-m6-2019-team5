@@ -64,17 +64,3 @@ class Rectangle:
 
     def __str__(self):
         return 'Rectangle(top_left={0}, width={1}, height={2})'.format(self.top_left, self.width, self.height)
-
-
-rec1 = Rectangle()
-rec2 = Rectangle()
-
-rec1.height = 100
-rec1.width = 100
-rec1.top_left = 0, 0
-
-rec2.height = 50
-rec2.width = 50
-rec2.top_left = 25, 25
-
-print(rec1.iou(rec2))

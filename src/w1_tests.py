@@ -33,7 +33,8 @@ def main():
                 make_video_frame(im, f, frames)
 
         iou_over_time(frames)
-
+        mAP = mean_average_precision(frames)
+        print(alg, " mAP:", mAP)
     """
         DETECTIONS FROM ALTERED GROUND TRUTH 
     """

@@ -1,13 +1,11 @@
 import cv2
+import matplotlib.pyplot as plt
 from functional import seq
 from matplotlib.lines import Line2D
 
 from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_precision
 from model import Video
 from utils import read_detections, read_optical_flow, alter_detections
-
-import matplotlib.pyplot as plt
-import numpy as np
 
 amount_frames = 40
 make_video = False
@@ -18,7 +16,7 @@ def main():
                   "../datasets/AICity_data/train/S03/c010/Anotation_40secs_AICITY_S03_C010.xml",
                   car_only=False)
     """
-        YOLO DETECTIONS
+        YOLO3 DETECTIONS
     """
     det_algs = ['mask_rcnn', 'ssd512', 'yolo3']
     for alg in det_algs:
@@ -72,7 +70,6 @@ def main():
 
 def make_video_frame(im, frame, frames):
     im1 = im.copy()
-    im2 = im.copy()
 
     for d in frame.ground_truth:
         cv2.rectangle(im1, (int(d.top_left[0]), int(d.top_left[1])),

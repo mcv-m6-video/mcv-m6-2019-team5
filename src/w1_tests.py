@@ -19,7 +19,7 @@ def main():
     gt = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
 
     """
-        YOLO3 DETECTIONS
+        DETECTIONS
     """
     det_algs = ['mask_rcnn', 'ssd512', 'yolo3']
     for alg in det_algs:
@@ -33,14 +33,13 @@ def main():
             f.detections = detections[f.id]
             frames.append(f)
 
-            print(f.id)
-
             if make_video:
                 make_video_frame(im, f, frames)
 
         iou_over_time(frames)
         mAP = mean_average_precision(frames)
         print(alg, " mAP:", mAP)
+
     """
         DETECTIONS FROM ALTERED GROUND TRUTH 
     """

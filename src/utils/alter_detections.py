@@ -6,7 +6,7 @@ import random
 def alter_detections(detections: List[Detection]) -> List[Detection]:
     prob_not = 0.05
     translation = 30
-    scale = [0.5, 2]
+    scale = [0.5, 1]
     prob_fp = 0.1
 
     frame_detections = []

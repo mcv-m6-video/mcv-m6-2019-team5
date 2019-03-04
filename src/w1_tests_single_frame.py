@@ -10,10 +10,11 @@ make_video = True
 
 
 def main():
-    im_1440 = cv2.imread("../datasets/AICity_data_S03_c010_1440/frame_1440.jpeg")
+    im_1440 = cv2.imread("../datasets/AICity_data_S03_c010_1440/frame_1440.jpg")
     top_left = [995, 410]
     width = 1241 - 995
     height = 605 - 410
+
     ground_truth = [Detection('', 'car', top_left, width, height)]
 
     """

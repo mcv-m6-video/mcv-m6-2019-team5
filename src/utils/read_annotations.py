@@ -25,4 +25,6 @@ def read_annotations(root_directory: str, start: int, end: int) -> List[List[Det
 
             frame_detections.append(Detection('', label, (xmin, ymin), xmax - xmin + 1, ymax - ymin + 1))
 
+        frames_detections.append(frame_detections)
+
     return frames_detections

@@ -20,7 +20,7 @@ end_frame = 1789
 def main():
     video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
-    gt = read_annotations('../annotations', 1440, 1789)
+    gt = read_annotations('../annotations', start_frame, end_frame)
 
     """
         DETECTIONS
@@ -32,7 +32,7 @@ def main():
 
         # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
 
-        for im, f in seq(video.get_frames()).drop(start_frame).take(end_frame - start_frame + 1):
+        for im, f in seq(video.get_frames(start_frame_number=start_frame)).take(end_frame - start_frame + 1):
             f.ground_truth = gt[f.id]
             f.detections = detections[f.id]
             frames.append(f)

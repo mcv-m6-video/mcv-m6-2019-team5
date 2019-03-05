@@ -11,4 +11,5 @@ def iou_over_time(frames: List[Frame]):
                      .to_list())
 
     plt.plot(iou_per_frame)
+    plt.title('IoU over time')
     plt.show()

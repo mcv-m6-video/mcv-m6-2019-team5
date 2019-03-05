@@ -11,7 +11,6 @@ from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_p
 from model import Video, Frame
 from utils import read_detections, read_optical_flow, alter_detections, read_annotations
 
-amount_frames = 40
 make_video = False
 start_frame = 1440
 end_frame = 1789
@@ -25,9 +24,11 @@ def main():
     """
         DETECTIONS
     """
-    det_algs = ['mask_rcnn', 'ssd512', 'yolo3']
+    det_algs = ['yolo3', 'mask_rcnn', 'ssd512']
     for alg in det_algs:
         detections = read_detections('../datasets/AICity_data/train/S03/c010/det/det_{0}.txt'.format(alg))
+        detections = detections[start_frame: end_frame + 1]
+
         frames = []
 
         # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
@@ -49,7 +50,7 @@ def main():
     """
     frames = []
 
-    for im, f in seq(video.get_frames()).drop(start_frame).take(end_frame - start_frame + 1):
+    for im, f in seq(video.get_frames()).take(end_frame - start_frame + 1):
         f.ground_truth = gt[f.id]
         f.detections = alter_detections(f.ground_truth)
         frames.append(f)
@@ -58,6 +59,8 @@ def main():
             make_video_frame(im, f, frames)
 
     iou_over_time(frames)
+    mAP = mean_average_precision(frames)
+    print('Random alteration', " mAP:", mAP)
 
     """
         OPTICAL FLOW 
@@ -100,6 +103,7 @@ def make_video_frame(im: np.ndarray, frame: Frame, frames: List[Frame]):
         cv2.rectangle(im1, (int(d.top_left[0]), int(d.top_left[1])),
                       (int(d.get_bottom_right()[0]), int(d.get_bottom_right()[1])), (0, 0, 255), thickness=5)
 
+    plt.figure(figsize=(8, 10))
     plt.subplot(2, 1, 1)
     plt.imshow(cv2.cvtColor(im1, cv2.COLOR_BGR2RGB))
     plt.axis('off')
@@ -122,14 +126,16 @@ def make_video_frame(im: np.ndarray, frame: Frame, frames: List[Frame]):
              'r-', label='mAP'
              )
     axes = plt.gca()
-    axes.set_xlim((0, amount_frames))
+    axes.set_xlim((0, end_frame - start_frame + 1))
     axes.set_ylim((0, 1))
     plt.legend()
 
     if not os.path.exists('../video'):
         os.mkdir('../video')
 
+    # plt.show()
     plt.savefig('../video/{:05d}'.format(frame.id))
+    plt.close()
 
 
 if __name__ == '__main__':

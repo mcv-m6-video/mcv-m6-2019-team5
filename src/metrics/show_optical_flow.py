@@ -9,6 +9,7 @@ def show_optical_flow(optical_flow: np.ndarray):
 
     # Display the image
     plt.imshow(flow_color)
+    plt.axis('off')
     plt.show()
 
 

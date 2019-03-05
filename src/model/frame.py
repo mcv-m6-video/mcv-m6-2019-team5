@@ -9,10 +9,13 @@ class Frame:
     detections: List[Detection]
     ground_truth: List[Detection]
 
+    cached_result: Result
+
     def __init__(self, id: int):
         self.id = id
         self.detections = []
         self.ground_truth = []
+        self.cached_result = None
 
     def get_detection_iou(self) -> List[float]:
         ret = []
@@ -34,13 +37,16 @@ class Frame:
             return 0
 
     def to_result(self) -> Result:
-        tp = 0
-        for ground_truth in self.ground_truth:
-            for detection in self.detections:
-                if detection.iou(ground_truth) > 0.5 and detection.label == ground_truth.label:
-                    tp += 1
-                    break
+        if self.cached_result is None:
+            tp = 0
+            for ground_truth in self.ground_truth:
+                for detection in self.detections:
+                    if detection.iou(ground_truth) > 0.5 and detection.label == ground_truth.label:
+                        tp += 1
+                        break
 
-        fp = len(self.detections) - tp
-        fn = len(self.ground_truth) - tp
-        return Result(tp, fp, 0, fn)
+            fp = len(self.detections) - tp
+            fn = len(self.ground_truth) - tp
+            self.cached_result = Result(tp, fp, 0, fn)
+
+        return self.cached_result

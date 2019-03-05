@@ -108,3 +108,5 @@ venv
 *.pyc
 out
 __pycache__
+
+video

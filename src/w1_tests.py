@@ -1,14 +1,18 @@
+import os
+from typing import List
+
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 from functional import seq
 from matplotlib.lines import Line2D
 
 from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_precision, show_optical_flow_arrows
-from model import Video
+from model import Video, Frame
 from utils import read_detections, read_optical_flow, alter_detections
 
 amount_frames = 40
-make_video = False
+make_video = True
 
 
 def main():
@@ -40,6 +44,8 @@ def main():
         mAP = mean_average_precision(frames)
         print(alg, " mAP:", mAP)
 
+        exit(0)
+
     """
         DETECTIONS FROM ALTERED GROUND TRUTH 
     """
@@ -66,7 +72,6 @@ def main():
 
     img_1 = cv2.imread('../datasets/optical_flow/img/000045_10.png')
     img_2 = cv2.imread('../datasets/optical_flow/img/000157_10.png')
-    
 
     msen_of = msen(of_det_2, of_gt_2)
     pepn_of = pepn(of_det_2, of_gt_2)
@@ -86,7 +91,7 @@ def main():
     show_optical_flow(of_gt_1)
 
 
-def make_video_frame(im, frame, frames):
+def make_video_frame(im: np.ndarray, frame: Frame, frames: List[Frame]):
     im1 = im.copy()
 
     for d in frame.ground_truth:
@@ -123,7 +128,10 @@ def make_video_frame(im, frame, frames):
     axes.set_ylim((0, 1))
     plt.legend()
 
-    plt.show()
+    if not os.path.exists('../video'):
+        os.mkdir('../video')
+
+    plt.savefig('../video/{:05d}'.format(frame.id))
 
 
 if __name__ == '__main__':

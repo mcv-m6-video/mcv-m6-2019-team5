@@ -12,7 +12,7 @@ from model import Video, Frame
 from utils import read_detections, read_optical_flow, alter_detections
 
 amount_frames = 40
-make_video = True
+make_video = False
 
 
 def main():
@@ -43,8 +43,6 @@ def main():
         iou_over_time(frames)
         mAP = mean_average_precision(frames)
         print(alg, " mAP:", mAP)
-
-        exit(0)
 
     """
         DETECTIONS FROM ALTERED GROUND TRUTH 

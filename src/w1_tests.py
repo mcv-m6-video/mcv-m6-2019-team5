@@ -113,22 +113,15 @@ def make_video_frame(im: np.ndarray, frame: Frame, frames: List[Frame]):
     ], ['Ground truth', 'Detection'])
 
     plt.subplot(2, 1, 2)
+    plt.title('IoU over time')
     plt.plot(range(frame.id + 1),
              seq(frames)
              .map(lambda fr: fr.get_detection_iou_mean())
-             .to_list(),
-             'b-', label='IoU'
-             )
-    plt.plot(range(frame.id + 1),
-             seq(range(frame.id + 1))
-             .map(lambda i: mean_average_precision(seq(frames).take(i).to_list()))
-             .to_list(),
-             'r-', label='mAP'
+             .to_list()
              )
     axes = plt.gca()
     axes.set_xlim((0, end_frame - start_frame + 1))
     axes.set_ylim((0, 1))
-    plt.legend()
 
     if not os.path.exists('../video'):
         os.mkdir('../video')

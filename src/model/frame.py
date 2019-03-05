@@ -9,10 +9,10 @@ class Frame:
     detections: List[Detection]
     ground_truth: List[Detection]
 
-    def __init__(self, id: int, ground_truth: List[Detection]):
+    def __init__(self, id: int):
         self.id = id
         self.detections = []
-        self.ground_truth = ground_truth
+        self.ground_truth = []
 
     def get_detection_iou(self) -> List[float]:
         ret = []

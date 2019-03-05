@@ -5,8 +5,7 @@ from model import Video
 
 
 def read_video_process(frame_queue: Queue):
-    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi",
-                  "../datasets/AICity_data/train/S03/c010/Anotation_40secs_AICITY_S03_C010.xml")
+    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
     for data in video.get_frames():
         frame_queue.put(data)

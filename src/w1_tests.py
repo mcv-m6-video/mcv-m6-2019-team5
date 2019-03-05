@@ -9,18 +9,18 @@ from matplotlib.lines import Line2D
 
 from metrics import msen, show_optical_flow, pepn, iou_over_time, mean_average_precision, show_optical_flow_arrows
 from model import Video, Frame
-from utils import read_detections, read_optical_flow, alter_detections
+from utils import read_detections, read_optical_flow, alter_detections, read_annotations
 
 amount_frames = 40
 make_video = False
+start_frame = 1440
+end_frame = 1789
 
 
 def main():
-    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi",
-                  "../datasets/AICity_data/train/S03/c010/Anotation_40secs_AICITY_S03_C010.xml",
-                  car_only=False)
+    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
-    gt = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
+    gt = read_annotations('../annotations', 1440, 1789)
 
     """
         DETECTIONS
@@ -32,7 +32,7 @@ def main():
 
         # roi = cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg')
 
-        for im, f in video.get_frames():
+        for im, f in seq(video.get_frames()).drop(start_frame).take(end_frame - start_frame + 1):
             f.ground_truth = gt[f.id]
             f.detections = detections[f.id]
             frames.append(f)
@@ -49,7 +49,7 @@ def main():
     """
     frames = []
 
-    for im, f in seq(video.get_frames()):
+    for im, f in seq(video.get_frames()).drop(start_frame).take(end_frame - start_frame + 1):
         f.ground_truth = gt[f.id]
         f.detections = alter_detections(f.ground_truth)
         frames.append(f)
@@ -76,7 +76,7 @@ def main():
 
     print(msen_of, pepn_of)
     show_optical_flow(of_gt_1)
-    show_optical_flow_arrows.show_optical_flow_arrows(img_1, of_gt_1)
+    show_optical_flow_arrows(img_1, of_gt_1)
 
     msen_45 = msen(of_det_1, of_gt_1, plot=True)
     pepn_45 = pepn(of_det_1, of_gt_1)

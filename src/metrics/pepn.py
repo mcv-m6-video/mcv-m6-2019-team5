@@ -16,8 +16,7 @@ def pepn(flow: np.ndarray, gt: np.ndarray) -> float:
 
     idx_zeros = gt[:, :, 2] == 0
 
-    err = np.linalg.norm(flow_uv - gt_uv, axis=2)
-    sen = np.power(err, 2)
+    sen = np.linalg.norm(flow_uv - gt_uv, axis=2)
     sen[idx_zeros] = 0
 
-    return float(sen[sen > th].size / (flow.size - np.sum(idx_zeros)))
+    return float(np.sum(sen > th) / (flow.shape[0] * flow.shape[1] - np.sum(idx_zeros)))

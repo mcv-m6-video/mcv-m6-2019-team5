@@ -16,14 +16,11 @@ def msen(flow: np.ndarray, gt: np.ndarray, plot: bool = False) -> float:
     idx_zeros = gt[:, :, 2] == 0
 
     sen = np.linalg.norm(flow_uv - gt_uv, axis=2)
-    # sen = np.power(sen, 2)
-
-    sen[idx_zeros] = 0
 
     if plot:
         plt.figure()
         plt.title('Histogram of errors')
-        plt.hist(sen[sen > 0], 25)
+        plt.hist(sen[np.logical_not(idx_zeros)], 25)
         plt.show()
 
-    return float(np.mean(sen))
+    return float(np.mean(sen[np.logical_not(idx_zeros)]))

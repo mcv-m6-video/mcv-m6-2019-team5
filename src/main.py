@@ -1,14 +1,7 @@
 import argparse
-from multiprocessing import Queue, Process
 
+from methods import week1
 from model import Video
-
-
-def read_video_process(frame_queue: Queue):
-    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
-
-    for data in video.get_frames():
-        frame_queue.put(data)
 
 
 def main():
@@ -24,15 +17,9 @@ def main():
     method_refs = {
     }
 
-    queue = Queue(maxsize=10)
-    p = Process(target=read_video_process, args=(queue,))
-    p.start()
+    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
-    while p.is_alive() or not queue.empty():
-        im, frame = queue.get()
-        print(frame.id)
-
-    p.join()
+    results = week1(video)
 
 
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ dill
 docopt
 future
 imageio
+joblib
 kiwisolver
 matplotlib
 networkx

@@ -3,6 +3,11 @@ import argparse
 from methods import week2
 from model import Video
 
+from joblib import Memory
+
+location = '../.cache'
+memory = Memory(location, verbose=0)
+
 
 def main():
     """

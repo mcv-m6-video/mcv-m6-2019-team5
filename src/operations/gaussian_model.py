@@ -4,17 +4,17 @@ from typing import Iterator
 import numpy as np
 from tqdm import tqdm
 
-from main import memory
+from utils.memory import memory
 from model import Video
 
 
 def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, background_std: np.ndarray,
                    threshold: float = 2.5, total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(frame_start), total=total_frames, file=sys.stdout,
-                          desc="Non-adaptative gaussian model..."):
+                          desc="Non-adaptive gaussian model..."):
         im_gray = np.mean(im, axis=-1) / 255
 
-        mask = (np.abs(im_gray) - background_mean) >= (threshold * background_std)
+        mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + 2 / 255))
 
         yield mask.astype(np.uint8)
 
@@ -23,23 +23,15 @@ def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean
                             background_std: np.ndarray,
                             threshold: float = 2.5, rho: float = 0.1, total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(train_stop_frame, -1), total=total_frames, file=sys.stdout,
-                          desc='Adaptative gaussian model...'):
-
-        mask = np.zeros((im.shape[0], im.shape[1]))
+                          desc='Adaptive gaussian model...'):
         im_gray = np.mean(im, axis=-1) / 255
         row = 0
-        for rows in im_gray:
-            col = 0
-            for pix in rows:
-                if (abs(pix) - background_mean[row, col]) >= (threshold * (background_std[row, col] + 2)):
-                    mask[row, col] = 1
-                else:
-                    background_mean = rho * pix + (1 - rho) * background_mean[row, col]
-                    background_std = rho * pow((pix - background_mean[row, col]), 2) + (1 - rho) * background_std[
-                        row, col]
-                col += 1
-            row += 1
-        yield mask
+
+        mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + 2 / 255))
+        background_mean = rho * im_gray + (1 - rho) * background_mean
+        background_std = rho * np.power((im_gray - background_mean), 2) + (1 - rho) * background_std
+
+        yield mask.astype(np.uint8)
 
 
 @memory.cache

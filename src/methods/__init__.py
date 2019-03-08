@@ -1,1 +1,2 @@
-from .week2 import week2
+from .week2_nonadaptive import week2_nonadaptive
+from .week2_adaptive import week2_adaptive

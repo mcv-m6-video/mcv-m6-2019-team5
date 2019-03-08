@@ -13,14 +13,14 @@ class Video:
     def __init__(self, video_path: str):
         self.video_path = video_path
 
-    def get_frames(self, start_frame_number: int = 0) -> Iterator[Tuple[np.ndarray, Frame]]:
+    def get_frames(self, start: int = 0, end: int = -1) -> Iterator[Tuple[np.ndarray, Frame]]:
         cap = cv2.VideoCapture(self.video_path)
-        cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame_number)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, start)
 
-        num = 0
+        num = start
         while cap.isOpened():
             valid, image = cap.read()
-            if not valid:
+            if not valid or (0 < end <= num):
                 break
 
             yield image, Frame(num)

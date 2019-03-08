@@ -25,11 +25,12 @@ def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean
     for im, frame in tqdm(video.get_frames(train_stop_frame, -1), total=total_frames, file=sys.stdout,
                           desc='Adaptive gaussian model...'):
         im_gray = np.mean(im, axis=-1) / 255
-        row = 0
 
         mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + 5 / 255))
         background_mean = rho * im_gray + (1 - rho) * background_mean
-        background_std = rho * np.power((im_gray - background_mean), 2) + (1 - rho) * background_std
+        background_std = np.sqrt(
+            rho * np.power((im_gray - background_mean), 2) + (1 - rho) * np.power(background_std, 2)
+        )
 
         yield mask.astype(np.uint8) * 255
 

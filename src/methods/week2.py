@@ -6,7 +6,7 @@ from operations.find_boxes import find_boxes
 from operations.morphological_operations import closing, opening
 
 
-def week1(video: Video) -> List[List[Rectangle]]:
+def week2(video: Video) -> List[List[Rectangle]]:
     bounding_boxes: List[List[Rectangle]] = []
     for mask in gaussian_model(video, int(2141 * 0.25)):
         mask = opening(closing(mask, 5), 5)

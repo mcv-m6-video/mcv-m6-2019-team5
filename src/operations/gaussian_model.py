@@ -4,8 +4,8 @@ from typing import Iterator
 import numpy as np
 from tqdm import tqdm
 
-from utils.memory import memory
 from model import Video
+from utils.memory import memory
 
 
 def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, background_std: np.ndarray,
@@ -14,9 +14,9 @@ def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, 
                           desc="Non-adaptive gaussian model..."):
         im_gray = np.mean(im, axis=-1) / 255
 
-        mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + 2 / 255))
+        mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + (5 / 255)))
 
-        yield mask.astype(np.uint8)
+        yield mask.astype(np.uint8) * 255
 
 
 def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean: np.ndarray,
@@ -27,11 +27,11 @@ def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean
         im_gray = np.mean(im, axis=-1) / 255
         row = 0
 
-        mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + 2 / 255))
+        mask = (np.abs(im_gray) - background_mean) >= (threshold * (background_std + 5 / 255))
         background_mean = rho * im_gray + (1 - rho) * background_mean
         background_std = rho * np.power((im_gray - background_mean), 2) + (1 - rho) * background_std
 
-        yield mask.astype(np.uint8)
+        yield mask.astype(np.uint8) * 255
 
 
 @memory.cache

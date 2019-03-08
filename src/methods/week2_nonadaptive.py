@@ -11,7 +11,8 @@ def week2_nonadaptive(video: Video) -> List[List[Rectangle]]:
     bounding_boxes: List[List[Rectangle]] = []
 
     for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, total_frames=int(2141 * 0.75)):
-        mask = opening(closing(mask, 5), 5)
+        mask = opening(closing(mask, 15), 15)
+
         bbs = find_boxes(mask)
         bounding_boxes.append(bbs)
 

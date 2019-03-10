@@ -19,25 +19,24 @@ Instead of installing all the dependencies to the global `python` installation,
 it is recommended to use a virtual environment.
 
 
-```bash
+```
 pip install virtualenv         # if not installed already
 python -v venv ./venv
 
 source venv/bin/activate       # activate the environment
 deactivate                     # deactivate the environment
-
 ```
 
 ### Install dependencies
 
-```bash
+```
 pip install -r requirements.txt
 ```
 
 ### Run the code
 
-```bash
-python src/main.py
+```
+python src/main.py {w2_adaptive,w2_nonadaptive}
 ```
 
 ## Directory structure

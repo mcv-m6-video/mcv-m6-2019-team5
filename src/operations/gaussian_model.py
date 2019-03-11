@@ -1,6 +1,8 @@
 import sys
+from enum import Enum
 from typing import Iterator
 
+import cv2
 import numpy as np
 from tqdm import tqdm
 
@@ -8,28 +10,47 @@ from model import Video
 from utils.memory import memory
 
 
+class PixelValue(Enum):
+    GRAY = 0
+    HUE = 1
+
+
 def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, background_std: np.ndarray,
-                   alpha: float = 2.5, total_frames: int = None) -> Iterator[np.ndarray]:
+                   alpha: float = 2.5, pixel_value: PixelValue = PixelValue.GRAY,
+                   total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(frame_start), total=total_frames, file=sys.stdout,
                           desc="Non-adaptive gaussian model..."):
-        im_gray = np.mean(im, axis=-1) / 255
 
-        mask = (np.abs(im_gray) - background_mean) >= (alpha * (background_std + (5 / 255)))
+        if pixel_value == PixelValue.GRAY:
+            im_values = np.mean(im, axis=-1) / 255
+        elif PixelValue.HUE:
+            im_values = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0] / 255
+        else:
+            raise Exception
+
+        mask = (np.abs(im_values) - background_mean) >= (alpha * (background_std + (5 / 255)))
 
         yield mask.astype(np.uint8) * 255
 
 
 def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean: np.ndarray,
                             background_std: np.ndarray,
-                            alpha: float = 2.5, rho: float = 0.1, total_frames: int = None) -> Iterator[np.ndarray]:
+                            alpha: float = 2.5, rho: float = 0.1, pixel_value: PixelValue = PixelValue.GRAY,
+                            total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(train_stop_frame, -1), total=total_frames, file=sys.stdout,
                           desc='Adaptive gaussian model...'):
-        im_gray = np.mean(im, axis=-1) / 255
 
-        mask = (np.abs(im_gray) - background_mean) >= (alpha * (background_std + 5 / 255))
-        background_mean = rho * im_gray + (1 - rho) * background_mean
+        if pixel_value == PixelValue.GRAY:
+            im_values = np.mean(im, axis=-1) / 255
+        elif PixelValue.HUE:
+            im_values = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0] / 255
+        else:
+            raise Exception
+
+        mask = (np.abs(im_values) - background_mean) >= (alpha * (background_std + 5 / 255))
+        background_mean = rho * im_values + (1 - rho) * background_mean
         background_std = np.sqrt(
-            rho * np.power((im_gray - background_mean), 2) + (1 - rho) * np.power(background_std, 2)
+            rho * np.power((im_values - background_mean), 2) + (1 - rho) * np.power(background_std, 2)
         )
 
         yield mask.astype(np.uint8) * 255

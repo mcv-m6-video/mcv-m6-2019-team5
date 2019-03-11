@@ -1,12 +1,14 @@
 import argparse
 
-from methods import week2_nonadaptive, week2_adaptive, week2_soa
+from methods import week2_nonadaptive, week2_adaptive, week2_soa, week2_nonadaptive_hsv, week2_adaptive_hsv
 from model import Video
 
 method_refs = {
     'w2_adaptive': week2_adaptive,
     'w2_nonadaptive': week2_nonadaptive,
-    'w2_soa': week2_soa
+    'w2_soa': week2_soa,
+    'w2_nonadaptive_hsv': week2_nonadaptive_hsv,
+    'w2_adaptive_hsv': week2_adaptive_hsv
 }
 
 

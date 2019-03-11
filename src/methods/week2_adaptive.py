@@ -1,7 +1,5 @@
 from typing import List
 
-import cv2
-
 from model import Video, Rectangle
 from operations.find_boxes import find_boxes
 from operations.gaussian_model import get_background_model, gaussian_model_adaptive

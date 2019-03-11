@@ -12,18 +12,18 @@ from utils.memory import memory
 
 class PixelValue(Enum):
     GRAY = 0
-    HUE = 1
+    HSV = 1
 
 
 def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, background_std: np.ndarray,
-                   alpha: float = 2.5, pixel_value: PixelValue = PixelValue.GRAY,
+                   alpha: float = 2.5, pixel_value: week2_nonadaptive.py = PixelValue.GRAY,
                    total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(frame_start), total=total_frames, file=sys.stdout,
                           desc="Non-adaptive gaussian model..."):
 
         if pixel_value == PixelValue.GRAY:
             im_values = np.mean(im, axis=-1) / 255
-        elif PixelValue.HUE:
+        elif PixelValue.HSV:
             im_values = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0] / 255
         else:
             raise Exception
@@ -42,7 +42,7 @@ def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean
 
         if pixel_value == PixelValue.GRAY:
             im_values = np.mean(im, axis=-1) / 255
-        elif PixelValue.HUE:
+        elif PixelValue.HSV:
             im_values = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0] / 255
         else:
             raise Exception

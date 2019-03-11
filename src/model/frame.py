@@ -31,12 +31,13 @@ class Frame:
         else:
             return 0
 
-    def to_result(self) -> Result:
+    def to_result(self, ignore_classes=False) -> Result:
         if self.cached_result is None:
             tp = 0
             for ground_truth in self.ground_truth:
                 for detection in self.detections:
-                    if detection.iou(ground_truth) > 0.5 and detection.label == ground_truth.label:
+                    if detection.iou(ground_truth) > 0.5 and (
+                            not ignore_classes and detection.label == ground_truth.label):
                         tp += 1
                         break
 

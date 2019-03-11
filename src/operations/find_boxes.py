@@ -9,10 +9,9 @@ from .integral import get_detection
 def find_boxes(mask: np.ndarray) -> List[Rectangle]:
     mask = fill_holes(mask)
 
-    mask,  detections = get_detection(mask)
+    mask, detections = get_detection(mask)
     cv2.imshow('mask', mask)
     cv2.waitKey()
-    print()
     return detections
 
 

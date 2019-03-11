@@ -12,7 +12,7 @@ def week2_adaptive(video: Video) -> List[List[Rectangle]]:
 
     for mask in gaussian_model_adaptive(video, int(2141 * 0.25), model_mean, model_std,
                                         total_frames=int(2141 * 0.75)):
-        mask = opening(dilate(closing(mask, 15), 30), 15)
+        mask = closing(opening(closing(mask, 15), 15), 30)
 
         bbs = find_boxes(mask)
         bounding_boxes.append(bbs)

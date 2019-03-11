@@ -3,10 +3,6 @@ class Result:
     We define and initialize the different variables for the evaluation
     of the results
     """
-    tp: float
-    fp: float
-    tn: float
-    fn: float
 
     def __init__(self, tp=0, fp=0, tn=0, fn=0):
         self.tp = tp

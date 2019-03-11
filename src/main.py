@@ -1,11 +1,12 @@
 import argparse
 
-from methods import week2_nonadaptive, week2_adaptive
+from methods import week2_nonadaptive, week2_adaptive, week2_soa
 from model import Video
 
 method_refs = {
     'w2_adaptive': week2_adaptive,
-    'w2_nonadaptive': week2_nonadaptive
+    'w2_nonadaptive': week2_nonadaptive,
+    'w2_soa': week2_soa
 }
 
 
@@ -21,6 +22,7 @@ def main():
     video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
     results = method(video)
+
 
 if __name__ == '__main__':
     main()

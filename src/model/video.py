@@ -7,8 +7,6 @@ from model import Frame
 
 
 class Video:
-    video_path: str
-    car_only: bool
 
     def __init__(self, video_path: str):
         self.video_path = video_path

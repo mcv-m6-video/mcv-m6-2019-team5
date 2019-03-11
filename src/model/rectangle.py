@@ -12,10 +12,6 @@ class Rectangle:
     
     """
 
-    top_left: (float, float)
-    width: float
-    height: float
-
     def __init__(self, top_left=(0, 0), width=0, height=0):
         self.top_left = top_left
         self.width = width

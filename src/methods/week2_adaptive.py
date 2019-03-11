@@ -10,7 +10,7 @@ from operations.morphological_operations import closing, opening
 
 def week2_adaptive(video: Video) -> List[List[Rectangle]]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
-    bounding_boxes: List[List[Rectangle]] = []
+    bounding_boxes = []
 
     for mask in gaussian_model_adaptive(video, int(2141 * 0.25), model_mean, model_std,
                                         total_frames=int(2141 * 0.75)):

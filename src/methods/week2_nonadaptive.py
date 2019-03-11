@@ -11,9 +11,9 @@ def week2_nonadaptive(video: Video) -> List[List[Rectangle]]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
 
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
-    detections: List[List[Rectangle]] = []
+    detections = []
 
-    frames: List[Frame] = []
+    frames = []
 
     frame_id = int(2141 * 0.25)
     for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, total_frames=int(2141 * 0.10)):

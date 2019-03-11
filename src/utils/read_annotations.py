@@ -6,13 +6,13 @@ from model import Detection
 
 
 def read_annotations(root_directory: str, start: int, end: int) -> List[List[Detection]]:
-    frames_detections: List[List[Detection]] = []
+    frames_detections = []
 
     for i in range(start, end + 1):
         frame_path = 'frame_{:04d}.xml'.format(i)
         root = ET.parse(os.path.join(root_directory, frame_path)).getroot()
 
-        frame_detections: List[Detection] = []
+        frame_detections = []
 
         for obj in root.findall('object'):
             box = obj.find('bndbox')

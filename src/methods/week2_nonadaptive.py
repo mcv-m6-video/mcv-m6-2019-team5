@@ -5,7 +5,7 @@ import cv2
 from model import Video, Rectangle, Frame
 from operations.find_boxes import find_boxes
 from operations.gaussian_model import get_background_model, gaussian_model
-from operations.morphological_operations import closing, opening
+from operations.morphological_operations import closing, opening, dilate
 from utils import read_detections
 
 
@@ -17,7 +17,7 @@ def week2_nonadaptive(video: Video) -> List[List[Rectangle]]:
 
     frame_id = int(2141 * 0.25)
     for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, total_frames=int(2141 * 0.10)):
-        mask = opening(closing(mask, 15), 15)
+        mask = opening(dilate(closing(mask, 15), 30), 15)
 
         bbs = find_boxes(mask)
 

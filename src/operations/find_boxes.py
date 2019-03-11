@@ -3,14 +3,17 @@ from typing import List
 import numpy as np
 import cv2
 from model import Rectangle
-from .integral import get_detection
+from .get_cc_regions import get_cc_regions
 
 
 def find_boxes(mask: np.ndarray) -> List[Rectangle]:
     mask = fill_holes(mask)
-
-    mask, detections = get_detection(mask)
-    cv2.imshow('mask', mask)
+    mask2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    detections = get_cc_regions(mask)
+    for detection in detections:
+        cv2.rectangle(mask2, (int(detection.top_left[0]), int(detection.top_left[1])), (int(detection.get_bottom_right()[0]),
+                                                                                        int(detection.get_bottom_right()[1])), (0,255,0), 5)
+    cv2.imshow('mask', mask2)
     cv2.waitKey()
     return detections
 

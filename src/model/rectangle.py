@@ -48,6 +48,12 @@ class Rectangle:
 
         return rec
 
+    def intersects(self, rectangle) -> bool:
+        return self.contains_point(rectangle.top_left) or self.contains_point(rectangle.get_bottom_right()) or \
+               self.contains_point(rectangle.get_top_right()) or self.contains_point(rectangle.get_bottom_left()) or \
+               rectangle.contains_point(self.top_left) or rectangle.contains_point(self.get_bottom_right()) or \
+               rectangle.contains_point(self.get_top_right()) or rectangle.contains_point(self.get_bottom_left())
+
     def intersection(self, other: 'Rectangle') -> Optional['Rectangle']:
         rec = Rectangle()
         rec.top_left = (max(self.top_left[0], other.top_left[0]), max(self.top_left[1], other.top_left[1]))

@@ -16,7 +16,7 @@ class PixelValue(Enum):
 
 
 def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, background_std: np.ndarray,
-                   alpha: float = 2.5, pixel_value: week2_nonadaptive.py = PixelValue.GRAY,
+                   alpha: float = 2.5, pixel_value: int = PixelValue.GRAY,
                    total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(frame_start), total=total_frames, file=sys.stdout,
                           desc="Non-adaptive gaussian model..."):
@@ -35,7 +35,7 @@ def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, 
 
 def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean: np.ndarray,
                             background_std: np.ndarray,
-                            alpha: float = 2.5, rho: float = 0.1, pixel_value: PixelValue = PixelValue.GRAY,
+                            alpha: float = 2.5, rho: float = 0.1, pixel_value: int = PixelValue.GRAY,
                             total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(train_stop_frame, -1), total=total_frames, file=sys.stdout,
                           desc='Adaptive gaussian model...'):

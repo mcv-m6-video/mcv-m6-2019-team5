@@ -1,5 +1,7 @@
 from typing import List
 
+import cv2
+
 from model import Video, Rectangle, Frame
 from operations.find_boxes import find_boxes
 from operations.gaussian_model import get_background_model, gaussian_model, PixelValue
@@ -27,6 +29,9 @@ def week2_nonadaptive_hsv(video: Video) -> List[List[Rectangle]]:
         frame.ground_truth = ground_truth[frame_id]
 
         frames.append(frame)
+
+        cv2.imshow('f', mask)
+        cv2.waitKey()
 
         frame_id += 1
 

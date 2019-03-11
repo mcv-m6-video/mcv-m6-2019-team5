@@ -11,4 +11,4 @@ def closing(im: np.ndarray, kernel_side: int) -> np.ndarray:
 
 
 def dilate(im: np.ndarray, kernel_side: int) -> np.ndarray:
-    return cv2.dilate(im, kernel_side)
+    return cv2.dilate(im, np.ones((kernel_side, kernel_side)))

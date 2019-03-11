@@ -14,7 +14,7 @@ SHRINK_MULTIPLIER = .9
 THRESHOLD = 0.6
 
 
-def get_detection(mask: np.array) -> (np.array, List[Rectangle]):
+def get_detection(mask: np.ndarray) -> (np.ndarray, List[Rectangle]):
     integral = cv2.integral(mask / 255)
 
     positions = int_iter(integral)
@@ -34,7 +34,7 @@ def get_detection(mask: np.array) -> (np.array, List[Rectangle]):
 
 
 @njit()
-def int_iter(integral: np.array) -> List[Tuple[int, int, int]]:
+def int_iter(integral: np.ndarray) -> List[Tuple[int, int, int]]:
     ret = []
     side = SIDE
     for _ in range(INTERMEDIATE_STEPS):

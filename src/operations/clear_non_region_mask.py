@@ -6,7 +6,7 @@ import numpy as np
 from model import Rectangle
 
 
-def clear_non_region_mask(mask: np.ndarray, regions: List[Rectangle]) -> np.array:
+def clear_non_region_mask(mask: np.ndarray, regions: List[Rectangle]) -> np.ndarray:
     """
     Sets the area of the mask not covered by any region to 0.
     :param mask: the sign mask

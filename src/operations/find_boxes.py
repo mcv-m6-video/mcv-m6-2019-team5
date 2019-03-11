@@ -3,11 +3,12 @@ from typing import List
 import numpy as np
 import cv2
 from model import Rectangle
-
+from .integral import get_detection
 
 def find_boxes(mask: np.ndarray) -> List[Rectangle]:
     mask = fill_holes(mask)
 
+    get_detection(mask)
     cv2.imshow('mask', mask)
     print()
     pass

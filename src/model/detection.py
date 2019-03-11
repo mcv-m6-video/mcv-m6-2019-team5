@@ -7,8 +7,6 @@ class Detection(Rectangle):
         label: class
         rectangle: bounding box
     """
-    id: str
-    label: str
 
     def __init__(self, id: str, label: str, top_left=(0, 0), width=0, height=0):
         super().__init__(top_left, width, height)

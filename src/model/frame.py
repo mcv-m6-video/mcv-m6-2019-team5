@@ -5,11 +5,6 @@ from model import Result
 
 
 class Frame:
-    id: int
-    detections: List[Detection]
-    ground_truth: List[Detection]
-
-    cached_result: Result
 
     def __init__(self, id: int):
         self.id = id

@@ -27,11 +27,8 @@ def week2_nonadaptive(video: Video) -> List[List[Rectangle]]:
 
         frames.append(frame)
 
-        cv2.imshow('f', mask)
-        cv2.waitKey()
-
         frame_id += 1
 
-    for f in frames:
-        result = f.to_result(ignore_classes=True)
-        iou = f.get_detection_iou()
+        result = frame.to_result(ignore_classes=True)
+        iou = frame.get_detection_iou(ignore_classes=True)
+        print(iou)

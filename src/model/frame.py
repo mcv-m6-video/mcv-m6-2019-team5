@@ -12,13 +12,13 @@ class Frame:
         self.ground_truth = []
         self.cached_result = None
 
-    def get_detection_iou(self) -> List[float]:
+    def get_detection_iou(self, ignore_classes=False) -> List[float]:
         ret = []
         for ground_truth in self.ground_truth:
             max_iou = 0
             for detection in self.detections:
                 iou = detection.iou(ground_truth)
-                if detection.label == ground_truth.label and iou > max_iou:
+                if (ignore_classes or detection.label == ground_truth.label) and iou > max_iou:
                     max_iou = iou
 
             ret.append(max_iou)

@@ -5,13 +5,15 @@ import cv2
 from model import Rectangle
 from .integral import get_detection
 
+
 def find_boxes(mask: np.ndarray) -> List[Rectangle]:
     mask = fill_holes(mask)
 
-    get_detection(mask)
+    mask,  detections = get_detection(mask)
     cv2.imshow('mask', mask)
+    cv2.waitKey()
     print()
-    pass
+    return detections
 
 
 def fill_holes(mask: np.ndarray) -> np.ndarray:

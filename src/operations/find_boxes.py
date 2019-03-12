@@ -8,6 +8,7 @@ from .get_cc_regions import get_cc_regions
 MIN_AREA = 9000
 MIN_ASPECT_RATIO = 0.3
 SCALE = 0.1
+SCALE_POST = 0.2
 MAX_AREA = 200000
 
 
@@ -20,7 +21,8 @@ def find_boxes(mask: np.ndarray) -> (np.ndarray, List[Rectangle]):
     remove_by_shape(detections)
 
     mask = clear_non_region_mask(mask, detections)
-
+    for d in detections:
+        d.apply_scale(SCALE_POST)
     return mask, detections
 
 

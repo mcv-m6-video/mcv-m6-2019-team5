@@ -37,6 +37,7 @@ def main():
     for im, mask, frame in method(video, **{'debug': args.debug}):
         frames.append(frame)
         iou = frame.get_detection_iou(ignore_classes=True)
+        print(iou)
         if not args.debug:
             plt.figure()
             plt.subplot2grid((2, 2), (0, 0))

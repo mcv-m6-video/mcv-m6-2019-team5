@@ -1,13 +1,15 @@
+from typing import Iterator
+
 import cv2
-from typing import List, Iterator
-from model import Video, Rectangle, Frame, Result
+
+from model import Video, Frame
 from operations.find_boxes import find_boxes
 from operations.gaussian_model import get_background_model, gaussian_model_adaptive
-from operations.morphological_operations import closing, opening, dilate
+from operations.morphological_operations import closing, opening
 from utils import read_detections
 
 
-def week2_adaptive(video: Video, alpha=2, debug=False) -> Iterator[Frame]:
+def week2_adaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
 

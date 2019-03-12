@@ -17,6 +17,8 @@ def w2_map_alpha(alpha):
         frames.append(frame)
     mAP = mean_average_precision(frames)
 
+    print('alpha', alpha, 'mAP', mAP)
+
     return mAP
 
 

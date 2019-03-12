@@ -7,7 +7,7 @@ import numpy as np
 def mean_average_precision(frames: List[Frame], ignore_classes=True) -> float:
     p_and_r = (seq(frames)
                .map(lambda f: f.to_result(ignore_classes=ignore_classes))
-               .filter(lambda r: r.tp + r.fn > 0)
+               .filter(lambda r: r.tp + r.fn > 0 and r.tp + r.fp > 0)
                .map(lambda r: (r.get_precision(), r.get_recall())))
 
     s = 0

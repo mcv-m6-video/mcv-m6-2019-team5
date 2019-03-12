@@ -24,8 +24,8 @@ class Frame:
             ret.append(max_iou)
         return ret
 
-    def get_detection_iou_mean(self) -> float:
-        iou_list = self.get_detection_iou()
+    def get_detection_iou_mean(self, ignore_classes=False) -> float:
+        iou_list = self.get_detection_iou(ignore_classes)
         if len(iou_list) > 0:
             return float(np.mean(iou_list))
         else:

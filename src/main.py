@@ -2,6 +2,7 @@ import argparse
 
 from methods import week2_nonadaptive, week2_adaptive, week2_soa, week2_soa_mod, week2_nonadaptive_hsv, \
     week2_adaptive_hsv
+from metrics import iou_over_time, mean_average_precision
 from model import Video
 
 method_refs = {
@@ -26,9 +27,12 @@ def main():
 
     video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
+    frames = []
     for frame in method(video, **{'debug': args.debug}):
-        iou = frame.get_detection_iou(ignore_classes=True)
-        result = frame.to_result(ignore_classes=True)
+        frames.append(frame)
+
+    iou_over_time(frames, ignore_classes=True)
+    print('mAP:', mean_average_precision(frames, ignore_classes=True))
 
 
 if __name__ == '__main__':

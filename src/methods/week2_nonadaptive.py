@@ -9,7 +9,7 @@ from operations.morphological_operations import closing, opening
 from utils import read_detections
 
 
-def week2_nonadaptive(video: Video, alpha, debug=False) -> Iterator[Frame]:
+def week2_nonadaptive(video: Video, alpha=1.6, debug=False) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
 
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
@@ -38,5 +38,20 @@ def week2_nonadaptive(video: Video, alpha, debug=False) -> Iterator[Frame]:
         frame.ground_truth = ground_truth[frame_id]
 
         frame_id += 1
+
+        if debug:
+            mask2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+            for detection in detections:
+                cv2.rectangle(mask2,
+                              (int(detection.top_left[1]), int(detection.top_left[0])),
+                              (int(detection.get_bottom_right()[1]), int(detection.get_bottom_right()[0])),
+                              (0, 255, 0), 5)
+            for gt in ground_truth[frame_id]:
+                cv2.rectangle(mask2,
+                              (int(gt.top_left[1]), int(gt.top_left[0])),
+                              (int(gt.get_bottom_right()[1]), int(gt.get_bottom_right()[0])),
+                              (255, 0, 0), 5)
+            cv2.imshow('f', mask2)
+            cv2.waitKey()
 
         yield frame

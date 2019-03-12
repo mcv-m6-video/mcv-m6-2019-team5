@@ -13,10 +13,10 @@ def read_detections(path: str) -> List[List[Detection]]:
             while frame_id > len(frame_detections):
                 frame_detections.append([])
 
-            tl_x = int(float(parts[2]))
-            tl_y = int(float(parts[3]))
-            width = int(float(parts[4]))
-            height = int(float(parts[5]))
+            tl_y = int(float(parts[2]))
+            tl_x = int(float(parts[3]))
+            height = int(float(parts[4]))
+            width = int(float(parts[5]))
 
             frame_detections[-1].append(Detection(parts[1], 'car', (tl_x, tl_y), width, height))
 

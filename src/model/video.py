@@ -26,3 +26,9 @@ class Video:
             num += 1
 
         cap.release()
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return 'Video(path=\'video_path\')'

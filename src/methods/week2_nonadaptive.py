@@ -7,7 +7,7 @@ from operations.find_boxes import find_boxes
 from operations.gaussian_model import get_background_model, gaussian_model
 from operations.morphological_operations import closing, opening
 from utils import read_detections
-
+import numpy as np
 
 def week2_nonadaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
@@ -16,9 +16,10 @@ def week2_nonadaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
 
     frame_id = int(2141 * 0.25)
     roi = cv2.cvtColor(cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg'), cv2.COLOR_BGR2GRAY)
-    for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, alpha=alpha,
-                               total_frames=int(2141 * 0.75)):
+    for im, mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, alpha=alpha,
+                                   total_frames=int(2141 * 0.75)):
         mask = mask & roi
+        mask_orig = np.copy(mask)
         if debug:
             cv2.imshow('f', mask)
             cv2.waitKey()
@@ -54,4 +55,4 @@ def week2_nonadaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
             cv2.imshow('f', mask2)
             cv2.waitKey()
 
-        yield frame
+        yield im, mask_orig, frame

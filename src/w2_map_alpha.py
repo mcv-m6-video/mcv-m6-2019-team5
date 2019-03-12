@@ -28,8 +28,11 @@ def main():
 
     fig, ax = plt.figure
     ax.plot(alpha_values, mAP_list)
-    ax.set(xlabel='alpha value', ylabel='mean average precision')
+    ax.set(xlabel=r'$\alpha$ threshold', ylabel='mean average precision')
+
+    fig.savefig('mAP_alpha.png')
     plt.show()
+
 
 
 if __name__ == '__main__':

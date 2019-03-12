@@ -5,7 +5,7 @@ from functional import seq
 from model import Frame
 
 
-def iou_over_time(frames: List[Frame], ignore_classes=False):
+def iou_over_time(frames: List[Frame], ignore_classes=False, show=True):
     iou_per_frame = (seq(frames)
                      .map(lambda f: f.get_detection_iou_mean(ignore_classes))
                      .to_list())
@@ -16,10 +16,11 @@ def iou_over_time(frames: List[Frame], ignore_classes=False):
         .to_list()
     )
 
-    plt.plot(iou_per_frame)
-    plt.plot(iou_gt, 'r-')
-    plt.title('IoU over time')
-    axes = plt.gca()
-    axes.set_xlim((0, len(frames)))
-    axes.set_ylim((0, 1))
-    plt.show()
+    plt.plot(range(len(frames)), iou_per_frame, 'b-')
+    plt.plot(range(len(iou_gt)), iou_gt, 'r-')
+    if show:
+        plt.title('IoU over time')
+        axes = plt.gca()
+        axes.set_xlim((0, len(frames)))
+        axes.set_ylim((0, 1))
+        plt.show()

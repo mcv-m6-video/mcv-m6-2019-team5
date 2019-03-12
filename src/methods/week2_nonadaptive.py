@@ -19,16 +19,17 @@ def week2_nonadaptive(video: Video, alpha, debug=False) -> Iterator[Frame]:
     for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, alpha=alpha,
                                total_frames=int(2141 * 0.75)):
         mask = mask & roi
-        # cv2.imshow('f', mask)
-        # cv2.waitKey()
-
+        if debug:
+            cv2.imshow('f', mask)
+            cv2.waitKey()
         mask = opening(mask, 2)
-        # cv2.imshow('f', mask)
-        # cv2.waitKey()
-
+        if debug:
+            cv2.imshow('f', mask)
+            cv2.waitKey()
         mask = closing(mask, 35)
-        # cv2.imshow('f', mask)
-        # cv2.waitKey()
+        if debug:
+            cv2.imshow('f', mask)
+            cv2.waitKey()
 
         mask, detections = find_boxes(mask)
 

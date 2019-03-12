@@ -7,14 +7,14 @@ from operations.clear_non_region_mask import clear_non_region_mask
 from .get_cc_regions import get_cc_regions
 from .combine_overlapped_regions import combine_overlapped_regions
 
-MIN_AREA = 100
-MIN_ASPECT_RATIO = 0.5
-
+MIN_AREA = 5000
+MIN_ASPECT_RATIO = 0.3
+SCALE = 0.15
 
 def find_boxes(mask: np.ndarray) -> (np.ndarray, List[Rectangle]):
     detections = get_cc_regions(mask)
     for d in detections:
-        d.apply_scale(scale=0.3)
+        d.apply_scale(SCALE)
 
     detections = combine_overlapped_regions(detections)
     remove_by_shape(detections)
@@ -25,7 +25,11 @@ def find_boxes(mask: np.ndarray) -> (np.ndarray, List[Rectangle]):
 
 
 def remove_by_shape(detections):
-    for detection in detections:
+    i = 0
+    while i < len(detections):
+        detection = detections[i]
         if detection.get_area() < MIN_AREA or detection.width / detection.height < MIN_ASPECT_RATIO or \
                 detection.height / detection.width < MIN_ASPECT_RATIO:
-            detections.pop(detections.index(detection))
+            detections.pop(i)
+        else:
+            i += 1

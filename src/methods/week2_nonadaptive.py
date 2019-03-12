@@ -9,6 +9,7 @@ from operations.morphological_operations import closing, opening
 from utils import read_detections
 import numpy as np
 
+
 def week2_nonadaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
 

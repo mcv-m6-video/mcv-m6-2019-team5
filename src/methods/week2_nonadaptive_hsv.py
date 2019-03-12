@@ -22,6 +22,7 @@ def week2_nonadaptive_hsv(video: Video, debug=False) -> Iterator[Frame]:
         mask = mask & roi
         mask = opening(mask, 3)
         mask = closing(mask, 35)
+
         mask, detections = find_boxes(mask)
 
         frame = Frame(frame_id)

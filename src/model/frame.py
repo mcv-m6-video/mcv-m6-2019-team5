@@ -36,8 +36,7 @@ class Frame:
             tp = 0
             for ground_truth in self.ground_truth:
                 for detection in self.detections:
-                    if detection.iou(ground_truth) > 0.5 and (
-                            not ignore_classes and detection.label == ground_truth.label):
+                    if detection.iou(ground_truth) > 0.5 and (ignore_classes or detection.label == ground_truth.label):
                         tp += 1
                         break
 

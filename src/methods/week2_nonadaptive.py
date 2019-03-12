@@ -22,7 +22,7 @@ def week2_nonadaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
         if debug:
             cv2.imshow('f', mask)
             cv2.waitKey()
-        mask = opening(mask, 2)
+        mask = opening(mask, 3)
         if debug:
             cv2.imshow('f', mask)
             cv2.waitKey()

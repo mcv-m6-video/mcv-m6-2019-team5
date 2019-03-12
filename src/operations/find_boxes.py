@@ -9,8 +9,8 @@ from .combine_overlapped_regions import combine_overlapped_regions
 
 MIN_AREA = 10000
 MIN_ASPECT_RATIO = 0.3
-SCALE = 0.15
-MAX_AREA = 250000
+SCALE = 0.1
+MAX_AREA = 200000
 
 def find_boxes(mask: np.ndarray) -> (np.ndarray, List[Rectangle]):
     detections = get_cc_regions(mask)

@@ -16,32 +16,38 @@ def week2_adaptive(video: Video, alpha, debug=False) -> Iterator[Frame]:
     for im, mask in gaussian_model_adaptive(video, int(2141 * 0.25), model_mean, model_std, alpha=alpha, rho=0.4,
                                             total_frames=int(2141 * 0.75)):
         mask = mask & roi
-        # cv2.imshow('f', mask)
-        # cv2.waitKey()
-
+        if debug:
+            cv2.imshow('f', mask)
+            cv2.waitKey()
         mask = opening(mask, 3)
-        # cv2.imshow('f', mask)
-        # cv2.waitKey()
-
+        if debug:
+            cv2.imshow('f', mask)
+            cv2.waitKey()
         mask = closing(mask, 35)
-        # cv2.imshow('f', mask)
-        # cv2.waitKey()
-
+        if debug:
+            cv2.imshow('f', mask)
+            cv2.waitKey()
         mask, detections = find_boxes(mask)
-
-        mask2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-        for detection in detections:
-            cv2.rectangle(mask2,
-                          (int(detection.top_left[1]), int(detection.top_left[0])),
-                          (int(detection.get_bottom_right()[1]), int(detection.get_bottom_right()[0])),
-                          (0, 255, 0), 3)
-        cv2.imshow('f', mask2)
-        cv2.waitKey()
 
         frame = Frame(frame_id)
         frame.detections = detections
         frame.ground_truth = ground_truth[frame_id]
 
         frame_id += 1
+
+        if debug:
+            mask2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+            for detection in detections:
+                cv2.rectangle(mask2,
+                              (int(detection.top_left[1]), int(detection.top_left[0])),
+                              (int(detection.get_bottom_right()[1]), int(detection.get_bottom_right()[0])),
+                              (0, 255, 0), 5)
+            for gt in ground_truth[frame_id]:
+                cv2.rectangle(mask2,
+                              (int(gt.top_left[1]), int(gt.top_left[0])),
+                              (int(gt.get_bottom_right()[1]), int(gt.get_bottom_right()[0])),
+                              (255, 0, 0), 5)
+            cv2.imshow('f', mask2)
+            cv2.waitKey()
 
         yield im, mask, frame

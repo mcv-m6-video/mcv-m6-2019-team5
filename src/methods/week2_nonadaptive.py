@@ -16,7 +16,9 @@ def week2_nonadaptive(video: Video) -> List[List[Rectangle]]:
     frames = []
 
     frame_id = int(2141 * 0.25)
+    roi = cv2.cvtColor(cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg'), cv2.COLOR_BGR2GRAY)
     for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, total_frames=int(2141 * 0.10)):
+        mask = mask & roi
         cv2.imshow('f', mask)
         cv2.waitKey()
         mask = closing(mask, 30)

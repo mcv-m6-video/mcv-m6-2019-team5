@@ -9,14 +9,14 @@ from operations.morphological_operations import closing, opening
 from utils import read_detections
 
 
-def week2_nonadaptive(video: Video, debug=False) -> Iterator[Frame]:
+def week2_nonadaptive(video: Video, alpha, debug=False) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
 
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
 
     frame_id = int(2141 * 0.25)
     roi = cv2.cvtColor(cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg'), cv2.COLOR_BGR2GRAY)
-    for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, alpha=2,
+    for mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, alpha=alpha,
                                total_frames=int(2141 * 0.75)):
         mask = mask & roi
         # cv2.imshow('f', mask)

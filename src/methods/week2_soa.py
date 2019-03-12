@@ -22,27 +22,21 @@ def week2_soa(video: Video, debug=False) -> Iterator[Frame]:
     for im, frame_ in tqdm(video.get_frames(), total=2141, file=sys.stdout,
                            desc='Training model...'):
         mask = fgbg.apply(im)
-        cv.imshow('f', mask)
-        cv.waitKey()
         mask[mask < th] = 0
 
         mask.astype(np.uint8) * 255
-        cv.imshow('f', mask)
-        cv.waitKey()
 
         mask = mask & roi
-        cv.imshow('f', mask)
-        cv.waitKey()
 
-        mask = opening(mask, 2)
-        cv.imshow('f', mask)
-        cv.waitKey()
+        mask = opening(mask, 5)
+        # cv.imshow('f', mask)
+        # cv.waitKey()
 
-        mask = closing(mask, 35)
-        cv.imshow('f', mask)
-        cv.waitKey()
+        mask = closing(mask, 25)
+        # cv.imshow('f', mask)
+        # cv.waitKey()
 
-        detections = find_boxes(mask)
+        mask, detections = find_boxes(mask)
 
         frame = Frame(frame_id)
         frame.detections = detections

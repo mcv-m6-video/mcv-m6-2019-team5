@@ -66,13 +66,19 @@ def get_background_model(video: Video, train_stop_frame: int, total_frames: int 
             background_list = np.zeros((im.shape[0], im.shape[1], train_stop_frame), dtype=np.int16)
 
         if pixel_value == PixelValue.GRAY:
-            background_list[:, :, frame.id] = np.mean(im, axis=-1) / 255
+            background_list[:, :, frame.id] = np.mean(im, axis=-1)
         elif PixelValue.HSV:
-            background_list[:, :, frame.id] = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0] / 180
+            background_list[:, :, frame.id] = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0]
         else:
             raise Exception
 
-    background_mean = np.mean(background_list, axis=-1)
-    background_std = np.std(background_list, axis=-1)
+    if pixel_value == PixelValue.GRAY:
+        background_mean = np.mean(background_list, axis=-1) / 255
+        background_std = np.std(background_list, axis=-1) / 255
+    elif PixelValue.HSV:
+        background_mean = np.mean(background_list, axis=-1) / 180
+        background_std = np.std(background_list, axis=-1) / 180
+    else:
+        raise Exception
 
     return background_mean, background_std

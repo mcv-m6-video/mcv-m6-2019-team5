@@ -11,7 +11,6 @@ joblib
 kiwisolver
 matplotlib
 networkx
-numba
 numpy
 opencv-python
 pandas

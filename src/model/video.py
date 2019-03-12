@@ -1,3 +1,4 @@
+import os
 from typing import Iterator, Tuple
 
 import cv2
@@ -11,21 +12,9 @@ class Video:
     def __init__(self, video_path: str):
         self.video_path = video_path
 
-    def get_frames(self, start: int = 0, end: int = -1) -> Iterator[Tuple[np.ndarray, Frame]]:
-        cap = cv2.VideoCapture(self.video_path)
-        cap.set(cv2.CAP_PROP_POS_FRAMES, start)
-
-        num = start
-        while cap.isOpened():
-            valid, image = cap.read()
-            if not valid or (0 < end <= num):
-                break
-
-            yield image, Frame(num)
-
-            num += 1
-
-        cap.release()
+    def get_frames(self, start: int = 0, end: int = 2142) -> Iterator[Tuple[np.ndarray, Frame]]:
+        for i in range(start+1, end+1):
+            yield cv2.imread(os.path.join(self.video_path, 'frame_{:04d}.jpg'.format(i)))
 
     def __repr__(self):
         return self.__str__()

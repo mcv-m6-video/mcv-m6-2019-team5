@@ -10,15 +10,16 @@ from utils import read_detections
 import numpy as np
 
 
-def week2_nonadaptive(video: Video, alpha=1.75, debug=False) -> Iterator[Frame]:
-    model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
+def week2_nonadaptive(video: Video, alpha=1.75, debug=False, disable_tqdm=False) -> Iterator[Frame]:
+    model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25),
+                                                 disable_tqdm=disable_tqdm)
 
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
 
     frame_id = int(2141 * 0.25)
     roi = cv2.cvtColor(cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg'), cv2.COLOR_BGR2GRAY)
     for im, mask in gaussian_model(video, int(2141 * 0.25), model_mean, model_std, alpha=alpha,
-                                   total_frames=int(2141 * 0.75)):
+                                   total_frames=int(2141 * 0.75), disable_tqdm=disable_tqdm):
         mask = mask & roi
         mask_orig = np.copy(mask)
         if debug:

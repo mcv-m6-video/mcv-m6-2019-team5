@@ -1,5 +1,7 @@
 import sys
 
+from joblib import Parallel, delayed
+
 from methods import week2_nonadaptive
 from model import Video
 from metrics import mean_average_precision
@@ -9,30 +11,32 @@ from tqdm import tqdm
 
 
 def w2_map_alpha(alpha):
-    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
+    video = Video("../datasets/AICity_data/train/S03/c010/frames")
     frames = []
-    for frame in week2_nonadaptive(video, alpha):
+    ious = []
+    for im, mask, frame in week2_nonadaptive(video, alpha, disable_tqdm=True):
         frames.append(frame)
+        ious.append(frame.get_detection_iou_mean(ignore_classes=True))
+
     mAP = mean_average_precision(frames)
 
-    print('alpha', alpha, 'mAP', mAP)
+    print('alpha', alpha, 'mAP', mAP, 'mean IoU', np.mean(ious))
 
-    return mAP
+    return np.mean(ious)
 
 
 def main():
-    mAP_list = []
     alpha_values = np.linspace(1.5, 3, 20)
-    for alpha in tqdm(alpha_values, file=sys.stdout, desc='Global loop....'):
-        mAP_list.append(w2_map_alpha(alpha))
+    mAP_list = Parallel(n_jobs=1)(delayed(w2_map_alpha)(alpha) for alpha in tqdm(alpha_values))
+    # for alpha in tqdm(alpha_values, file=sys.stdout, desc='Global loop....'):
+    #     mAP_list.append(w2_map_alpha(alpha))
 
-    fig, ax = plt.figure
-    ax.plot(alpha_values, mAP_list)
-    ax.set(xlabel=r'$\alpha$ threshold', ylabel='mean average precision')
-
-    fig.savefig('mAP_alpha.png')
+    plt.figure()
+    plt.plot(alpha_values, mAP_list)
+    plt.xlabel(r'$\alpha$ threshold')
+    plt.ylabel('IoU')
+    plt.savefig('iou_alpha.png')
     plt.show()
-
 
 
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ def main():
 
     method = method_refs.get(args.method)
 
-    video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
+    video = Video("../datasets/AICity_data/train/S03/c010/frames")
 
     frames = []
     for im, mask, frame in method(video, **{'debug': args.debug}):

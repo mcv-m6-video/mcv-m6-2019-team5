@@ -23,7 +23,10 @@ def main():
 
     video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
 
-    results = method(video)
+    for frame in method(video):
+        iou = frame.get_detection_iou(ignore_classes=True)
+        print(iou)
+        result = frame.to_result(ignore_classes=True)
 
 
 if __name__ == '__main__':

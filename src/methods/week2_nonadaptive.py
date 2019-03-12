@@ -1,13 +1,15 @@
-from typing import List
+from typing import Iterator
+
 import cv2
-from model import Video, Frame, Result
+
+from model import Video, Frame
 from operations.find_boxes import find_boxes
 from operations.gaussian_model import get_background_model, gaussian_model
 from operations.morphological_operations import closing, opening
 from utils import read_detections
 
 
-def week2_nonadaptive(video: Video) -> List[Result]:
+def week2_nonadaptive(video: Video) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
 
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
@@ -39,10 +41,4 @@ def week2_nonadaptive(video: Video) -> List[Result]:
 
         frame_id += 1
 
-        iou = frame.get_detection_iou(ignore_classes=True)
-        print(iou)
-
-        results.append(frame.to_result(ignore_classes=True))
-
-    return results
-
+    return frames

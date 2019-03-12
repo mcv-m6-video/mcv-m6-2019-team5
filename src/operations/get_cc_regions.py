@@ -13,10 +13,10 @@ def get_cc_regions(mask: np.array) -> List[Rectangle]:
         min_point = np.full(2, np.iinfo(np.int).max)
         max_point = np.zeros(2).astype(int)
         for point in contour:
-            min_point[1] = min(min_point[1], int(point[0][1]))
-            min_point[0] = min(min_point[0], int(point[0][0]))
-            max_point[1] = max(max_point[1], int(point[0][1]))
-            max_point[0] = max(max_point[0], int(point[0][0]))
+            min_point[0] = min(min_point[0], int(point[0][1]))
+            min_point[1] = min(min_point[1], int(point[0][0]))
+            max_point[0] = max(max_point[0], int(point[0][1]))
+            max_point[1] = max(max_point[1], int(point[0][0]))
 
         rectangle = Rectangle()
         rectangle.top_left = min_point.astype(int).tolist()

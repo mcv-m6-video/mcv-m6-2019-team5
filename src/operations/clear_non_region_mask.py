@@ -15,8 +15,10 @@ def clear_non_region_mask(mask: np.ndarray, regions: List[Rectangle]) -> np.ndar
     """
     m = np.zeros(mask.shape, mask.dtype)
     for region in regions:
-        cv2.rectangle(m, (region.top_left[0], region.top_left[1]),
-                      (region.get_bottom_right()[0], region.get_bottom_right()[1]), 255, thickness=cv2.FILLED)
+        cv2.rectangle(m, (int(region.top_left[1]), int(region.top_left[0])),
+                      (int(region.get_bottom_right()[1]), int(region.get_bottom_right()[0])),
+                      255, thickness=cv2.FILLED)
 
     mask = cv2.bitwise_and(mask, m)
+
     return mask

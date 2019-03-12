@@ -30,10 +30,10 @@ class Rectangle:
         self.top_left = (x, y)
 
     def apply_scale(self, scale: float = 0.2):
-        self.top_left = (self.top_left[0] - self.width * (scale / 2),
-                         self.top_left[1] - self.height * (scale / 2))
-        self.width += (self.width * scale)
-        self.height += (self.height * scale)
+        self.top_left = (int(self.top_left[0] - self.width * (scale / 2)),
+                         int(self.top_left[1] - self.height * (scale / 2)))
+        self.width += int(self.width * scale)
+        self.height += int(self.height * scale)
 
     def contains_point(self, point: (float, float)) -> bool:
         return (self.top_left[0] <= point[0] <= self.get_bottom_right()[0] and

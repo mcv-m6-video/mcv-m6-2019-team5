@@ -16,18 +16,27 @@ def week2_adaptive(video: Video) -> Iterator[Frame]:
     for mask in gaussian_model_adaptive(video, int(2141 * 0.25), model_mean, model_std, alpha=1.75, rho=0.4,
                                         total_frames=int(2141 * 0.75)):
         mask = mask & roi
-        cv2.imshow('f', mask)
-        cv2.waitKey()
+        # cv2.imshow('f', mask)
+        # cv2.waitKey()
 
         mask = opening(mask, 3)
-        cv2.imshow('f', mask)
-        cv2.waitKey()
+        # cv2.imshow('f', mask)
+        # cv2.waitKey()
 
         mask = closing(mask, 35)
-        cv2.imshow('f', mask)
-        cv2.waitKey()
+        # cv2.imshow('f', mask)
+        # cv2.waitKey()
 
-        detections = find_boxes(mask)
+        mask, detections = find_boxes(mask)
+
+        mask2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+        for detection in detections:
+            cv2.rectangle(mask2,
+                          (int(detection.top_left[1]), int(detection.top_left[0])),
+                          (int(detection.get_bottom_right()[1]), int(detection.get_bottom_right()[0])),
+                          (0, 255, 0), 3)
+        cv2.imshow('f', mask2)
+        cv2.waitKey()
 
         frame = Frame(frame_id)
         frame.detections = detections

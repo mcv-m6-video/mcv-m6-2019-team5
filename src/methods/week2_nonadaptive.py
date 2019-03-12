@@ -30,7 +30,7 @@ def week2_nonadaptive(video: Video) -> Iterator[Frame]:
         # cv2.imshow('f', mask)
         # cv2.waitKey()
 
-        detections = find_boxes(mask)
+        mask, detections = find_boxes(mask)
 
         frame = Frame(frame_id)
         frame.detections = detections

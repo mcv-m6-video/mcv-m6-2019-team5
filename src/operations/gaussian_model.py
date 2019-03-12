@@ -16,7 +16,7 @@ class PixelValue(Enum):
 
 
 def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, background_std: np.ndarray,
-                   alpha: float = 2.5, pixel_value: int = PixelValue.GRAY,
+                   alpha: float = 2.5, pixel_value: PixelValue = PixelValue.GRAY,
                    total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(frame_start), total=total_frames, file=sys.stdout,
                           desc="Non-adaptive gaussian model..."):
@@ -35,7 +35,7 @@ def gaussian_model(video: Video, frame_start: int, background_mean: np.ndarray, 
 
 def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean: np.ndarray,
                             background_std: np.ndarray,
-                            alpha: float = 2.5, rho: float = 0.1, pixel_value: int = PixelValue.GRAY,
+                            alpha: float = 2.5, rho: float = 0.1, pixel_value: PixelValue = PixelValue.GRAY,
                             total_frames: int = None) -> Iterator[np.ndarray]:
     for im, frame in tqdm(video.get_frames(train_stop_frame, -1), total=total_frames, file=sys.stdout,
                           desc='Adaptive gaussian model...'):
@@ -57,14 +57,20 @@ def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean
 
 
 @memory.cache
-def get_background_model(video: Video, train_stop_frame: int, total_frames: int = None) -> (np.ndarray, np.ndarray):
+def get_background_model(video: Video, train_stop_frame: int, total_frames: int = None,
+                         pixel_value: PixelValue = PixelValue.GRAY) -> (np.ndarray, np.ndarray):
     background_list = None
     for im, frame in tqdm(video.get_frames(0, train_stop_frame), total=total_frames, file=sys.stdout,
                           desc='Training model...'):
         if background_list is None:
             background_list = np.zeros((im.shape[0], im.shape[1], train_stop_frame), dtype=np.int16)
 
-        background_list[:, :, frame.id] = np.mean(im, axis=-1, dtype=np.int16)
+        if pixel_value == PixelValue.GRAY:
+            background_list[:, :, frame.id] = np.mean(im, axis=-1)
+        elif PixelValue.HSV:
+            background_list[:, :, frame.id] = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)[:, :, 0]
+        else:
+            raise Exception
 
     background_mean = np.mean(background_list, axis=-1) / 255
     background_std = np.std(background_list, axis=-1) / 255

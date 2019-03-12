@@ -18,10 +18,10 @@ def find_boxes(mask: np.ndarray) -> List[Rectangle]:
             detections.pop(idx)
         else:
             detection.apply_scale(scale=0.3)
-        idx +=1
+        idx += 1
 
     detections = combine_overlapped_regions(detections)
-    # mask = clear_non_region_mask(mask, detections)
+    mask = clear_non_region_mask(mask, detections)
     mask2 = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
     for detection in detections:
         cv2.rectangle(mask2, (int(detection.top_left[0]), int(detection.top_left[1])),

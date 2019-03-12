@@ -10,8 +10,7 @@ from utils import read_detections
 def week2_adaptive(video: Video) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
-    frames = []
-    results = []
+
     frame_id = int(2141 * 0.25)
     roi = cv2.cvtColor(cv2.imread('../datasets/AICity_data/train/S03/c010/roi.jpg'), cv2.COLOR_BGR2GRAY)
     for mask in gaussian_model_adaptive(video, int(2141 * 0.25), model_mean, model_std, alpha=1.75, rho=0.4,
@@ -33,8 +32,6 @@ def week2_adaptive(video: Video) -> Iterator[Frame]:
         frame = Frame(frame_id)
         frame.detections = detections
         frame.ground_truth = ground_truth[frame_id]
-
-        frames.append(frame)
 
         frame_id += 1
 

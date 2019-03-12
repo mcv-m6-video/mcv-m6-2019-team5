@@ -7,7 +7,7 @@ from operations.morphological_operations import closing, opening, dilate
 from utils import read_detections
 
 
-def week2_adaptive(video: Video) -> Iterator[Frame]:
+def week2_adaptive(video: Video, debug=False) -> Iterator[Frame]:
     model_mean, model_std = get_background_model(video, int(2141 * 0.25), total_frames=int(2141 * 0.25))
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
 

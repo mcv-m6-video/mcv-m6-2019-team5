@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from tqdm import tqdm
 from model import Video, Frame
 import sys
@@ -9,7 +11,7 @@ from operations.find_boxes import find_boxes
 from operations.morphological_operations import closing, opening
 
 
-def week2_soa(video: Video):
+def week2_soa(video: Video, debug=False) -> Iterator[Frame]:
     th = 150
     frame_id = 0
     fgbg = cv.createBackgroundSubtractorMOG2()

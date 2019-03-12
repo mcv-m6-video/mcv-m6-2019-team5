@@ -12,8 +12,6 @@ def w2_map_alpha(alpha):
     video = Video("../datasets/AICity_data/train/S03/c010/vdo.avi")
     frames = []
     for frame in week2_nonadaptive(video, alpha):
-        # iou = frame.get_detection_iou(ignore_classes=True)
-        # result = frame.to_result(ignore_classes=True)
         frames.append(frame)
     mAP = mean_average_precision(frames)
 
@@ -30,8 +28,11 @@ def main():
 
     fig, ax = plt.figure
     ax.plot(alpha_values, mAP_list)
-    ax.set(xlabel='alpha value', ylabel='mean average precision')
+    ax.set(xlabel=r'$\alpha$ threshold', ylabel='mean average precision')
+
+    fig.savefig('mAP_alpha.png')
     plt.show()
+
 
 
 if __name__ == '__main__':

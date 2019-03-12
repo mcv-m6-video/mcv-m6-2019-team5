@@ -23,7 +23,7 @@ def week2_nonadaptive_hsv(video: Video, debug=False) -> Iterator[Frame]:
         if debug:
             cv2.imshow('f', mask)
             cv2.waitKey()
-        mask = opening(mask, 3)
+        mask = opening(mask, 7)
         if debug:
             cv2.imshow('f', mask)
             cv2.waitKey()

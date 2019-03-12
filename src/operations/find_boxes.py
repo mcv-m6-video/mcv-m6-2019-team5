@@ -1,16 +1,15 @@
 from typing import List
-
 import numpy as np
-import cv2
 from model import Rectangle
 from operations.clear_non_region_mask import clear_non_region_mask
-from .get_cc_regions import get_cc_regions
 from .combine_overlapped_regions import combine_overlapped_regions
+from .get_cc_regions import get_cc_regions
 
-MIN_AREA = 10000
+MIN_AREA = 9000
 MIN_ASPECT_RATIO = 0.3
 SCALE = 0.1
 MAX_AREA = 200000
+
 
 def find_boxes(mask: np.ndarray) -> (np.ndarray, List[Rectangle]):
     detections = get_cc_regions(mask)

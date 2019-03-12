@@ -30,7 +30,8 @@ def main():
     frames = []
     for frame in method(video, **{'debug': args.debug}):
         frames.append(frame)
-
+        iou = frame.get_detection_iou(ignore_classes=True)
+        print(iou)
     iou_over_time(frames, ignore_classes=True)
     print('mAP:', mean_average_precision(frames, ignore_classes=True))
 

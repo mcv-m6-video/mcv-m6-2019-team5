@@ -16,8 +16,8 @@ def iou_over_time(frames: List[Frame], ignore_classes=False, show=True):
         .to_list()
     )
 
-    plt.plot(range(len(frames)), iou_per_frame, 'b-')
-    plt.plot(range(len(iou_gt)), iou_gt, 'r-')
+    plt.plot(range(len(frames)), iou_per_frame, 'b-', label='IoU')
+    plt.plot(range(len(iou_gt)), iou_gt, 'r-', label='Best possible IoU')
     if show:
         plt.title('IoU over time')
         axes = plt.gca()

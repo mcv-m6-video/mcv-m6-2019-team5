@@ -37,7 +37,7 @@ def gaussian_model_adaptive(video: Video, train_stop_frame: int, background_mean
                             background_std: np.ndarray,
                             alpha: float = 2.5, rho: float = 0.1, pixel_value: PixelValue = PixelValue.GRAY,
                             total_frames: int = None, disable_tqdm=False) -> Iterator[np.ndarray]:
-    for im in tqdm(video.get_frames(train_stop_frame, -1), total=total_frames, file=sys.stdout,
+    for im in tqdm(video.get_frames(train_stop_frame), total=total_frames, file=sys.stdout,
                    desc='Adaptive gaussian model...', disable=disable_tqdm):
 
         if pixel_value == PixelValue.GRAY:

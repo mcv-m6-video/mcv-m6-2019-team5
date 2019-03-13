@@ -12,7 +12,7 @@ class Video:
     def __init__(self, video_path: str):
         self.video_path = video_path
 
-    def get_frames(self, start: int = 0, end: int = 2142) -> Iterator[Tuple[np.ndarray, Frame]]:
+    def get_frames(self, start: int = 0, end: int = 2141) -> Iterator[Tuple[np.ndarray, Frame]]:
         for i in range(start+1, end+1):
             yield cv2.imread(os.path.join(self.video_path, 'frame_{:04d}.jpg'.format(i)))
 

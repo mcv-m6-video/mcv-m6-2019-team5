@@ -3,9 +3,8 @@ from model import Rectangle
 
 class Detection(Rectangle):
     """
-        id: for tracking objects
-        label: class
-        rectangle: bounding box
+        id: int. For tracking objects
+        label: str. Class of the object
     """
 
     def __init__(self, id: str, label: str, top_left=(0, 0), width=0, height=0):

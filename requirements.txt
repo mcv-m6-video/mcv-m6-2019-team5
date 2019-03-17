@@ -14,7 +14,4 @@ scikit-learn
 scikit-image
 scipy
 tqdm
-ninja
-yacs
-cython
-easydict
+wget

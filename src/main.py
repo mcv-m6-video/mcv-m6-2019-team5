@@ -1,3 +1,5 @@
+# Set up custom environment before nearly anything else is imported
+# noinspection PyUnresolvedReferences
 import argparse
 
 from model import Video
@@ -20,6 +22,8 @@ def main():
     method = method_refs.get(args.method)
 
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
+
+    method(video)
 
 
 if __name__ == '__main__':

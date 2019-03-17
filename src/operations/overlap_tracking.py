@@ -11,7 +11,7 @@ class OverlapTracking:
     look_back: int. How many frames back to search for an intersection
     """
 
-    def __init__(self, look_back=5):
+    def __init__(self, look_back=3):
         self.look_back = look_back
 
     def __call__(self, frame: Frame, frame_list: List[Frame]) -> None:

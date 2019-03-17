@@ -1,8 +1,11 @@
 import argparse
 
 from model import Video
+from methods import fine_tune, off_the_shelf
 
 method_refs = {
+    'fine_tune': fine_tune,
+    'off_the_shelf': off_the_shelf
 }
 
 

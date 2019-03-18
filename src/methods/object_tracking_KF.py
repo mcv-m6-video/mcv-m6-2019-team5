@@ -1,10 +1,7 @@
 from typing import List
-
 import numpy as np
-
-from model import Video, Frame
+from model import Frame
 from operations import Sort
-from utils import read_annotations, read_detections
 
 
 def object_tracking_kf(frames: List[Frame]) -> List[Sort]:
@@ -18,5 +15,6 @@ def object_tracking_kf(frames: List[Frame]) -> List[Sort]:
         trackers = mot_tracker.update(dets)
 
         out.append(trackers)
+        print(out[0])
     return out
 

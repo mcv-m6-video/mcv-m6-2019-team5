@@ -13,6 +13,7 @@ def mean_average_precision(frames: List[Frame], ignore_classes=True) -> float:
     ap = []
     running_tp = 0
     running_total = 0
+    detections = seq(frames).flat_map(lambda f: f.detections).order_by(lambda d: d.confidence)
     for frame in frames:
         res = frame.to_result()
         running_tp += res.tp

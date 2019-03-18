@@ -66,14 +66,3 @@ class Frame:
             self.cached_result = Result(tp, fp, 0, fn)
 
         return self.cached_result
-
-    def get_format_detections(self) -> List[List]:
-        det = []
-        for detection in self.detections:
-            det1 = []
-            det1.append(detection.top_left[0])
-            det1.append(detection.top_left[1])
-            det1.append(detection.get_bottom_right()[0])
-            det1.append(detection.get_bottom_right()[1])
-            det.append(det1)
-        return det

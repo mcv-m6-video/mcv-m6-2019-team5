@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from model import Rectangle
 
 
@@ -17,3 +19,6 @@ class Detection(Rectangle):
 
     def __str__(self):
         return 'Detection(id={0}, label={1}, rectangle={2})'.format(self.id, self.label, super().__str__())
+
+    def to_sort_format(self) -> Tuple[int, int, int, int]:
+        return self.top_left + self.get_bottom_right()

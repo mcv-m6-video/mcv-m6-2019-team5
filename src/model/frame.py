@@ -1,5 +1,7 @@
 from typing import List, Tuple
 import numpy as np
+from functional import seq
+
 from model import Detection
 from model import Result
 
@@ -31,6 +33,25 @@ class Frame:
         else:
             return 0
 
+    def get_detection_gt_pairs(self, ignore_classes=False) -> List[Tuple[Detection, Detection]]:
+        out = []
+        for ground_truth in self.ground_truth:
+            found = False
+            for detection in self.detections:
+                if detection.iou(ground_truth) > 0.5 and (ignore_classes or detection.label == ground_truth.label):
+                    out.append((detection, ground_truth))
+                    found = True
+                    break
+
+            if not found:
+                out.append((None, ground_truth))
+
+        for det in out:
+            if seq(out).find(lambda p: p[0] == det) is None:
+                out.append((det, None))
+
+        return out
+
     def to_result(self, ignore_classes=False) -> Result:
         if self.cached_result is None:
             tp = 0
@@ -49,7 +70,7 @@ class Frame:
     def get_format_detections(self) -> List[List]:
         det = []
         for detection in self.detections:
-            det1 =[]
+            det1 = []
             det1.append(detection.top_left[0])
             det1.append(detection.top_left[1])
             det1.append(detection.get_bottom_right()[0])

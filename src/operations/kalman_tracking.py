@@ -2,7 +2,7 @@ import cv2
 
 from functional import seq
 
-from model import Frame, Detection
+from model import Frame, Video
 from operations import Sort, associate_detections_to_trackers
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,13 +12,15 @@ class KalmanTracking:
 
     def __init__(self):
         self.mot_tracker = Sort()  # create instance of the SORT tracker
+        self.video = Video("../../datasets/AICity_data/train/S03/c010/frames")
 
     def __call__(self, frame: Frame):
         detections = seq(frame.detections).map(lambda d: d.to_sort_format()).to_list()
         detections = np.array(detections)
         trackers = self.mot_tracker.update(detections)
         matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(detections, trackers)
-        grid = np.ones((1920, 1080, 3), dtype=np.uint8)
+        grid = self.video[frame.id]
+
         for match in matched:
             frame.detections[match[0]].id = match[1]
         for d in frame.detections:

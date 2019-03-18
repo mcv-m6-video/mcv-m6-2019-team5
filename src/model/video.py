@@ -21,3 +21,4 @@ class Video:
 
     def __str__(self):
         return 'Video(path=\'video_path\')'
+

@@ -17,3 +17,4 @@ tqdm
 ninja
 yacs
 cython
+FilterPy

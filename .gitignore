@@ -110,3 +110,5 @@ out
 __pycache__
 .cache
 video
+build
+*.tmp

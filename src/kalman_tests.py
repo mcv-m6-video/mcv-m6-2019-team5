@@ -5,14 +5,8 @@ import argparse
 from functional import seq
 
 from model import Video, Frame
-from methods import fine_tune, off_the_shelf
 from operations import KalmanTracking
 from utils import read_annotations, read_detections
-
-method_refs = {
-    'fine_tune': fine_tune,
-    'off_the_shelf': off_the_shelf
-}
 
 
 def main():

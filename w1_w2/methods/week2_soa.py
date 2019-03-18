@@ -19,7 +19,7 @@ def week2_soa(video: Video, debug=False) -> Iterator[Frame]:
     ground_truth = read_detections('../datasets/AICity_data/train/S03/c010/gt/gt.txt')
     roi = cv.cvtColor(cv.imread('../datasets/AICity_data/train/S03/c010/roi.jpg'), cv.COLOR_BGR2GRAY)
 
-    for im, frame_ in tqdm(video.get_frames(), total=2141, file=sys.stdout,
+    for im in tqdm(video.get_frames(), total=2141, file=sys.stdout,
                            desc='Training model...'):
         mask = fgbg.apply(im)
         mask[mask < th] = 0
@@ -44,4 +44,4 @@ def week2_soa(video: Video, debug=False) -> Iterator[Frame]:
 
         frame_id += 1
 
-        yield frame
+        yield im, mask, frame

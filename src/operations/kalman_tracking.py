@@ -18,3 +18,4 @@ class KalmanTracking:
             for track in trackers:
                 if det.top_left[0] == track[0] and det.top_left[1] == track[1]:
                     det.id = track[4]
+                    break

@@ -18,3 +18,4 @@ ninja
 yacs
 cython
 FilterPy
+wget

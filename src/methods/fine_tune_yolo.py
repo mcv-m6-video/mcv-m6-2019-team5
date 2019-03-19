@@ -37,12 +37,17 @@ def fine_tune_yolo(debug=False):
 
     optimizer = Adam(filter(lambda p: p.requires_grad, model.parameters()))
     gt = read_annotations('../datasets/AICity_data/train/S03/c010/m6-full_annotation.xml')
-    dataset = YoloDataset(video, gt, detection_transform)
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
+    dataset = YoloDataset(video, gt, classes, transforms=detection_transform)
+    data_loader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4)
 
     for epoch in tqdm(range(10), file=sys.stdout, desc='Fine tuning...'):
-        for batch_i, (_, imgs, targets) in enumerate(dataloader):
+        for imgs, targets in tqdm(data_loader, file=sys.stdout, desc='Running epoch...'):
+            if torch.cuda.is_available():
+                imgs = imgs.cuda()
+                targets = targets.cuda()
             optimizer.zero_grad()
             loss = model(imgs, targets)
             loss.backward()
             optimizer.step()
+
+            print(loss.item())

@@ -14,6 +14,8 @@ def read_annotations(file_path: str, frames: int = 2140) -> List[List[Detection]
         for track in root.findall('track'):
             id_value = int(track.attrib["id"])
             label = track.attrib["label"]
+            if label == 'bike':
+                label = 'bicycle'
             box = track.find('box[@frame="{}"]'.format(i))
             if box is not None:
                 xtl = int(float((box.attrib["xtl"])))

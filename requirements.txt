@@ -16,3 +16,4 @@ scipy
 tqdm
 FilterPy
 wget
+numba

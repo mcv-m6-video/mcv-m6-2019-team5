@@ -15,3 +15,5 @@ scikit-image
 scipy
 tqdm
 FilterPy
+wget
+numba

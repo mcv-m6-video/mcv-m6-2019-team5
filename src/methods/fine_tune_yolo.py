@@ -41,12 +41,12 @@ def fine_tune_yolo(debug=False):
     data_loader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4)
 
     for epoch in tqdm(range(10), file=sys.stdout, desc='Fine tuning...'):
-        for imgs, targets in tqdm(data_loader, file=sys.stdout, desc='Running epoch...'):
+        for input, targets in tqdm(data_loader, file=sys.stdout, desc='Running epoch...'):
             if torch.cuda.is_available():
-                imgs = imgs.cuda()
+                input = input.cuda()
                 targets = targets.cuda()
             optimizer.zero_grad()
-            loss = model(imgs, targets)
+            loss = model(input, targets)
             loss.backward()
             optimizer.step()
 

@@ -9,7 +9,7 @@ def read_annotations(file_path: str, frames: int = 2140) -> List[List[Detection]
 
     root = ET.parse(file_path).getroot()
 
-    for i in range(frames):
+    for i in range(frames+1):
         frame_detections = []
         for track in root.findall('track'):
             id_value = int(track.attrib["id"])

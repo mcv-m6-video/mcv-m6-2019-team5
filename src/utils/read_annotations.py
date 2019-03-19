@@ -1,29 +1,27 @@
-import os
 import xml.etree.ElementTree as ET
 from typing import List
 
 from model import Detection
 
 
-def read_annotations(root_directory: str, start: int, end: int) -> List[List[Detection]]:
+def read_annotations(file_path: str, frames: int = 2140) -> List[List[Detection]]:
     frames_detections = []
 
-    for i in range(start, end + 1):
-        frame_path = 'frame_{:04d}.xml'.format(i)
-        root = ET.parse(os.path.join(root_directory, frame_path)).getroot()
+    root = ET.parse(file_path).getroot()
 
+    for i in range(frames):
         frame_detections = []
+        for track in root.findall('track'):
+            id_value = int(track.attrib["id"])
+            label = track.attrib["label"]
+            box = track.find('box[@frame="{}"]'.format(i))
+            if box is not None:
+                xtl = int(float((box.attrib["xtl"])))
+                ytl = int(float((box.attrib["ytl"])))
+                xbr = int(float((box.attrib["xbr"])))
+                ybr = int(float((box.attrib["ybr"])))
 
-        for obj in root.findall('object'):
-            box = obj.find('bndbox')
-
-            label = obj.find('name').text
-            xmin = int(box.find('xmin').text)
-            ymin = int(box.find('ymin').text)
-            xmax = int(box.find('xmax').text)
-            ymax = int(box.find('ymax').text)
-
-            frame_detections.append(Detection('', label, (xmin, ymin), xmax - xmin + 1, ymax - ymin + 1))
+                frame_detections.append(Detection(id_value, label, (xtl, ytl), xbr - xtl + 1, ybr - ytl + 1))
 
         frames_detections.append(frame_detections)
 

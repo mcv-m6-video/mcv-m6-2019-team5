@@ -7,6 +7,7 @@ from torchvision import transforms
 from model import Video, Detection, Frame
 from nn.yolo.utils import utils
 from nn.yolo.models import Darknet
+from operations import KalmanTracking
 
 
 def off_the_shelf_yolo(debug=False):
@@ -21,6 +22,8 @@ def off_the_shelf_yolo(debug=False):
     model.load_weights('../weights/yolov3.weights')
     if torch.cuda.is_available():
         model = model.cuda()
+
+    kalman = KalmanTracking()
 
     model.eval()
     with torch.no_grad():
@@ -61,3 +64,5 @@ def off_the_shelf_yolo(debug=False):
                 plt.imshow(im_show)
                 plt.show()
                 plt.close()
+
+            kalman(frame)

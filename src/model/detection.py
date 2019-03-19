@@ -9,7 +9,7 @@ class Detection(Rectangle):
         label: str. Class of the object
     """
 
-    def __init__(self, id: str, label: str, top_left=(0, 0), width=0, height=0, confidence: float = None):
+    def __init__(self, id: int, label: str, top_left=(0, 0), width=0, height=0, confidence: float = None):
         super().__init__(top_left, width, height)
         self.id = id
         self.label = label

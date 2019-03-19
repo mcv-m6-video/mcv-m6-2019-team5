@@ -5,6 +5,12 @@ import numpy as np
 
 
 def mean_average_precision(frames: List[Frame], ignore_classes=True) -> float:
+    total_gt = seq(frames).flat_map(lambda f: f.ground_truth).count()
+    detections = (seq(frames)
+                  .flat_map(lambda f: f.get_detection_gt_pairs(True))
+                  .filter(lambda p: p[0] is not None)
+                  .order_by(lambda p: p[0].confidence))
+
     tp, fp, fn = (seq(frames)
                   .map(lambda fr: fr.to_result(ignore_classes=ignore_classes))
                   .map(lambda r: (r.tp, r.fp, r.fn))
@@ -21,7 +27,7 @@ def mean_average_precision(frames: List[Frame], ignore_classes=True) -> float:
         running_total += res.tp + res.fp
         if running_total == 0:
             continue
-        ap.append((running_tp / running_total, running_tp / (tp+fn)))
+        ap.append((running_tp / running_total, running_tp / (tp + fn)))
 
     summation = 0
     max_recall = seq(ap).max_by(lambda p_r: p_r[1])[1]

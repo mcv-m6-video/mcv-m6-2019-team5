@@ -62,11 +62,11 @@ def off_the_shelf_ssd(debug=False):
                 for cls_det in cls_dets:
                     x1 = int(w * cls_det[0])
                     y1 = int(h * cls_det[1])
-                    det = Detection(-1, labels[j-1], (x1, y1), width=w * (cls_det[2] - cls_det[0]),
+                    det = Detection(-1, labels[j - 1], (x1, y1), width=w * (cls_det[2] - cls_det[0]),
                                     height=h * (cls_det[3] - cls_det[1]), confidence=cls_det[4])
                     frame.detections.append(det)
 
-            kalman(frame)
+            # kalman(frame)
 
             if debug:
                 plt.figure()
@@ -78,5 +78,8 @@ def off_the_shelf_ssd(debug=False):
                              color='white', verticalalignment='top',
                              bbox={'color': 'blue', 'pad': 0})
                 plt.imshow(im)
+                plt.axis('off')
+                #plt.savefig('../video/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()
+

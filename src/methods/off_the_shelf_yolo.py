@@ -58,5 +58,7 @@ def off_the_shelf_yolo(debug=False):
                              color='white', verticalalignment='top',
                              bbox={'color': 'blue', 'pad': 0})
                 plt.imshow(im)
+                plt.axis('off')
+                #plt.savefig('../video/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()

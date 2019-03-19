@@ -2,12 +2,12 @@
 # noinspection PyUnresolvedReferences
 import argparse
 
-from model import Video
-from methods import fine_tune, off_the_shelf_yolo
+from methods import fine_tune, off_the_shelf_yolo, off_the_shelf_ssd
 
 method_refs = {
     'fine_tune': fine_tune,
-    'off_the_shelf_yolo': off_the_shelf_yolo
+    'off_the_shelf_yolo': off_the_shelf_yolo,
+    'off_the_shelf_ssd': off_the_shelf_ssd
 }
 
 
@@ -21,7 +21,7 @@ def main():
 
     method = method_refs.get(args.method)
 
-    method()
+    method(args.debug)
 
 
 if __name__ == '__main__':

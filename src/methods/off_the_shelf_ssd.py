@@ -5,7 +5,7 @@ import torch
 from torchvision import transforms
 
 from model import Video
-from ssd.ssd import build_ssd
+from nn.ssd.ssd import build_ssd
 
 
 def off_the_shelf_ssd(debug=False):

@@ -5,8 +5,8 @@ from matplotlib import patches
 from torchvision import transforms
 
 from model import Video, Detection, Frame
-from utils import utils
-from yolo.models import Darknet
+from nn.yolo.utils import utils
+from nn.yolo.models import Darknet
 
 
 def off_the_shelf_yolo(debug=False):

@@ -1,5 +1,5 @@
-import cv2
-
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 from matplotlib import patches
 from torchvision import transforms
@@ -7,8 +7,6 @@ from torchvision import transforms
 from model import Video, Detection, Frame
 from utils import utils
 from yolo.models import Darknet
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 def off_the_shelf_yolo(debug=False):

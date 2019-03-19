@@ -1,14 +1,11 @@
-import os
-import sys
-
 import cv2
 import matplotlib.pyplot as plt
-from matplotlib import colors
-from torchvision import transforms
-from model import Video
 import numpy as np
 import torch
-from ssd import build_ssd
+from torchvision import transforms
+
+from model import Video
+from ssd.ssd import build_ssd
 
 
 def off_the_shelf_ssd(debug=False):

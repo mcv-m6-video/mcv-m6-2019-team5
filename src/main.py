@@ -2,7 +2,6 @@
 # noinspection PyUnresolvedReferences
 import argparse
 
-from model import Video
 from methods import fine_tune, off_the_shelf_yolo, off_the_shelf_ssd
 
 method_refs = {

@@ -34,8 +34,8 @@ def off_the_shelf_yolo(debug=False):
             detections = utils.non_max_suppression(detections, 80)
             im_show = np.copy(im)
 
-            scalex = im.width / 416
-            scaley = im.height / 416
+            scale_x = im.width / 416
+            scale_y = im.height / 416
 
             frame = Frame(i)
 
@@ -44,10 +44,10 @@ def off_the_shelf_yolo(debug=False):
 
             for d in detections[0]:
                 bbox = d.cpu().numpy()
-                x1 = int(scalex * bbox[0])
-                y1 = int(scaley * bbox[1])
-                det = Detection(-1, classes[int(d[6])], (x1, y1), width=scalex * (bbox[2] - bbox[0]),
-                                height=scaley * (bbox[3] - bbox[1]), confidence=d[5])
+                x1 = int(scale_x * bbox[0])
+                y1 = int(scale_y * bbox[1])
+                det = Detection(-1, classes[int(d[6])], (x1, y1), width=scale_x * (bbox[2] - bbox[0]),
+                                height=scale_y * (bbox[3] - bbox[1]), confidence=d[5])
                 frame.detections.append(det)
                 if debug:
                     rect = patches.Rectangle((x1, y1), det.width, det.height,

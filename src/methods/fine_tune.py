@@ -1,7 +1,7 @@
 from torchvision import transforms
 
 from model import Video
-from utils import utils
+from nn.yolo.utils import utils
 
 
 def fine_tune(debug=False):

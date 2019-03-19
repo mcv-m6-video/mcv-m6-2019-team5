@@ -35,7 +35,6 @@ def off_the_shelf_yolo(debug=False):
 
             detections = model.forward(im_tensor)
             detections = utils.non_max_suppression(detections, 80)
-            im_show = np.copy(im)
 
             scale_x = im.width / 416
             scale_y = im.height / 416
@@ -52,17 +51,17 @@ def off_the_shelf_yolo(debug=False):
                 det = Detection(-1, classes[int(d[6])], (x1, y1), width=scale_x * (bbox[2] - bbox[0]),
                                 height=scale_y * (bbox[3] - bbox[1]), confidence=d[5])
                 frame.detections.append(det)
-                if debug:
-                    rect = patches.Rectangle((x1, y1), det.width, det.height,
-                                             linewidth=2, edgecolor='blue', facecolor='none')
-                    plt.gca().add_patch(rect)
-                    plt.text(x1, y1, s=det.label,
-                             color='white', verticalalignment='top',
-                             bbox={'color': 'blue', 'pad': 0})
-
-            if debug:
-                plt.imshow(im_show)
-                plt.show()
-                plt.close()
 
             kalman(frame)
+
+            if debug:
+                for det in frame.detections:
+                    rect = patches.Rectangle(det.top_left, det.width, det.height,
+                                             linewidth=2, edgecolor='blue', facecolor='none')
+                    plt.gca().add_patch(rect)
+                    plt.text(det.top_left[0], det.top_left[1], s='{} - {}'.format(det.label, det.id),
+                             color='white', verticalalignment='top',
+                             bbox={'color': 'blue', 'pad': 0})
+                plt.imshow(im)
+                plt.show()
+                plt.close()

@@ -15,7 +15,7 @@ class Video(Dataset):
         self.video_path = video_path
         self.files = list(map(lambda p: os.path.join(video_path, p), os.listdir(video_path)))
 
-    def get_frames(self, start: int = 0, end: int = 2141) -> Iterator[Image]:
+    def get_frames(self, start: int = 0, end: int = 2141) -> Iterator[Image.Image]:
         for i in range(start, end):
             yield self[i]
 

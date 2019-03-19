@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from layers import *
-from data import coco, voc
+from .layers import *
+from .data.config import coco, voc
 import os
 
 

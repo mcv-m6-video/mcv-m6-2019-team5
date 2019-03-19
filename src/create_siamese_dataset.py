@@ -7,7 +7,7 @@ def create_siamese_dataset():
     AICity_dataset_path = '../datasets/AICity_data/train/S03/c010/'
     siamese_dataset_path = '../datasets/siamese_data/'
     annotation_file = 'm6-full_annotation.xml'
-    frames = 2140
+    frames = int(2140*0.25)
     gt_detections = read_annotations(AICity_dataset_path + annotation_file, frames)
 
     for frame in range(frames + 1):

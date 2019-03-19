@@ -2,10 +2,10 @@
 # noinspection PyUnresolvedReferences
 import argparse
 
-from methods import fine_tune, off_the_shelf_yolo, off_the_shelf_ssd
+from methods import fine_tune_yolo, off_the_shelf_yolo, off_the_shelf_ssd
 
 method_refs = {
-    'fine_tune': fine_tune,
+    'fine_tune_yolo': fine_tune_yolo,
     'off_the_shelf_yolo': off_the_shelf_yolo,
     'off_the_shelf_ssd': off_the_shelf_ssd
 }

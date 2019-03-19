@@ -4,7 +4,7 @@ from typing import Iterator
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision.datasets.folder import default_loader
-
+from functional import seq
 
 class Video(Dataset):
 
@@ -13,7 +13,7 @@ class Video(Dataset):
 
     def __init__(self, video_path: str):
         self.video_path = video_path
-        self.files = list(map(lambda p: os.path.join(video_path, p), os.listdir(video_path)))
+        self.files = seq(os.listdir(video_path)).map(lambda p: os.path.join(video_path, p)).sorted().to_list()
 
     def get_frames(self, start: int = 0, end: int = 2141) -> Iterator[Image.Image]:
         for i in range(start, end):

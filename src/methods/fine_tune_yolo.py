@@ -32,13 +32,13 @@ def fine_tune_yolo(debug=False):
     model = Darknet('../config/yolov3.cfg')
     print(model)
     model.load_weights('../weights/yolov3.weights')
+    model.train()
     for module_def, module in zip(model.module_defs, model.module_list):
         if module_def["type"] == "yolo":
             break
-        module.training = False
+        module.train(False)
     if torch.cuda.is_available():
         model = model.cuda()
-    model.train()
 
     optimizer = Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-5)
     gt = read_annotations('../datasets/AICity_data/train/S03/c010/m6-full_annotation.xml')
@@ -57,5 +57,5 @@ def fine_tune_yolo(debug=False):
             optimizer.step()
 
     print('Training finished. Saving weights...')
-    model.save_weights('../weights/fine_tuned_yolo.weights')
+    model.save_weights('../weights/fine_tuned_yolo_freeze.weights')
     print('Saved weights')

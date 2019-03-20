@@ -30,12 +30,17 @@ def fine_tune_yolo(debug=False):
     burn_in = int(hyperparams["burn_in"])
 
     model = Darknet('../config/yolov3.cfg')
+    print(model)
     model.load_weights('../weights/yolov3.weights')
+    for module_def, module in zip(model.module_defs, model.module_list):
+        if module_def["type"] == "yolo":
+            break
+        module.training = False
     if torch.cuda.is_available():
         model = model.cuda()
     model.train()
 
-    optimizer = Adam(filter(lambda p: p.requires_grad, model.parameters()))
+    optimizer = Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-5)
     gt = read_annotations('../datasets/AICity_data/train/S03/c010/m6-full_annotation.xml')
     dataset = YoloDataset(video, gt, classes, transforms=detection_transform)
     data_loader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)

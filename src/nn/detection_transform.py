@@ -1,3 +1,4 @@
+import torchvision
 from torchvision.transforms import Compose, Resize, Pad, ToTensor
 import numpy as np
 
@@ -8,21 +9,24 @@ class DetectionTransform(Compose):
 
     def __init__(self, input_size=(1920, 1080), side: int = 416):
         self.scale = np.max(input_size) / side
-        self.small_x = int(input_size[0] / self.scale)
-        self.small_y = int(input_size[1] / self.scale)
-        self.pad_x = (side - self.small_x) // 2
-        self.pad_y = (side - self.small_y) // 2
+
+        if input_size[0] > input_size[1]:
+            self.pad = (0, int(input_size[0] - input_size[1]) // 2)
+        else:
+            self.pad = (int(input_size[1] - input_size[0]) // 2, 0)
         super().__init__([
-            Resize((self.small_y, self.small_x)),
-            Pad((self.pad_x, self.pad_y)),
+            Pad(self.pad, fill=128),
+            Resize((side, side)),
             ToTensor()
         ])
 
     def __call__(self, im):
-        return super().__call__(im)
+        a = super().__call__(im)
+        return a / 255
 
     def shrink_detection(self, det: Detection) -> None:
-        top_left = (int(det.top_left[0] / self.scale + self.pad_x), int(det.top_left[1] / self.scale + self.pad_y))
+        top_left = (int((det.top_left[0] + self.pad[0]) / self.scale),
+                    int((det.top_left[1] + self.pad[1]) / self.scale))
         det.top_left = top_left
         det.width = int(det.width / self.scale)
         det.height = int(det.height / self.scale)

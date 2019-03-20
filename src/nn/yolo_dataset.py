@@ -1,3 +1,5 @@
+import copy
+
 import torch
 from typing import List
 
@@ -7,12 +9,15 @@ from torchvision.transforms import Compose, functional
 from model import Video, Detection
 import numpy as np
 
+from nn import DetectionTransform
+
 MAX_DETECTIONS = 50
 
 
 class YoloDataset(Dataset):
 
-    def __init__(self, video: Video, gt: List[List[Detection]], classes: List[str], transforms: Compose = None):
+    def __init__(self, video: Video, gt: List[List[Detection]], classes: List[str],
+                 transforms: DetectionTransform = None):
         self.video = video
         self.gt = gt
         self.classes = classes
@@ -26,10 +31,17 @@ class YoloDataset(Dataset):
         gt = self.gt[index]
         target = np.zeros((MAX_DETECTIONS, 5))
         for i, det in enumerate(gt):
-            target[i, :] = np.array([det.top_left[0], det.top_left[1], det.width, det.height,
-                                     self.classes.index(det.label)])
+            det = copy.copy(det)
+            self.transforms.shrink_detection(det)
+            target[i, :] = np.array([(det.top_left[0] + det.width // 2) / 416,
+                                     (det.top_left[1] + det.height // 2) / 416,
+                                     det.width / 416,
+                                     det.height / 416,
+                                     self.classes.index(det.label) + 1])
 
-        return im, functional.to_tensor(target)
+        print(target)
+
+        return im, torch.from_numpy(target)
 
     def __len__(self):
         return len(self.video)

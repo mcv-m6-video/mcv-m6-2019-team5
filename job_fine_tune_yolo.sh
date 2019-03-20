@@ -9,4 +9,5 @@
 
 mkdir logs | true
 source venv/bin/activate
-python src/main.py fine_tune_yolo
+cd src
+python main.py fine_tune_yolo

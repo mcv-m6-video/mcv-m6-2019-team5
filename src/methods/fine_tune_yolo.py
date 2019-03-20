@@ -35,7 +35,6 @@ def fine_tune_yolo(debug=False):
         model = model.cuda()
     model.train()
 
-
     kalman = KalmanTracking()
 
     optimizer = Adam(filter(lambda p: p.requires_grad, model.parameters()))
@@ -43,8 +42,8 @@ def fine_tune_yolo(debug=False):
     dataset = YoloDataset(video, gt, classes, transforms=detection_transform)
     data_loader = DataLoader(dataset, batch_size=2, shuffle=False, num_workers=4)
 
-    for epoch in tqdm(range(10), file=sys.stdout, desc='Fine tuning...'):
-        for images, targets in tqdm(data_loader, file=sys.stdout, desc='Running epoch...'):
+    for epoch in tqdm(range(10), file=sys.stdout, desc='Fine tuning'):
+        for images, targets in tqdm(data_loader, file=sys.stdout, desc='Running epoch'):
             if torch.cuda.is_available():
                 images = images.cuda()
                 targets = targets.cuda()
@@ -53,3 +52,7 @@ def fine_tune_yolo(debug=False):
             loss = model(images, targets)
             loss.backward()
             optimizer.step()
+
+    print('Training finished. Saving weights...')
+    model.save_weights('../weights/fine_tuned_yolo.weights')
+    print('Saved weights')

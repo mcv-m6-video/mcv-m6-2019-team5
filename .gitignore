@@ -112,3 +112,4 @@ __pycache__
 video*
 build
 *.tmp
+logs

@@ -37,9 +37,7 @@ class YoloDataset(Dataset):
                                      (det.top_left[1] + det.height // 2) / 416,
                                      det.width / 416,
                                      det.height / 416,
-                                     self.classes.index(det.label) + 1])
-
-        print(target)
+                                     self.classes.index(det.label)])
 
         return im, torch.from_numpy(target)
 

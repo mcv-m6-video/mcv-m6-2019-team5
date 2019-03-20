@@ -9,9 +9,9 @@ from model import Result
 class Frame:
 
     def __init__(self, id: int):
-        self.id: int = id
-        self.detections: List[Detection] = []
-        self.ground_truth: List[Detection] = []
+        self.id = id
+        self.detections = []
+        self.ground_truth = []
         self.cached_result = None
 
     def get_detection_iou(self, ignore_classes=False) -> List[float]:

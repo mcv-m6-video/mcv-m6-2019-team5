@@ -173,7 +173,7 @@ class YOLOLayer(nn.Module):
 
             nProposals = int((pred_conf > 0.5).sum().item())
             recall = float(nCorrect / nGT) if nGT else 1
-            precision = float(nCorrect / nProposals)
+            precision = 0 if nProposals == 0 else float(nCorrect / nProposals)
 
             # Handle masks
             mask = Variable(mask.type(ByteTensor))

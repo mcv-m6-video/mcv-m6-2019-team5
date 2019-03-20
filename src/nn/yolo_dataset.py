@@ -11,7 +11,7 @@ import numpy as np
 
 from nn import DetectionTransform
 
-MAX_DETECTIONS = 50
+MAX_DETECTIONS = 20
 
 
 class YoloDataset(Dataset):
@@ -33,11 +33,11 @@ class YoloDataset(Dataset):
         for i, det in enumerate(gt):
             det = copy.copy(det)
             self.transforms.shrink_detection(det)
-            target[i, :] = np.array([(det.top_left[0] + det.width // 2) / 416,
-                                     (det.top_left[1] + det.height // 2) / 416,
-                                     det.width / 416,
-                                     det.height / 416,
-                                     self.classes.index(det.label)])
+            target[i, :] = np.array([self.classes.index(det.label),
+                                    (det.top_left[0] + det.width // 2) / 416,
+                                    (det.top_left[1] + det.height // 2) / 416,
+                                    det.width / 416,
+                                    det.height / 416])
 
         return im, torch.from_numpy(target)
 

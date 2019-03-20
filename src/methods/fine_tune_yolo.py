@@ -29,6 +29,7 @@ def fine_tune_yolo(debug=False):
 
     model = Darknet('../config/yolov3.cfg')
     model.load_weights('../weights/yolov3.weights')
+
     model.train()
     if torch.cuda.is_available():
         model = model.cuda()
@@ -38,7 +39,7 @@ def fine_tune_yolo(debug=False):
     optimizer = Adam(filter(lambda p: p.requires_grad, model.parameters()))
     gt = read_annotations('../datasets/AICity_data/train/S03/c010/m6-full_annotation.xml')
     dataset = YoloDataset(video, gt, classes, transforms=detection_transform)
-    data_loader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4)
+    data_loader = DataLoader(dataset, batch_size=2, shuffle=True, num_workers=4)
 
     for epoch in tqdm(range(10), file=sys.stdout, desc='Fine tuning...'):
         for images, targets in tqdm(data_loader, file=sys.stdout, desc='Running epoch...'):

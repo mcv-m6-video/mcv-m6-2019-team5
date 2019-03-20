@@ -15,14 +15,14 @@ class DetectionTransform(Compose):
         else:
             self.pad = (int(input_size[1] - input_size[0]) // 2, 0)
         super().__init__([
-            Pad(self.pad, fill=128),
+            Pad(self.pad, fill=0),
             Resize((side, side)),
             ToTensor()
         ])
 
     def __call__(self, im):
         a = super().__call__(im)
-        return a / 255
+        return a
 
     def shrink_detection(self, det: Detection) -> None:
         top_left = (int((det.top_left[0] + self.pad[0]) / self.scale),
@@ -32,7 +32,8 @@ class DetectionTransform(Compose):
         det.height = int(det.height / self.scale)
 
     def unshrink_detection(self, det: Detection) -> None:
-        top_left = (int((det.top_left[0] - self.pad_x) * self.scale), int((det.top_left[1] - self.pad_y) * self.scale))
+        top_left = (int(det.top_left[0] * self.scale - self.pad[0]),
+                    int(det.top_left[1] * self.scale - self.pad[1]))
         det.top_left = top_left
         det.width = int(det.width * self.scale)
         det.height = int(det.height * self.scale)

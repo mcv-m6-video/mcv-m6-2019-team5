@@ -10,6 +10,8 @@ from nn.yolo.utils import utils
 from nn.yolo.models import Darknet
 from operations import KalmanTracking
 
+VALID_LABELS = [1, 2, 3, 9]
+
 
 def off_the_shelf_yolo(debug=False):
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
@@ -17,7 +19,7 @@ def off_the_shelf_yolo(debug=False):
     classes = utils.load_classes('../config/coco.names')
 
     model = Darknet('../config/yolov3.cfg')
-    model.load_weights('../weights/yolov3.weights')
+    model.load_weights('../weights/fine_tuned_yolo.weights')
     if torch.cuda.is_available():
         model = model.cuda()
 
@@ -37,19 +39,18 @@ def off_the_shelf_yolo(debug=False):
 
             frame = Frame(i)
 
-            if debug:
-                plt.figure()
-
             for d in detections[0]:
-                bbox = d.cpu().numpy()
-                det = Detection(-1, classes[int(d[6])], (bbox[0], bbox[1]), width=bbox[2] - bbox[0],
-                                height=bbox[3] - bbox[1], confidence=d[5])
-                detection_transform.unshrink_detection(det)
-                frame.detections.append(det)
+                if int(d[6]) in VALID_LABELS:
+                    bbox = d.cpu().numpy()
+                    det = Detection(-1, classes[int(d[6])], (bbox[0], bbox[1]), width=bbox[2] - bbox[0],
+                                    height=bbox[3] - bbox[1], confidence=d[5])
+                    detection_transform.unshrink_detection(det)
+                    frame.detections.append(det)
 
             kalman(frame)
 
             if debug:
+                plt.figure()
                 for det in frame.detections:
                     rect = patches.Rectangle(det.top_left, det.width, det.height,
                                              linewidth=2, edgecolor='blue', facecolor='none')

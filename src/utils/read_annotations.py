@@ -2,16 +2,19 @@ import xml.etree.ElementTree as ET
 from typing import List
 
 from model import Detection
+from .memory import memory
 
 
+@memory.cache()
 def read_annotations(file_path: str, frames: int = 2140) -> List[List[Detection]]:
     frames_detections = []
 
     root = ET.parse(file_path).getroot()
+    tracks = root.findall('track')
 
-    for i in range(frames+1):
+    for i in range(frames + 1):
         frame_detections = []
-        for track in root.findall('track'):
+        for track in tracks:
             id_value = int(track.attrib["id"])
             label = track.attrib["label"]
             if label == 'bike':

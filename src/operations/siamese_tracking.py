@@ -1,28 +1,17 @@
-import sys
+import numpy as np
 import torch
-
 from PIL import Image
-from torch.optim import Adam
-from torch.optim.lr_scheduler import StepLR
-from torch.utils.data import DataLoader
+from torch import cuda
 from torchvision import transforms
-from tqdm import tqdm, trange
 
-from nn import SiameseDataset
-from nn.contrastive_loss import ContrastiveLoss
+from model import Frame
 from nn.siamese_net import SiameseNet
 
 
 class SiameseTracking:
 
-    def __init__(self):
-        self.train_transform = transforms.Compose([
-            transforms.Resize(224, interpolation=Image.BICUBIC),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                 std=[0.229, 0.224, 0.225])
-        ])
+    def __init__(self, threshold=0.1):
+        self.threshold = threshold
         self.valid_transform = transforms.Compose([
             transforms.Resize(224, interpolation=Image.BICUBIC),
             transforms.ToTensor(),
@@ -30,36 +19,28 @@ class SiameseTracking:
                                  std=[0.229, 0.224, 0.225])
         ])
 
-    def train(self, dataset_path: str):
-        train_set = SiameseDataset(dataset_path, self.train_transform)
-        train_loader = DataLoader(train_set, batch_size=16, shuffle=True, num_workers=4)
-        print(train_set)
+        self.model = SiameseNet(16)
+        if cuda.is_available():
+            self.model = self.model.cuda()
 
-        model = SiameseNet(16)
-        if torch.cuda.is_available():
-            model = model.cuda()
+        state_dict = torch.load('../weights/siamese.pth')
+        self.model.load_state_dict(state_dict)
+        self.model.eval()
 
-        criterion = ContrastiveLoss(margin=1.)
-        optimizer = Adam(model.parameters())
-        scheduler = StepLR(optimizer, 8, gamma=0.1, last_epoch=-1)
-
-        for epoch in trange(1, 11, desc="Training", file=sys.stdout):
-            scheduler.step()
-            for batch_idx, data in tqdm(enumerate(train_loader), desc='Epoch {}/{}'.format(epoch, 10),
-                                        total=len(train_loader),
-                                        file=sys.stdout):
-                (sample1, sample2), target = data
-                if torch.cuda.is_available():
-                    sample1 = sample1.cuda()
-                    sample2 = sample2.cuda()
-                    target = target.cuda()
-
-                optimizer.zero_grad()
-                output1, output2 = model(sample1, sample2)
-
-                loss = criterion(output1, output2, target)
-                loss.backward()
-                optimizer.step()
-
-    def predict(self, im1, im2):
+    def __call__(self, frame: Frame, debug=False):
+        # TODO
         pass
+
+    def predict(self, im1, im2) -> float:
+        with torch.no_grad():
+            im1 = self.valid_transform(im1)
+            im2 = self.valid_transform(im2)
+            if cuda.is_available():
+                im1 = im1.cuda()
+                im2 = im2.cuda()
+
+            output1 = self.model.forward_single(im1)
+            output2 = self.model.forward_single(im2)
+            x = output1.cpu().numpy()
+            y = output2.cpu().numpy()
+            return np.linalg.norm(x - y)

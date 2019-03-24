@@ -27,7 +27,7 @@ class SiameseTracking:
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
-    def __call__(self, frame: Frame, debug=False):
+    def __call__(self, frame: Frame, previous_frame: Frame, debug=False):
         # TODO
         pass
 

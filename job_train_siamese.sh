@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name m6-yolo
+#SBATCH --job-name m6-siamese
 #SBATCH --ntasks 4
 #SBATCH --mem 16G
 #SBATCH --partition mhigh,mlow
@@ -10,4 +10,4 @@
 mkdir logs | true
 source venv/bin/activate
 cd src
-python main.py fine_tune_yolo
+python main.py train_siamese

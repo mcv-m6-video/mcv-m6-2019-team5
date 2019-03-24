@@ -2,7 +2,7 @@ from torchvision.datasets import ImageFolder
 
 import numpy as np
 
-POSITIVE_NEGATIVE_RATIO = 0.1  # higher means more positives
+POSITIVE_NEGATIVE_RATIO = 0.2  # higher means more positives
 
 
 class SiameseDataset(ImageFolder):

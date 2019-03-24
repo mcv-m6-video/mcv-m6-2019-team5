@@ -1,19 +1,18 @@
-import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from matplotlib import patches
+from torch import cuda
 from torchvision import transforms
 
-from operations import KalmanTracking
-
-if torch.cuda.is_available():
-    torch.set_default_tensor_type('torch.cuda.FloatTensor')
 from model import Video, Frame, Detection
 from nn.ssd.ssd import build_ssd
+from operations import KalmanTracking
 
 
 def off_the_shelf_ssd(debug=False):
+    if cuda.is_available():
+        torch.set_default_tensor_type('torch.cuda.FloatTensor')
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
     trans = transforms.Compose([
         transforms.Resize((300, 300)),
@@ -79,7 +78,6 @@ def off_the_shelf_ssd(debug=False):
                              bbox={'color': 'blue', 'pad': 0})
                 plt.imshow(im)
                 plt.axis('off')
-                #plt.savefig('../video/frame_{:04d}'.format(i))
+                # plt.savefig('../video/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()
-

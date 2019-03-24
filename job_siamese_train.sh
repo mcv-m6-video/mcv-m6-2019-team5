@@ -10,4 +10,4 @@
 mkdir logs | true
 source venv/bin/activate
 cd src
-python main.py train_siamese
+python main.py siamese_train

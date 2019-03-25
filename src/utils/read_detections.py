@@ -17,7 +17,9 @@ def read_detections(path: str) -> List[List[Detection]]:
             tl_x = int(float(parts[3]))
             height = int(float(parts[4]))
             width = int(float(parts[5]))
+            confidence = float(parts[6])
 
-            frame_detections[-1].append(Detection(parts[1], 'car', (tl_x, tl_y), width, height))
+            frame_detections[-1].append(
+                Detection(int(parts[1]), 'car', (tl_x, tl_y), width, height, confidence=confidence))
 
     return frame_detections

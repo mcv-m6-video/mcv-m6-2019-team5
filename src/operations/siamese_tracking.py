@@ -10,14 +10,15 @@ from model import Frame
 from nn.siamese_net import SiameseNet
 from utils import IDGenerator
 from utils.crop_image import crop_image
+from functional import seq
 
 
 class SiameseTracking:
 
-    def __init__(self, threshold=0.1):
+    def __init__(self, threshold=0.75):
         self.threshold = threshold
         self.valid_transform = transforms.Compose([
-            transforms.Resize(224, interpolation=Image.BICUBIC),
+            transforms.Resize((224, 224), interpolation=Image.BICUBIC),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
@@ -34,7 +35,7 @@ class SiameseTracking:
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
-    def __call__(self, frame: Frame, im: np.ndarray, last_frame: Frame, last_im: np.ndarray, debug=False, *args,
+    def __call__(self, frame: Frame, im: Image, last_frame: Frame, last_im: Image, debug=False, *args,
                  **kwargs):
         if self.model is None:
             self._init_model()
@@ -44,10 +45,11 @@ class SiameseTracking:
             ims2 = [crop_image(last_im, rectangle) for rectangle in last_frame.detections]
 
             for i, im1 in enumerate(ims1):
-                for j, im2 in enumerate(ims2):
-                    if self._predict(im1, im2) < self.threshold:
-                        frame.detections[i].id = last_frame.detections[j].id
-                        break
+                min_j, min_distance = (seq(enumerate(ims2))
+                                       .map(lambda pair: (pair[0], self._predict(im1, pair[1])))
+                                       .min_by(lambda pair: pair[1]))
+                if min_distance < self.threshold:
+                    frame.detections[i].id = last_frame.detections[min_j].id
 
         for detection in frame.detections:
             if detection.id == -1:
@@ -61,8 +63,8 @@ class SiameseTracking:
                 im1 = im1.cuda()
                 im2 = im2.cuda()
 
-            output1 = self.model.forward_single(im1)
-            output2 = self.model.forward_single(im2)
+            output1 = self.model.get_embedding(im1.reshape((1,) + im1.size()))
+            output2 = self.model.get_embedding(im2.reshape((1,) + im2.size()))
             x = output1.cpu().numpy()
             y = output2.cpu().numpy()
             return np.linalg.norm(x - y)

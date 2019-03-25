@@ -50,7 +50,7 @@ def off_the_shelf_ssd(tracking, debug=False, *args):
             frame = Frame(i)
 
             # skip j = 0, because it's the background class
-            for j in (2, 6, 7, 14, 15):
+            for j in (2, 6, 7, 14):
                 dets = detections[0, j, :]
                 mask = dets[:, 0].gt(0.).expand(5, dets.size(0)).t()
                 dets = torch.masked_select(dets, mask).view(-1, 5)
@@ -79,11 +79,11 @@ def off_the_shelf_ssd(tracking, debug=False, *args):
                     rect = patches.Rectangle(det.top_left, det.width, det.height,
                                              linewidth=2, edgecolor='blue', facecolor='none')
                     plt.gca().add_patch(rect)
-                    plt.text(det.top_left[0], det.top_left[1], s='{} - {}'.format(det.label, det.id),
+                    plt.text(det.top_left[0], det.top_left[1], s='{} ~ {}'.format(det.label, det.id),
                              color='white', verticalalignment='top',
                              bbox={'color': 'blue', 'pad': 0})
                 plt.imshow(im)
                 plt.axis('off')
-                # plt.savefig('../video/frame_{:04d}'.format(i))
+                # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()

@@ -7,7 +7,8 @@ import numpy as np
 def mean_average_precision(frames: List[Frame], ignore_classes=True) -> float:
     total_gt = seq(frames).flat_map(lambda f: f.ground_truth).count(lambda f: True)
     det_gt_pairs = (seq(frames)
-                    .flat_map(lambda f: f.get_detection_gt_pairs(ignore_classes=ignore_classes))
+                    .map(lambda f: f.get_detection_gt_pairs(ignore_classes=ignore_classes))
+                    .flatten()
                     .filter(lambda p: p[0] is not None)
                     .order_by(lambda p: p[0].confidence))
 

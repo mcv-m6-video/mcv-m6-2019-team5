@@ -15,7 +15,7 @@ def compute_map_gt_det(det_file, gt_file):
         frame.ground_truth = gt_list[i]
         frames.append(frame)
 
-    mAP = mean_average_precision(frames)
+    mAP = mean_average_precision(frames, ignore_classes=True)
 
     return mAP
 
@@ -31,7 +31,7 @@ def main():
     mAP_ssd = compute_map_gt_det(ssd_path, gt_path)
     mAP_yolo = compute_map_gt_det(yolo_path, gt_path)
 
-    print(mAP_rcnn, mAP_ssd, mAP_yolo)
+    print(mAP_ssd, mAP_rcnn, mAP_yolo)
 
 
 if __name__ == "__main__":

@@ -5,15 +5,18 @@ from matplotlib import patches
 from torch import cuda
 from torchvision import transforms
 
+from metrics import iou_over_time, mean_average_precision
 from model import Video, Frame, Detection
 from nn.ssd.ssd import build_ssd
 from nn.yolo.utils import utils
 from operations import KalmanTracking
+from utils import read_annotations
 
 
-def off_the_shelf_ssd(tracking, debug=False, *args):
+def off_the_shelf_ssd(tracking, debug=False, **kwargs):
     if cuda.is_available():
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
+    gt = read_annotations('../datasets/AICity_data/train/S03/c010/m6-full_annotation.xml')
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
     trans = transforms.Compose([
         transforms.Resize((300, 300)),
@@ -37,6 +40,7 @@ def off_the_shelf_ssd(tracking, debug=False, *args):
     model.eval()
     with torch.no_grad():
         for i, im in enumerate(video.get_frames()):
+
             im_tensor = trans(im)
             im_tensor = im_tensor.view((-1,) + im_tensor.size())
             if torch.cuda.is_available():
@@ -48,6 +52,8 @@ def off_the_shelf_ssd(tracking, debug=False, *args):
             w = im.width
             h = im.height
             frame = Frame(i)
+
+            frame.ground_truth = gt[frame.id]
 
             # skip j = 0, because it's the background class
             for j in (2, 6, 7, 14):
@@ -87,3 +93,8 @@ def off_the_shelf_ssd(tracking, debug=False, *args):
                 # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()
+
+        iou_over_time(frames)
+        mAP = mean_average_precision(frames)
+        print("SSD mAP:", mAP)
+

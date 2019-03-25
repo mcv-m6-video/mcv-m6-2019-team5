@@ -10,7 +10,7 @@ from nn.yolo.utils import utils
 from nn.yolo.models import Darknet
 from operations import KalmanTracking
 
-VALID_LABELS = [1, 2, 3, 9]
+VALID_LABELS = [1, 2, 3, 5, 7]
 
 
 def off_the_shelf_yolo(debug=False):

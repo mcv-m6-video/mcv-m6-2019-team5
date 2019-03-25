@@ -48,7 +48,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args):
                     frame.detections.append(det)
 
             if tracking is not None:
-                tracking(frame, frames, debug=debug)
+                tracking(frame, debug, frames)
 
             frames.append(frame)
 
@@ -58,14 +58,14 @@ def off_the_shelf_yolo(tracking, debug=False, *args):
                     rect = patches.Rectangle(det.top_left, det.width, det.height,
                                              linewidth=2, edgecolor='blue', facecolor='none')
                     plt.gca().add_patch(rect)
-                    """plt.text(det.top_left[0], det.top_left[1], s='{} ~ {}'.format(det.label, det.id),
-                             color='white', verticalalignment='top',
-                             bbox={'color': 'blue', 'pad': 0})"""
-                    plt.text(det.top_left[0], det.top_left[1], s='{}'.format(det.label),
+                    plt.text(det.top_left[0], det.top_left[1], s='{} ~ {}'.format(det.label, det.id),
                              color='white', verticalalignment='top',
                              bbox={'color': 'blue', 'pad': 0})
+                    """plt.text(det.top_left[0], det.top_left[1], s='{}'.format(det.label),
+                             color='white', verticalalignment='top',
+                             bbox={'color': 'blue', 'pad': 0})"""
                 plt.imshow(im)
                 plt.axis('off')
-                plt.savefig('../video/video_yolo/frame_{:04d}'.format(i))
+                plt.savefig('../video/video_yolo_KalmanID/frame_{:04d}'.format(i))
                 # plt.show()
                 plt.close()

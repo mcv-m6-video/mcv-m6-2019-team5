@@ -35,7 +35,7 @@ def main():
 
     method = method_refs.get(args.method)
 
-    method(args.epochs, args.debug, tracking=tracking)
+    method(debug=args.debug, tracking=tracking)
 
 
 if __name__ == '__main__':

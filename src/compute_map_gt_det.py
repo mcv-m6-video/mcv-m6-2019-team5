@@ -27,8 +27,8 @@ def main():
     ssd_path = dataset_path + 'det/det_ssd512.txt'
     yolo_path = dataset_path + 'det/det_yolo3.txt'
 
-    mAP_rcnn = compute_map_gt_det(rcnn_path, gt_path)
     mAP_ssd = compute_map_gt_det(ssd_path, gt_path)
+    mAP_rcnn = compute_map_gt_det(rcnn_path, gt_path)
     mAP_yolo = compute_map_gt_det(yolo_path, gt_path)
 
     print(mAP_ssd, mAP_rcnn, mAP_yolo)

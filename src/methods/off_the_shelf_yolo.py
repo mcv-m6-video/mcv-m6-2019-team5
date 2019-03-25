@@ -31,7 +31,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
 
     model.eval()
     with torch.no_grad():
-        for i, im in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout, desc='Yolo'):
+        for i, im in tqdm(enumerate(video.get_frames(start=200)), total=len(video), file=sys.stdout, desc='Yolo'):
             im_tensor = detection_transform(im)
 
             im_tensor = im_tensor.view((-1,) + im_tensor.size())

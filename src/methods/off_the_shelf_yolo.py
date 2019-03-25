@@ -7,11 +7,13 @@ from matplotlib import patches
 from torchvision import transforms
 from tqdm import tqdm
 
+from metrics import iou_over_time, mean_average_precision
 from model import Video, Detection, Frame
 from nn import DetectionTransform
 from nn.yolo.utils import utils
 from nn.yolo.models import Darknet
 from operations import KalmanTracking, OverlapTracking
+from utils import read_annotations
 
 VALID_LABELS = [1, 2, 3, 5, 7]
 
@@ -20,6 +22,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
     detection_transform = DetectionTransform()
     classes = utils.load_classes('../config/coco.names')
+    gt = read_annotations('../datasets/AICity_data/train/S03/c010/m6-full_annotation.xml')
 
     model = Darknet('../config/yolov3.cfg')
     model.load_weights('../weights/fine_tuned_yolo_freeze.weights')
@@ -42,6 +45,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
             detections = utils.non_max_suppression(detections, 80, conf_thres=.75, nms_thres=0.2)
 
             frame = Frame(i)
+            frame.ground_truth = gt[frame.id]
 
             for d in detections[0]:
                 if int(d[6]) in VALID_LABELS:
@@ -77,3 +81,6 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
                 # plt.savefig('../video/video_yolo_fine_tune_good/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()
+        iou_over_time(frames)
+        mAP = mean_average_precision(frames)
+        print("SSD mAP:", mAP)

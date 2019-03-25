@@ -1,8 +1,11 @@
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from matplotlib import patches
 from torchvision import transforms
+from tqdm import tqdm
 
 from model import Video, Detection, Frame
 from nn import DetectionTransform
@@ -13,13 +16,13 @@ from operations import KalmanTracking, OverlapTracking
 VALID_LABELS = [1, 2, 3, 5, 7]
 
 
-def off_the_shelf_yolo(tracking, debug=False, *args):
+def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
     detection_transform = DetectionTransform()
     classes = utils.load_classes('../config/coco.names')
 
     model = Darknet('../config/yolov3.cfg')
-    model.load_weights('../weights/fine_tuned_yolo.weights')
+    model.load_weights('../weights/fine_tuned_yolo_freeze.weights')
     if torch.cuda.is_available():
         model = model.cuda()
 
@@ -27,7 +30,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args):
 
     model.eval()
     with torch.no_grad():
-        for i, im in enumerate(video.get_frames()):
+        for i, im in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout, desc='Yolo'):
             im_tensor = detection_transform(im)
 
             im_tensor = im_tensor.view((-1,) + im_tensor.size())
@@ -35,7 +38,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args):
                 im_tensor = im_tensor.cuda()
 
             detections = model.forward(im_tensor)
-            detections = utils.non_max_suppression(detections, 80)
+            detections = utils.non_max_suppression(detections, 80, conf_thres=.75, nms_thres=0.2)
 
             frame = Frame(i)
 
@@ -48,7 +51,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args):
                     frame.detections.append(det)
 
             if tracking is not None:
-                tracking(frame, debug, frames)
+                tracking(frame, frames, debug=False)
 
             frames.append(frame)
 
@@ -58,14 +61,15 @@ def off_the_shelf_yolo(tracking, debug=False, *args):
                     rect = patches.Rectangle(det.top_left, det.width, det.height,
                                              linewidth=2, edgecolor='blue', facecolor='none')
                     plt.gca().add_patch(rect)
-                    plt.text(det.top_left[0], det.top_left[1], s='{} ~ {}'.format(det.label, det.id),
+                    if tracking is None:
+                        text = '{}'.format(det.label)
+                    else:
+                        text = '{} ~ {}'.format(det.label, det.id)
+                    plt.text(det.top_left[0], det.top_left[1], s=text,
                              color='white', verticalalignment='top',
                              bbox={'color': 'blue', 'pad': 0})
-                    """plt.text(det.top_left[0], det.top_left[1], s='{}'.format(det.label),
-                             color='white', verticalalignment='top',
-                             bbox={'color': 'blue', 'pad': 0})"""
                 plt.imshow(im)
                 plt.axis('off')
-                plt.savefig('../video/video_yolo_KalmanID/frame_{:04d}'.format(i))
-                # plt.show()
+                # plt.savefig('../video/video_yolo_fine_tune_good/frame_{:04d}'.format(i))
+                plt.show()
                 plt.close()

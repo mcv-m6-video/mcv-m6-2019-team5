@@ -14,7 +14,7 @@ class KalmanTracking:
         self.mot_tracker = Sort()  # create instance of the SORT tracker
         self.video = Video("../datasets/AICity_data/train/S03/c010/frames")
 
-    def __call__(self, frame: Frame, debug=False, *args):
+    def __call__(self, frame: Frame, frames=None, debug=False, *args):
         detections = seq(frame.detections).map(lambda d: d.to_sort_format()).to_list()
         detections = np.array(detections)
         trackers = self.mot_tracker.update(detections)

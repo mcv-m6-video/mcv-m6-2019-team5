@@ -14,10 +14,10 @@ class OverlapTracking:
     def __init__(self, look_back=3):
         self.look_back = look_back
 
-    def __call__(self, frame: Frame, frame_list: List[Frame], *args) -> None:
+    def __call__(self, frame: Frame, frame_list: List[Frame], *args, **kwargs) -> None:
         for detection in frame.detections:
             self._find_id(detection, frame_list)
-            if detection.id is None:
+            if detection.id == -1:
                 detection.id = IDGenerator.next()
 
     def _find_id(self, detection: Detection, frame_list: List[Frame]) -> None:

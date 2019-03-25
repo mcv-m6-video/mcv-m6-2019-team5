@@ -8,6 +8,8 @@ from torchvision import transforms
 
 from model import Frame
 from nn.siamese_net import SiameseNet
+from utils import IDGenerator
+from utils.crop_image import crop_image
 
 
 class SiameseTracking:
@@ -32,13 +34,26 @@ class SiameseTracking:
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
-    def __call__(self, frame: Frame, frames: List[Frame], debug=False, *args):
+    def __call__(self, frame: Frame, im: np.ndarray, last_frame: Frame, last_im: np.ndarray, debug=False, *args,
+                 **kwargs):
         if self.model is None:
             self._init_model()
-        # TODO
-        pass
 
-    def predict(self, im1, im2) -> float:
+        if last_frame is not None:
+            ims1 = [crop_image(im, rectangle) for rectangle in frame.detections]
+            ims2 = [crop_image(last_im, rectangle) for rectangle in last_frame.detections]
+
+            for i, im1 in enumerate(ims1):
+                for j, im2 in enumerate(ims2):
+                    if self._predict(im1, im2) < self.threshold:
+                        frame.detections[i].id = last_frame.detections[j].id
+                        break
+
+        for detection in frame.detections:
+            if detection.id == -1:
+                detection.id = IDGenerator.next()
+
+    def _predict(self, im1, im2) -> float:
         with torch.no_grad():
             im1 = self.valid_transform(im1)
             im2 = self.valid_transform(im2)

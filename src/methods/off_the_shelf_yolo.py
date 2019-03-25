@@ -27,6 +27,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
         model = model.cuda()
 
     frames = []
+    last_im = None
 
     model.eval()
     with torch.no_grad():
@@ -51,9 +52,12 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
                     frame.detections.append(det)
 
             if tracking is not None:
-                tracking(frame, frames, debug=False)
+                last_frame = None if len(frames) == 0 else frames[-1]
+                tracking(frame=frame, im=im, last_frame=last_frame, last_im=last_im, frames=frames, debug=False)
 
             frames.append(frame)
+
+            last_im = im
 
             if debug:
                 plt.figure()

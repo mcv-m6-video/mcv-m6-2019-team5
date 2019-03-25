@@ -21,6 +21,9 @@ class SiameseTracking:
                                  std=[0.229, 0.224, 0.225])
         ])
 
+        self.model = None
+
+    def _init_model(self):
         self.model = SiameseNet(16)
         if cuda.is_available():
             self.model = self.model.cuda()
@@ -30,6 +33,8 @@ class SiameseTracking:
         self.model.eval()
 
     def __call__(self, frame: Frame, frames: List[Frame], debug=False, *args):
+        if self.model is None:
+            self._init_model()
         # TODO
         pass
 

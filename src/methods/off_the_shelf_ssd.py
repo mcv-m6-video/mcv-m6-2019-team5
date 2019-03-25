@@ -7,10 +7,11 @@ from torchvision import transforms
 
 from model import Video, Frame, Detection
 from nn.ssd.ssd import build_ssd
+from nn.yolo.utils import utils
 from operations import KalmanTracking
 
 
-def off_the_shelf_ssd(debug=False):
+def off_the_shelf_ssd(tracking, debug=False, *args):
     if cuda.is_available():
         torch.set_default_tensor_type('torch.cuda.FloatTensor')
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
@@ -30,7 +31,9 @@ def off_the_shelf_ssd(debug=False):
     model.load_weights('../weights/ssd300_mAP_77.43_v2.pth')
     if torch.cuda.is_available():
         model = model.cuda()
-    kalman = KalmanTracking()
+
+    frames = []
+
     model.eval()
     with torch.no_grad():
         for i, im in enumerate(video.get_frames()):
@@ -66,6 +69,9 @@ def off_the_shelf_ssd(debug=False):
                     frame.detections.append(det)
 
             # kalman(frame)
+            if tracking is not None:
+                tracking(frame, frames, debug=debug)
+            frames.append(frame)
 
             if debug:
                 plt.figure()

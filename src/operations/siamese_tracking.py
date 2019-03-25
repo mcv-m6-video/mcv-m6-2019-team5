@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 import torch
 from PIL import Image
@@ -27,7 +29,7 @@ class SiameseTracking:
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
-    def __call__(self, frame: Frame, previous_frame: Frame, debug=False):
+    def __call__(self, frame: Frame, frames: List[Frame], debug=False, *args):
         # TODO
         pass
 

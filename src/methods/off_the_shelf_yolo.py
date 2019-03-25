@@ -8,12 +8,12 @@ from model import Video, Detection, Frame
 from nn import DetectionTransform
 from nn.yolo.utils import utils
 from nn.yolo.models import Darknet
-from operations import KalmanTracking
+from operations import KalmanTracking, OverlapTracking
 
 VALID_LABELS = [1, 2, 3, 9]
 
 
-def off_the_shelf_yolo(debug=False):
+def off_the_shelf_yolo(tracking, debug=False, *args):
     video = Video("../datasets/AICity_data/train/S03/c010/frames")
     detection_transform = DetectionTransform()
     classes = utils.load_classes('../config/coco.names')
@@ -23,7 +23,7 @@ def off_the_shelf_yolo(debug=False):
     if torch.cuda.is_available():
         model = model.cuda()
 
-    kalman = KalmanTracking()
+    frames = []
 
     model.eval()
     with torch.no_grad():
@@ -47,7 +47,10 @@ def off_the_shelf_yolo(debug=False):
                     detection_transform.unshrink_detection(det)
                     frame.detections.append(det)
 
-            kalman(frame)
+            if tracking is not None:
+                tracking(frame, frames, debug=debug)
+
+            frames.append(frame)
 
             if debug:
                 plt.figure()

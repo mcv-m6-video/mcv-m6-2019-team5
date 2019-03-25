@@ -14,7 +14,7 @@ class OverlapTracking:
     def __init__(self, look_back=3):
         self.look_back = look_back
 
-    def __call__(self, frame: Frame, frame_list: List[Frame]) -> None:
+    def __call__(self, frame: Frame, frame_list: List[Frame], *args) -> None:
         for detection in frame.detections:
             self._find_id(detection, frame_list)
             if detection.id is None:

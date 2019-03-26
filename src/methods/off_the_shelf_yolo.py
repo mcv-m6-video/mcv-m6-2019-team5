@@ -34,7 +34,8 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
 
     model.eval()
     with torch.no_grad():
-        for i, im in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout, desc='Yolo'):
+        for i, im in tqdm(enumerate(video.get_frames(start=len(video) // 4)), total=len(video), file=sys.stdout,
+                          desc='Yolo'):
             im_tensor = detection_transform(im)
 
             im_tensor = im_tensor.view((-1,) + im_tensor.size())
@@ -44,7 +45,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
             detections = model.forward(im_tensor)
             detections = utils.non_max_suppression(detections, 80, conf_thres=.75, nms_thres=0.2)
 
-            frame = Frame(i)
+            frame = Frame(i+(len(video)//4))
             frame.ground_truth = gt[frame.id]
 
             for d in detections[0]:
@@ -81,6 +82,6 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
                 # plt.savefig('../video/video_yolo_fine_tune_good/frame_{:04d}'.format(i))
                 plt.show()
                 plt.close()
-        iou_over_time(frames)
+        # iou_over_time(frames)
         mAP = mean_average_precision(frames)
-        print("SSD mAP:", mAP)
+        print("YOLO mAP:", mAP)

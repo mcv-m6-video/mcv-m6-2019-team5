@@ -94,7 +94,7 @@ def off_the_shelf_ssd(tracking, debug=False, **kwargs):
                 plt.show()
                 plt.close()
 
-        iou_over_time(frames)
+        #iou_over_time(frames)
         mAP = mean_average_precision(frames)
         print("SSD mAP:", mAP)
 

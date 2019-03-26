@@ -3,7 +3,7 @@ from typing import List
 from model import Frame, Detection
 from utils import IDGenerator
 
-INTERSECTION_THRESHOLD = 0.75
+INTERSECTION_THRESHOLD = 0.5
 
 
 class OverlapTracking:
@@ -14,9 +14,9 @@ class OverlapTracking:
     def __init__(self, look_back=3):
         self.look_back = look_back
 
-    def __call__(self, frame: Frame, frame_list: List[Frame], *args, **kwargs) -> None:
+    def __call__(self, frame: Frame, frames: List[Frame], *args, **kwargs) -> None:
         for detection in frame.detections:
-            self._find_id(detection, frame_list)
+            self._find_id(detection, frames)
             if detection.id == -1:
                 detection.id = IDGenerator.next()
 

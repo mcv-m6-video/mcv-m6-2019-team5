@@ -44,9 +44,11 @@ class SiameseTracking:
             ims1 = [crop_image(im, rectangle) for rectangle in frame.detections]
             ims2 = [crop_image(last_im, rectangle) for rectangle in last_frame.detections]
 
-            for i, im1 in enumerate(ims1):
-                min_j, min_distance = (seq(enumerate(ims2))
-                                       .map(lambda pair: (pair[0], self._predict(im1, pair[1])))
+            embeddings1 = [self._get_embedding(im1) for im1 in ims1]
+            embeddings2 = [self._get_embedding(im2) for im2 in ims2]
+            for i, embedding1 in enumerate(embeddings1):
+                min_j, min_distance = (seq(enumerate(embeddings2))
+                                       .map(lambda pair: (pair[0], np.linalg.norm(embedding1 - pair[1])))
                                        .min_by(lambda pair: pair[1]))
                 if min_distance < self.threshold:
                     frame.detections[i].id = last_frame.detections[min_j].id
@@ -55,16 +57,11 @@ class SiameseTracking:
             if detection.id == -1:
                 detection.id = IDGenerator.next()
 
-    def _predict(self, im1, im2) -> float:
+    def _get_embedding(self, im1) -> np.ndarray:
         with torch.no_grad():
             im1 = self.valid_transform(im1)
-            im2 = self.valid_transform(im2)
             if cuda.is_available():
                 im1 = im1.cuda()
-                im2 = im2.cuda()
 
             output1 = self.model.get_embedding(im1.reshape((1,) + im1.size()))
-            output2 = self.model.get_embedding(im2.reshape((1,) + im2.size()))
-            x = output1.cpu().numpy()
-            y = output2.cpu().numpy()
-            return np.linalg.norm(x - y)
+            return output1.cpu().numpy()

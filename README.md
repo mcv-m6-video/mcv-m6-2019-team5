@@ -20,8 +20,8 @@ it is recommended to use a virtual environment.
 
 
 ```
-pip install virtualenv         # if not installed already
-python -v venv ./venv
+pip3 install virtualenv         # if not installed already
+python3 -v venv ./venv
 
 source venv/bin/activate       # activate the environment
 deactivate                     # deactivate the environment
@@ -30,27 +30,58 @@ deactivate                     # deactivate the environment
 ### Install dependencies
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-### Run the code
+### W3 usage
 
 ```
-python src/main.py {w2_adaptive,w2_nonadaptive}
+usage: main.py [-h] [-d] [-e EPOCHS]
+               {fine_tune_yolo,off_the_shelf_yolo,off_the_shelf_ssd,siamese_train}
+               [{siamese,overlap,kalman}]
+
+Search the picture passed in a picture database.
+
+positional arguments:
+  {fine_tune_yolo,off_the_shelf_yolo,off_the_shelf_ssd,siamese_train}
+                        Method to use
+  {siamese,overlap,kalman}
+                        Tracking method to use
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d, --debug           Show debug plots
+  -e EPOCHS, --epochs EPOCHS
+                        Number of train epochs
+
+```
+
+### W1-W2 usage
+
+```
+usage: main.py [-h] [--debug]
+               {w2_adaptive,w2_nonadaptive,w2_soa,w2_nonadaptive_hsv,w2_adaptive_hsv,w2_soa_mod}
+
+Search the picture passed in a picture database.
+
+positional arguments:
+  {w2_adaptive,w2_nonadaptive,w2_soa,w2_nonadaptive_hsv,w2_adaptive_hsv,w2_soa_mod}
+                        Method to use
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --debug               Show debug plots
 ```
 
 ## Directory structure
 
 ```
 .
-├── annotations                     # our annotations
+├── config                          # configuration files used by neural networks
 ├── datasets                        # datasets provided by the teachers
 ├── requirements.txt                # python dependencies
-└── src
-    ├── methods                     # pipelines used during the different weeks 
-    ├── metrics                     # metrics to extract from the data
-    ├── model                       # classes used to represent the domain model
-    ├── operations                  # different operations to be used by the pipelines
-    └── utils                       # miscellaneous utilities
+├── src                             # Code for the third week
+├── w1_w2                           # Code for the first two weeks
+└── weights                         # Weights for different neural networks
 
 ```

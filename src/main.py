@@ -1,21 +1,16 @@
-# Set up custom environment before nearly anything else is imported
-# noinspection PyUnresolvedReferences
 import argparse
 
-from methods import fine_tune_yolo, off_the_shelf_yolo, off_the_shelf_ssd, siamese_train
-from operations import SiameseTracking, OverlapTracking, KalmanTracking
+from methods import optical_flow, stabilization
+from optical_flow import block_matching, lucas_kanade
 
 method_refs = {
-    'fine_tune_yolo': fine_tune_yolo,
-    'off_the_shelf_yolo': off_the_shelf_yolo,
-    'off_the_shelf_ssd': off_the_shelf_ssd,
-    'siamese_train': siamese_train
+    'optical_flow': optical_flow,
+    'stabilization': stabilization,
 }
 
-tracking_refs = {
-    'siamese': SiameseTracking(),
-    'overlap': OverlapTracking(),
-    'kalman': KalmanTracking()
+optical_flow_refs = {
+    'block_matching': BlockMatching,
+    'lucas_kanade': lucas_kanade,
 }
 
 
@@ -23,19 +18,15 @@ def main():
     parser = argparse.ArgumentParser(description='Search the picture passed in a picture database.')
 
     parser.add_argument('method', help='Method to use', choices=method_refs.keys())
-    parser.add_argument('tracking', help='Tracking method to use', nargs='?', choices=tracking_refs.keys(), default=None)
+    parser.add_argument('optical_flow', help='Optical flow method to use', choices=optical_flow_refs.keys())
     parser.add_argument('-d', '--debug', action='store_true', help='Show debug plots')
-    parser.add_argument('-e', '--epochs', type=int, help='Number of train epochs', default=25)
 
     args = parser.parse_args()
 
-    tracking = None
-    if args.tracking is not None:
-        tracking = tracking_refs.get(args.tracking)
-
     method = method_refs.get(args.method)
+    optical_flow_method = optical_flow_refs.get(args.tracking)
 
-    method(debug=args.debug, tracking=tracking, epochs=args.epochs)
+    method(optical_flow_method, debug=args.debug)
 
 
 if __name__ == '__main__':

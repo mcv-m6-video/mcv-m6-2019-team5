@@ -43,7 +43,7 @@ def off_the_shelf_yolo(tracking, debug=False, *args, **kwargs):
                 im_tensor = im_tensor.cuda()
 
             detections = model.forward(im_tensor)
-            detections = utils.non_max_suppression(detections, 80, conf_thres=.75, nms_thres=0.2)
+            detections = utils.non_max_suppression(detections, 80, conf_thres=.6, nms_thres=0.3)
 
             frame = Frame(i+(len(video)//4))
             frame.ground_truth = gt[frame.id]

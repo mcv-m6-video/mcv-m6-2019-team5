@@ -1,3 +1,7 @@
+
+from src.optical_flow import BlockMatching
+
+
 def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
     """
     Perform the optical flow using the given method and print metrics
@@ -5,4 +9,9 @@ def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
     :param optical_flow_method: the optical flow method to use
     :param debug: whether to show debug plots
     """
+
+
     pass
+
+method = BlockMatching()
+optical_flow(method, True)

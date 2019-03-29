@@ -17,4 +17,5 @@ tqdm
 FilterPy
 wget
 numba
+seaborn
 cython

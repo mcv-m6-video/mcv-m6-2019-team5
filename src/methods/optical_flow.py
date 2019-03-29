@@ -1,5 +1,10 @@
+import io
+import sys
 
-from src.optical_flow import BlockMatching
+import cv2
+
+from metrics import msen, pepn
+from utils import show_optical_flow_arrows, read_optical_flow
 
 
 def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
@@ -10,8 +15,14 @@ def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
     :param debug: whether to show debug plots
     """
 
+    im1 = cv2.imread('../datasets/optical_flow/img/000045_10.png')
+    im2 = cv2.imread('../datasets/optical_flow/img/000045_11.png')
+    gt = read_optical_flow('../datasets/optical_flow/gt/000045_10.png')
 
-    pass
+    flow = optical_flow_method(im1, im2)
 
-method = BlockMatching()
-optical_flow(method, True)
+    print('MSEN: ', msen(flow, gt, debug=debug))
+    print('PEPN: ', pepn(flow, gt))
+
+    if debug:
+        show_optical_flow_arrows(im1, flow)

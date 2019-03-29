@@ -2,6 +2,7 @@ import argparse
 
 from methods import optical_flow, stabilization
 from optical_flow import lucas_kanade, BlockMatching, pyflow_optical_flow
+import seaborn as sns
 
 method_refs = {
     'optical_flow': optical_flow,
@@ -25,7 +26,7 @@ def main():
     args = parser.parse_args()
 
     method = method_refs.get(args.method)
-    optical_flow_method = optical_flow_refs.get(args.tracking)
+    optical_flow_method = optical_flow_refs.get(args.optical_flow)
 
     method(optical_flow_method, debug=args.debug)
 

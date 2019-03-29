@@ -45,6 +45,12 @@ rm -rf pyflow
 
 NOTE: remember to activate the environment before the install
 
+If you get any problem compiling in windows, go to file `pyflow/src/project.h` and comment line 9: 
+
+```c++
+// #define _LINUX_MAC
+```
+
 ### W3 usage
 
 ```

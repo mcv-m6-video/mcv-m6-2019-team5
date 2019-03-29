@@ -1,7 +1,7 @@
 import argparse
 
 from methods import optical_flow, stabilization
-from optical_flow import lucas_kanade, BlockMatching
+from optical_flow import lucas_kanade, BlockMatching, pyflow_optical_flow
 
 method_refs = {
     'optical_flow': optical_flow,
@@ -11,6 +11,7 @@ method_refs = {
 optical_flow_refs = {
     'block_matching': BlockMatching(),
     'lucas_kanade': lucas_kanade,
+    'pyflow': pyflow_optical_flow
 }
 
 

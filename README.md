@@ -33,6 +33,18 @@ deactivate                     # deactivate the environment
 pip3 install -r requirements.txt
 ```
 
+#### Pyflow
+
+```
+git clone https://github.com/pathak22/pyflow.git
+cd pyflow/
+python setup.py install
+cd ..
+rm -rf pyflow
+```
+
+NOTE: remember to activate the environment before the install
+
 ### W3 usage
 
 ```

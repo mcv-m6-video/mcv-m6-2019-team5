@@ -1,12 +1,13 @@
 import argparse
 
-from methods import optical_flow, stabilization
+from methods import optical_flow, stabilization, off_the_shelf_stabilization
 from optical_flow import lucas_kanade, BlockMatching, pyflow_optical_flow
 import seaborn as sns
 
 method_refs = {
     'optical_flow': optical_flow,
     'stabilization': stabilization,
+    'off_the_shelf_stabilization': off_the_shelf_stabilization
 }
 
 optical_flow_refs = {

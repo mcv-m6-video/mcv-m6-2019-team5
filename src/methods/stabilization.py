@@ -1,8 +1,11 @@
+import sys
+
 import cv2
+import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
 
 from model import Video
-import matplotlib.pyplot as plt
 
 
 def stabilization(optical_flow_method, debug: bool = False, **kwargs):
@@ -18,7 +21,7 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
 
     previous_frame = None
     accum_flow = np.zeros(2)
-    for frame in video.get_frames():
+    for frame in tqdm(video.get_frames(), total=len(video), file=sys.stdout):
         rows, cols, _ = frame.shape
         if previous_frame is not None:
             flow = optical_flow_method(previous_frame, frame)

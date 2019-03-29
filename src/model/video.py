@@ -24,3 +24,6 @@ class Video:
 
     def __str__(self):
         return 'Video(path=\'video_path\')'
+
+    def __len__(self):
+        return len(self.files)

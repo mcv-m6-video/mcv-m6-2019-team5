@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from math import pow
 
 
 class BlockMatching:
@@ -11,7 +12,9 @@ class BlockMatching:
 
         criteria_refs = {
             'SAD': self._sum_absolute_differences,
-            'SSD': self._sum_square_differences
+            'SSD': self._sum_square_differences,
+            'MAE': self._mean_absolute_error,
+            'MSE': self._mean_square_error
         }
 
         self.criteria = criteria_refs.get(criteria)
@@ -23,7 +26,7 @@ class BlockMatching:
         for i in range(self.window_size // 2, self.img_shape[0] - self.window_size // 2):
             for j in range(self.window_size // 2, self.img_shape[1] - self.window_size // 2):
                 block = im1[i - self.block_size // 2:i + self.block_size // 2,
-                            j - self.block_size // 2:j + self.block_size // 2, :]
+                        j - self.block_size // 2:j + self.block_size // 2, :]
                 maximum_matching = self._find_maximum_matching(block, im2, (i, j))
 
                 out[i, j, :] = maximum_matching
@@ -39,12 +42,13 @@ class BlockMatching:
                 for row in range(-int(self.window_size / 2), int(self.window_size / 2) + 1, self.stride):
                     row_index = row + pixel1[1]
                     if 0 <= row_index < self.img_shape[1]:
-                        pixel2 = (col_index, row_index)
-                        box2 = self._get_block(im2, pixel2)
+                        box2 = im2[col - self.block_size // 2:col + self.block_size // 2, row - self.block_size //
+                                                                                          2:row + self.block_size // 2,
+                               :]
                         likelihood = self.criteria(box1, box2)
                         if likelihood > likelihood_aux:
                             likelihood_aux = likelihood
-                            out = pixel2
+                            out = (col, row)
         return out
 
     @staticmethod
@@ -55,12 +59,18 @@ class BlockMatching:
     def _sum_square_differences(box1: np.ndarray, box2: np.ndarray) -> float:
         return float(np.sum(np.power(box1 - box2, 2)))
 
+    @staticmethod
+    def _mean_absolute_error(self, box1: np.ndarray, box2: np.ndarray) -> float:
+        return float(np.sum(np.abs(box1 - box2)) / pow(self.block_size, 2))
+
+    @staticmethod
+    def _mean_square_error(self, box1: np.ndarray, box2: np.ndarray) -> float:
+        return float(np.sum(np.power(box1 - box2, 2)) / pow(self.block_size, 2))
+
 
 if __name__ == '__main__':
     block = BlockMatching()
     im11 = cv2.imread("../../datasets/optical_flow/img/000045_10.png")
     im21 = cv2.imread("../../datasets/optical_flow/img/000045_11.png")
-    im11 = cv2.cvtColor(im11, cv2.COLOR_BGR2GRAY)
-    im21 = cv2.cvtColor(im21, cv2.COLOR_BGR2GRAY)
 
     block(im11, im21)

@@ -10,8 +10,8 @@ def lucas_kanade_dense(im1: np.ndarray, im2: np.ndarray, window_size=15, tau=1e-
     kernel_y = np.array([[-1., -1.], [1., 1.]])
     kernel_t = np.array([[1., 1.], [1., 1.]])  # *.25
     w = window_size / 2  # window_size is odd, all the pixels with offset in between [-w, w] are inside the window
-    im1 = im1 / 255.  # normalize pixels
-    im2 = im2 / 255.  # normalize pixels
+    im1 = im1.astype(float) / 255.  # normalize pixels
+    im2 = im2.astype(float) / 255.  # normalize pixels
     # Implement Lucas Kanade
     # for each point, calculate I_x, I_y, I_t
     mode = 'same'

@@ -2,7 +2,7 @@ from vidstab import VidStab
 import matplotlib.pyplot as plt
 
 
-def adam_spanbaauer(video_pth: str):
+def adam_spanbaauer(video_pth: str, debug: bool = False ):
     # Using defaults
     stabilizer = VidStab()
     stabilizer.stabilize(input_path=video_pth,
@@ -18,11 +18,13 @@ def adam_spanbaauer(video_pth: str):
     stabilizer.stabilize(input_path='../../datasets/stabilization/input.mp4',
                          output_path='adamOut/FAST_stable_video.avi')
 
-    stabilizer.plot_trajectory()
-    plt.show()
+    if debug:
 
-    stabilizer.plot_transforms()
-    plt.show()
+        stabilizer.plot_trajectory()
+        plt.show()
+
+        stabilizer.plot_transforms()
+        plt.show()
 
 
 if __name__ == '__main__':

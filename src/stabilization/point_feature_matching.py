@@ -34,7 +34,7 @@ def fix_border(frame):
     return frame
 
 
-def point_feature_matching(video_pth: str):
+def point_feature_matching(video_pth: str, debug: bool = False):
     smoothing_radius = 50
 
     # The larger the more stable the video, but less reactive to sudden panning
@@ -160,9 +160,10 @@ def point_feature_matching(video_pth: str):
         # If the image is too big, resize it.
         if frame_out.shape[1] > 1920:
             frame_out = cv2.resize(frame_out, (frame_out.shape[1] / 2, frame_out.shape[0] / 2))
+        if debug:
 
-        cv2.imshow("Before and After", frame_out)
-        cv2.waitKey(10)
+            cv2.imshow("Before and After", frame_out)
+            cv2.waitKey(10)
         out.write(frame_out)
 
     # Release video

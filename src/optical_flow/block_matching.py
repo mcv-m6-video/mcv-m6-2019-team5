@@ -36,25 +36,27 @@ class BlockMatching:
         ), total=total, file=sys.stdout):
             block = im1[i - self.block_size // 2:i + self.block_size // 2,
                     j - self.block_size // 2:j + self.block_size // 2, :]
-            maximum_matching = self._find_maximum_matching(block, im2, (i, j))
 
-            out[i, j, :] = maximum_matching
+            out[i, j, :] = self._find_maximum_matching(block, im2, (i, j))
         return out
 
     def _find_maximum_matching(self, box1: np.ndarray, im2: np.ndarray, pixel1: tuple) -> tuple:
-        max_likelihood = 0
-        max_direction = (0, 0)
-        for col in range(pixel1[0] - (self.window_size // 2) + (self.block_size // 2),
-                         pixel1[0] + (self.window_size // 2) - (self.block_size // 2), self.window_stride):
-            for row in range(pixel1[1] - (self.window_size // 2) + (self.block_size // 2),
-                             pixel1[1] + (self.window_size // 2) - (self.block_size // 2), self.window_stride):
-                box2 = im2[col - self.block_size // 2:col + self.block_size // 2,
-                       row - self.block_size // 2:row + self.block_size // 2, :]
-                likelihood = self.criteria(box1, box2)
-                if likelihood > max_likelihood:
-                    max_likelihood = likelihood
-                    max_direction = (col, row)
-        return max_direction
+        min_likelihood = float('inf')
+        min_direction = (0, 0)
+        for col, row in itertools.product(
+                range(- (self.window_size // 2) + (self.block_size // 2),
+                      (self.window_size // 2) - (self.block_size // 2), self.window_stride),
+                range(- (self.window_size // 2) + (self.block_size // 2),
+                      (self.window_size // 2) - (self.block_size // 2), self.window_stride)
+        ):
+            box2 = im2[pixel1[0] + col - self.block_size // 2:pixel1[0] + col + self.block_size // 2,
+                       pixel1[1] + row - self.block_size // 2:pixel1[1] + row + self.block_size // 2, :]
+            likelihood = self.criteria(box1, box2)
+            if likelihood < min_likelihood:
+                min_likelihood = likelihood
+                min_direction = (col, row)
+
+        return min_direction
 
     @staticmethod
     def _sum_absolute_differences(box1: np.ndarray, box2: np.ndarray) -> float:

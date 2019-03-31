@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 class BlockMatching:
 
-    def __init__(self, block_size=9, window_size=33, stride=4, window_stride=2, criteria="SAD"):
+    def __init__(self, block_size=5, window_size=21, stride=8, window_stride=1, criteria="SSD"):
         self.block_size = block_size
         self.window_size = window_size
         self.stride = stride

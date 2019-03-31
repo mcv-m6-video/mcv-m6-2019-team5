@@ -2,7 +2,7 @@ import sys
 
 from tqdm import tqdm
 
-from methods import read_detections
+from utils import read_detections
 from model import Video
 
 

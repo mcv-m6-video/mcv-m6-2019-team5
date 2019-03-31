@@ -2,7 +2,7 @@ import argparse
 
 import tracking
 from methods import optical_flow, stabilization, off_the_shelf_stabilization
-from optical_flow import lucas_kanade, BlockMatching, pyflow_optical_flow
+from optical_flow import LucasKanade, BlockMatching, pyflow_optical_flow
 from tracking import overlap_flow_tracking
 
 method_refs = {
@@ -14,7 +14,7 @@ method_refs = {
 
 optical_flow_refs = {
     'block_matching': BlockMatching(),
-    'lucas_kanade': lucas_kanade,
+    'lucas_kanade': LucasKanade(),
     'pyflow': pyflow_optical_flow
 }
 

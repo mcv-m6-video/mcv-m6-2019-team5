@@ -55,6 +55,9 @@ class BlockMatching:
             if likelihood < min_likelihood:
                 min_likelihood = likelihood
                 min_direction = (col, row)
+            elif likelihood == min_likelihood and np.sum(np.power(min_direction, 2)) > col**2 + row**2:
+                min_direction = (col, row)
+
 
         return min_direction
 

@@ -34,13 +34,13 @@ def fix_border(frame):
     return frame
 
 
-def point_feature_matching():
+def point_feature_matching(video_pth: str):
     smoothing_radius = 50
 
     # The larger the more stable the video, but less reactive to sudden panning
 
     # Read input video
-    cap = cv2.VideoCapture('../../datasets/stabilization/input.mp4')
+    cap = cv2.VideoCapture(video_pth)
 
     # Get frame count
     n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))

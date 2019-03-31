@@ -2,10 +2,10 @@ from vidstab import VidStab
 import matplotlib.pyplot as plt
 
 
-def adam_spanbaauer():
+def adam_spanbaauer(video_pth: str):
     # Using defaults
     stabilizer = VidStab()
-    stabilizer.stabilize(input_path='../../datasets/stabilization/input.mp4',
+    stabilizer.stabilize(input_path=video_pth,
                          output_path='adamOut/default_stable_video.avi')
 
     # Using a specific keypoint detector

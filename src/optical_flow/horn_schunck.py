@@ -1,5 +1,5 @@
 import numpy as np
-import bob.ip.optflow.hornschunck
+#import bob.ip.optflow.hornschunck
 
 
 def horn_schunck(im1: np.ndarray, im2: np.ndarray) -> np.ndarray:

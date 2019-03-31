@@ -30,25 +30,21 @@ class BlockMatching:
                 maximum_matching = self._find_maximum_matching(block, im2, (i, j))
 
                 out[i, j, :] = maximum_matching
-
         return out
 
     def _find_maximum_matching(self, box1: np.ndarray, im2: np.ndarray, pixel1: tuple) -> tuple:
         likelihood_aux = 0
         out = (0, 0)
-        for col in range(-int(self.window_size / 2), int(self.window_size / 2) + 1, self.stride):
-            col_index = col + pixel1[0]
-            if 0 <= col_index < self.img_shape[0]:
-                for row in range(-int(self.window_size / 2), int(self.window_size / 2) + 1, self.stride):
-                    row_index = row + pixel1[1]
-                    if 0 <= row_index < self.img_shape[1]:
-                        box2 = im2[col - self.block_size // 2:col + self.block_size // 2, row - self.block_size //
-                                                                                          2:row + self.block_size // 2,
-                               :]
-                        likelihood = self.criteria(box1, box2)
-                        if likelihood > likelihood_aux:
-                            likelihood_aux = likelihood
-                            out = (col, row)
+        for col in range(pixel1[0] - (self.window_size // 2) + (self.block_size // 2),
+                         pixel1[0] + (self.window_size // 2) - (self.block_size // 2)):
+            for row in range(pixel1[1] - (self.window_size // 2) + (self.block_size // 2),
+                             pixel1[1] + (self.window_size // 2) - (self.block_size // 2)):
+                box2 = im2[col - self.block_size // 2:col + self.block_size // 2, row - self.block_size //
+                                                                                  2:row + self.block_size // 2, :]
+                likelihood = self.criteria(box1, box2)
+                if likelihood > likelihood_aux:
+                    likelihood_aux = likelihood
+                    out = (col, row)
         return out
 
     @staticmethod

@@ -1,6 +1,3 @@
-import io
-import sys
-
 import cv2
 
 from metrics import msen, pepn

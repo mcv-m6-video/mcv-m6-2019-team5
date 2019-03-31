@@ -95,8 +95,9 @@ def point_feature_matching(video_pth: str, debug: bool = False):
         curr_pts = curr_pts[idx]
 
         # Find transformation matrix
-        m = cv2.estimateRigidTransform(prev_pts, curr_pts, fullAffine=False)  # will only work with OpenCV-3 or less
+        m = cv2.estimateAffinePartial2D(prev_pts, curr_pts)  # will only work with OpenCV-3 or less
 
+        m = m[0]
         # Extract traslation
         dx = m[0, 2]
         dy = m[1, 2]
@@ -172,6 +173,3 @@ def point_feature_matching(video_pth: str, debug: bool = False):
     # Close windows
     cv2.destroyAllWindows()
 
-
-if __name__ == '__main__':
-    point_feature_matching()

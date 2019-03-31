@@ -1,6 +1,6 @@
 import contextlib
 import os
-
+import cv2
 import numpy as np
 from scipy import signal
 
@@ -9,9 +9,9 @@ def lucas_kanade_dense(im1: np.ndarray, im2: np.ndarray, window_size=15, tau=1e-
     kernel_x = np.array([[-1., 1.], [-1., 1.]])
     kernel_y = np.array([[-1., -1.], [1., 1.]])
     kernel_t = np.array([[1., 1.], [1., 1.]])  # *.25
-    w = window_size / 2  # window_size is odd, all the pixels with offset in between [-w, w] are inside the window
-    im1 = im1.astype(float) / 255.  # normalize pixels
-    im2 = im2.astype(float) / 255.  # normalize pixels
+    w = window_size // 2  # window_size is odd, all the pixels with offset in between [-w, w] are inside the window
+    im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+    im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
     # Implement Lucas Kanade
     # for each point, calculate I_x, I_y, I_t
     mode = 'same'

@@ -22,6 +22,8 @@ class BlockMatching:
         self.criteria = criteria_refs.get(criteria)
 
     def __call__(self, im1: np.ndarray, im2: np.ndarray) -> np.ndarray:
+        im1 = im1.astype(float) / 255
+        im2 = im2.astype(float) / 255
         out = np.zeros((im1.shape[0], im1.shape[1], 2))
         self.img_shape = im1.shape
 

@@ -36,11 +36,7 @@ def _flow_to_arrows(flow_uv, ax):
             u[i, j] = block[inx[0], iny[0], 0]
             v[i, j] = block[inx[0], iny[0], 1]
 
-    max_u_value = np.amax(u)
-    max_v_value = np.amax(v)
-    max_uv_value = max(max_u_value, max_v_value)
-
     x = [[i for i in range(0, vert_size, step)] for _ in range(0, hor_size, step)]
     y = [[i for _ in range(0, vert_size, step)] for i in range(0, hor_size, step)]
 
-    ax.quiver(x, y, u[::step, ::step], v[::step, ::step], width=0.002, scale=max_uv_value * 20, color=(0, 0.1, 0.8))
+    ax.quiver(x, y, u[::step, ::step], v[::step, ::step], units='dots', scale=1, color=(0, 0.1, 0.8))

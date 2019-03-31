@@ -15,5 +15,4 @@ def pyflow_optical_flow(im1: np.ndarray, im2: np.ndarray):
     with suppress_stdout_stderr():
         u, v, _ = pyflow.coarse2fine_flow(im1.astype(float) / 255, im2.astype(float) / 255, alpha, ratio)
 
-
     return np.concatenate((u[..., None], v[..., None]), axis=2)

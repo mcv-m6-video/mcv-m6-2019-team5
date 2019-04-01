@@ -4,9 +4,9 @@ import cv2
 
 class LucasKanade:
 
-    def __init__(self, win_size=15, max_level=2):
+    def __init__(self, win_size=15, max_level=3):
         # params for ShiTomasi corner detection
-        self.feature_params = dict(maxCorners=100,
+        self.feature_params = dict(maxCorners=500,
                                    qualityLevel=0.3,
                                    minDistance=7,
                                    blockSize=7)
@@ -28,5 +28,5 @@ class LucasKanade:
         for i, (new, old) in enumerate(zip(good_new, good_old)):
             b, a = new.ravel()
             d, c = old.ravel()
-            of[int(a), int(b), :] = (c - a, d - b)
+            of[int(a), int(b), :] = (a - c, b - d)
         return of

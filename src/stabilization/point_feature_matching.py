@@ -56,7 +56,7 @@ def point_feature_matching(video_pth: str, debug: bool = False):
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
 
     # Set up output video
-    out = cv2.VideoWriter('video_out.avi', fourcc, fps, (2 * w, h))
+    out = cv2.VideoWriter('../.cache/point_feature_out.avi', fourcc, fps, (2 * w, h))
 
     # Read first frame
     _, prev = cap.read()

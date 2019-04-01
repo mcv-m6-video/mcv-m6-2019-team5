@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 class BlockMatching:
 
-    def __init__(self, block_size=5, window_size=21, stride=8, window_stride=1, criteria="SSD"):
+    def __init__(self, block_size=9, window_size=45, stride=16, window_stride=1, criteria="SSD"):
         self.block_size = block_size
         self.window_size = window_size
         self.stride = stride
@@ -65,9 +65,9 @@ class BlockMatching:
             likelihood = self.criteria(box1, box2)
             if likelihood < min_likelihood:
                 min_likelihood = likelihood
-                min_direction = (i, -j)
+                min_direction = (i, j)
             elif likelihood == min_likelihood and np.sum(np.power(min_direction, 2)) > j ** 2 + i ** 2:
-                min_direction = (i, -j)
+                min_direction = (i, j)
 
         return min_direction
 

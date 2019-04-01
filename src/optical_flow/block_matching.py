@@ -21,7 +21,7 @@ class BlockMatching:
 
         self.criteria = criteria_refs.get(criteria)
 
-    def __call__(self, im1: np.ndarray, im2: np.ndarray) -> np.ndarray:
+    def __call__(self, im1: np.ndarray, im2: np.ndarray, specific_pixels: np.ndarray = None) -> np.ndarray:
         im1 = im1.astype(float) / 255
         im2 = im2.astype(float) / 255
         out = np.zeros((im1.shape[0], im1.shape[1], 2))
@@ -31,15 +31,22 @@ class BlockMatching:
         w = ((self.img_shape[1] - self.window_size // 2) - self.window_size // 2) // self.stride
         total = w * h
 
-        # No padding used, if needed, we could use np.pad
-        for j, i in tqdm(itertools.product(
-                range(self.window_size // 2, self.img_shape[0] - self.window_size // 2, self.stride),
-                range(self.window_size // 2, self.img_shape[1] - self.window_size // 2, self.stride)
-        ), total=total, file=sys.stdout):
-            box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
-                       i - self.block_size // 2:i + self.block_size // 2 + 1, :]
+        if not specific_pixels:
+            # No padding used, if needed, we could use np.pad
+            for j, i in tqdm(itertools.product(
+                    range(self.window_size // 2, self.img_shape[0] - self.window_size // 2, self.stride),
+                    range(self.window_size // 2, self.img_shape[1] - self.window_size // 2, self.stride)
+            ), total=total, file=sys.stdout):
+                box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
+                           i - self.block_size // 2:i + self.block_size // 2 + 1, :]
 
-            out[j, i, :] = self._find_maximum_matching(box1, im2, (j, i))
+                out[j, i, :] = self._find_maximum_matching(box1, im2, (j, i))
+        else:
+            for i, j in specific_pixels:
+                box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
+                    i - self.block_size // 2:i + self.block_size // 2 + 1, :]
+
+                out[j, i, :] = self._find_maximum_matching(box1, im2, (j, i))
         return out
 
     def _find_maximum_matching(self, box1: np.ndarray, im2: np.ndarray, pixel1: tuple) -> tuple:
@@ -70,9 +77,3 @@ class BlockMatching:
         return float(np.sum(np.power(box1 - box2, 2)))
 
 
-if __name__ == '__main__':
-    block = BlockMatching()
-    im11 = cv2.imread("../../datasets/optical_flow/img/000045_10.png")
-    im21 = cv2.imread("../../datasets/optical_flow/img/000045_11.png")
-
-    block(im11, im21)

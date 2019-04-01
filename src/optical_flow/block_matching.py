@@ -42,7 +42,7 @@ class BlockMatching:
 
                 out[j, i, :] = self._find_maximum_matching(box1, im2, (j, i))
         else:
-            for i, j in specific_pixels:
+            for j, i in specific_pixels:
                 box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
                     i - self.block_size // 2:i + self.block_size // 2 + 1, :]
 

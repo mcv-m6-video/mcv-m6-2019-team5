@@ -20,3 +20,4 @@ numba
 seaborn
 cython
 vidstab[cv2]
+motmetrics

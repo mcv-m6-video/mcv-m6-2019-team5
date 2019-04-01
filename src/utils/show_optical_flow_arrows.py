@@ -39,4 +39,4 @@ def _flow_to_arrows(flow_uv, ax):
     x = [[i for i in range(0, vert_size, step)] for _ in range(0, hor_size, step)]
     y = [[i for _ in range(0, vert_size, step)] for i in range(0, hor_size, step)]
 
-    ax.quiver(x, y, u[::step, ::step], -v[::step, ::step], units='dots', scale=0.2, color=(0, 0.1, 0.8))
+    ax.quiver(x, y, u[::step, ::step], -v[::step, ::step], units='dots', scale=1, color=(0, 0.1, 0.8))

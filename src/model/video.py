@@ -17,7 +17,7 @@ class Video:
 
     def get_frames(self, start: int = 0, end: int = None) -> Iterator[np.ndarray]:
         for i in range(start, len(self.files) if end is None else end):
-            yield cv2.imread(os.path.join(self.video_path, 'frame_{:04d}.jpg'.format(i + 1)))
+            yield cv2.imread(self.files[i])
 
     def __repr__(self):
         return self.__str__()

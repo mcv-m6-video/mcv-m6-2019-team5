@@ -33,7 +33,7 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
                 p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None,
                                              **feature_params)
                 flow = optical_flow_method(previous_frame, frame, p0)
-                if debug:
+                if not debug:
                     show_optical_flow_arrows(previous_frame, flow)
 
                 accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
@@ -41,7 +41,7 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
                 transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
                 frame2 = cv2.warpAffine(frame, transform, (cols, rows))
 
-                if not debug:
+                if debug:
                     plt.figure()
                     plt.imshow(cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
                     plt.axis('off')

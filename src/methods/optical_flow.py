@@ -18,8 +18,9 @@ def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
 
     flow = optical_flow_method(im1, im2)
 
-    print('MSEN: ', msen(flow, gt, debug=debug))
-    print('PEPN: ', pepn(flow, gt))
+    if flow.shape[0] == gt.shape[0]:
+        print('MSEN: ', msen(flow, gt, debug=debug))
+        print('PEPN: ', pepn(flow, gt))
 
     if debug:
         show_optical_flow_arrows(im1, flow)

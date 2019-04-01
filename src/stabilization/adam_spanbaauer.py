@@ -10,13 +10,13 @@ def adam_spanbaauer(video_pth: str, debug: bool = False ):
 
     # Using a specific keypoint detector
     stabilizer = VidStab(kp_method='ORB')
-    stabilizer.stabilize(input_path='../../datasets/stabilization/input.mp4',
-                         output_path='ORB_stable_video.avi')
+    stabilizer.stabilize(input_path=video_pth,
+                         output_path='adamOut/ORB_stable_video.avi')
 
     # Using a specific keypoint detector and customizing keypoint parameters
     stabilizer = VidStab(kp_method='FAST', threshold=42, nonmaxSuppression=False)
-    stabilizer.stabilize(input_path='../../datasets/stabilization/input.mp4',
-                         output_path='FAST_stable_video.avi')
+    stabilizer.stabilize(input_path=video_pth,
+                         output_path='adamOut/FAST_stable_video.avi')
 
     if debug:
 

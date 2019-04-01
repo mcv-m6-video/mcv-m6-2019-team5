@@ -5,7 +5,7 @@ import numpy as np
 from scipy import signal
 
 
-def lucas_kanade_dense(im1: np.ndarray, im2: np.ndarray, window_size=35, tau=1e-3) -> np.ndarray:
+def lucas_kanade_dense(im1: np.ndarray, im2: np.ndarray, window_size=35, tau=1e-2) -> np.ndarray:
     kernel_x = np.array([[-1., 1.], [-1., 1.]])
     kernel_y = np.array([[-1., -1.], [1., 1.]])
     kernel_t = np.array([[1., 1.], [1., 1.]])# *.25

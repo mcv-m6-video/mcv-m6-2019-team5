@@ -1,7 +1,6 @@
 import itertools
 import sys
 
-import cv2
 import numpy as np
 from tqdm import tqdm
 
@@ -31,20 +30,24 @@ class BlockMatching:
         w = ((self.img_shape[1] - self.window_size // 2) - self.window_size // 2) // self.stride
         total = w * h
 
-        if not specific_pixels:
+        if specific_pixels is None:
             # No padding used, if needed, we could use np.pad
             for j, i in tqdm(itertools.product(
                     range(self.window_size // 2, self.img_shape[0] - self.window_size // 2, self.stride),
                     range(self.window_size // 2, self.img_shape[1] - self.window_size // 2, self.stride)
             ), total=total, file=sys.stdout):
                 box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
-                           i - self.block_size // 2:i + self.block_size // 2 + 1, :]
+                       i - self.block_size // 2:i + self.block_size // 2 + 1, :]
 
                 out[j, i, :] = self._find_maximum_matching(box1, im2, (j, i))
         else:
-            for j, i in specific_pixels:
+            specific_pixels = specific_pixels.reshape(-1, 2).astype(int)
+            for i, j in specific_pixels:
+                if (min(i, self.img_shape[1] - i) < self.window_size // 2 + self.block_size // 2 or
+                        min(j, self.img_shape[0] - i) < self.window_size // 2 + self.block_size // 2):
+                    continue
                 box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
-                    i - self.block_size // 2:i + self.block_size // 2 + 1, :]
+                           i - self.block_size // 2:i + self.block_size // 2 + 1, :]
 
                 out[j, i, :] = self._find_maximum_matching(box1, im2, (j, i))
         return out
@@ -75,5 +78,3 @@ class BlockMatching:
     @staticmethod
     def _sum_square_differences(box1: np.ndarray, box2: np.ndarray) -> float:
         return float(np.sum(np.power(box1 - box2, 2)))
-
-

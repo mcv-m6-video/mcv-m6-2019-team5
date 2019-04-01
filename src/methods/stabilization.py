@@ -40,7 +40,7 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
 
                 accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
 
-                transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
+                transform = np.float32([[1, 0, accum_flow[0]], [0, 1, -accum_flow[1]]])
                 frame2 = cv2.warpAffine(frame, transform, (cols, rows))
 
                 if debug:

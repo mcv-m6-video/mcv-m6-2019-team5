@@ -5,10 +5,10 @@ import numpy as np
 from scipy import signal
 
 
-def lucas_kanade_dense(im1: np.ndarray, im2: np.ndarray, window_size=15, tau=1e-2) -> np.ndarray:
+def lucas_kanade_dense(im1: np.ndarray, im2: np.ndarray, window_size=55, tau=1e-2) -> np.ndarray:
     kernel_x = np.array([[-1., 1.], [-1., 1.]])
     kernel_y = np.array([[-1., -1.], [1., 1.]])
-    kernel_t = np.array([[1., 1.], [1., 1.]])  # *.25
+    kernel_t = np.array([[1., 1.], [1., 1.]])# *.25
     w = window_size // 2  # window_size is odd, all the pixels with offset in between [-w, w] are inside the window
     im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
     im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)

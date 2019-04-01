@@ -25,24 +25,28 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
                           blockSize=7)
     previous_frame = None
     accum_flow = np.zeros(2)
-    for frame in tqdm(video.get_frames(), total=len(video), file=sys.stdout):
+
+    for i, frame in tqdm(enumerate(video.get_frames(start=500)), total=len(video) - 500, file=sys.stdout):
+
         rows, cols, _ = frame.shape
-        if previous_frame is not None:
+        if i % 4 == 0:
+            if previous_frame is not None:
 
-            p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None, **feature_params)
-            flow = optical_flow_method(previous_frame, frame, p0)
-            if debug:
-                show_optical_flow_arrows(previous_frame, flow)
+                p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None,
+                                             **feature_params)
+                flow = optical_flow_method(previous_frame, frame, p0)
+                if debug:
+                    show_optical_flow_arrows(previous_frame, flow)
 
-            accum_flow += np.mean(flow, axis=(0, 1))
+                accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
 
-            transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
-            frame = cv2.warpAffine(frame, transform, (cols, rows))
+                transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
+                frame = cv2.warpAffine(frame, transform, (cols, rows))
 
-            if debug:
-                plt.figure()
-                plt.imshow(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                plt.axis('off')
-                plt.show()
+                if not debug:
+                    plt.figure()
+                    plt.imshow(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                    plt.axis('off')
+                    plt.show()
 
-        previous_frame = frame
+            previous_frame = frame

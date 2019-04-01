@@ -1,7 +1,7 @@
 import cv2
 
 from metrics import msen, pepn
-from utils import show_optical_flow_arrows, read_optical_flow
+from utils import show_optical_flow_arrows, read_optical_flow, show_optical_flow
 
 
 def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
@@ -24,3 +24,4 @@ def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
 
     if debug:
         show_optical_flow_arrows(im1, flow)
+        show_optical_flow(im1, flow)

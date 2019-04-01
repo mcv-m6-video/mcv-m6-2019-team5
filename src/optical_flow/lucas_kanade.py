@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 
 class LucasKanade:
@@ -15,7 +16,7 @@ class LucasKanade:
                               maxLevel=max_level,
                               criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
-    def __call__(self, im1: np.ndarray, im2: np.ndarray, p0: np.ndarray = None) -> np.ndarray:
+    def __call__(self, im1: np.ndarray, im2: np.ndarray, p0: np.ndarray = None, debug: bool = False) -> np.ndarray:
         of = np.zeros((im1.shape[0], im1.shape[1], 2))
         old_gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
         if p0 is None:
@@ -30,4 +31,11 @@ class LucasKanade:
             b, a = new.ravel()
             d, c = old.ravel()
             of[int(c), int(d), :] = (b - d, a - c)
+        if debug:
+            plt.figure()
+            plt.imshow(cv2.cvtColor(im1,cv2.COLOR_BGR2RGB))
+            plt.scatter(p0[:, 0, 0], p0[:, 0, 1], s=3)
+            plt.axis('off')
+            plt.show()
+
         return of

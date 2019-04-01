@@ -27,11 +27,9 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
     accum_flow = np.zeros(2)
 
     for i, frame in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout):
-
         rows, cols, _ = frame.shape
         if i % 4 == 0:
             if previous_frame is not None:
-
                 p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None,
                                              **feature_params)
                 flow = optical_flow_method(previous_frame, frame, p0)
@@ -40,7 +38,7 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
 
                 accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
 
-                transform = np.float32([[1, 0, accum_flow[0]], [0, 1, -accum_flow[1]]])
+                transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
                 frame2 = cv2.warpAffine(frame, transform, (cols, rows))
 
                 if debug:

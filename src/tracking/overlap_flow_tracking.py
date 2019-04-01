@@ -32,8 +32,8 @@ def overlap_flow_tracking(optical_flow_method,
             det.id = IDGenerator.next()
 
 
-def _find_id(det1: Detection, dets2: List[Detection]) -> None:
-    for det2 in dets2:
+def _find_id(det1: Detection, det2: List[Detection]) -> None:
+    for det2 in det2:
         if det1.iou(det2) > INTERSECTION_THRESHOLD:
             det1.id = det2.id
             return

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 import os
 
-from stabilization import generate_frames
+from utils import generate_frames
 
 
 def adam_spanbaauer(video_pth: str, debug: bool = False):

@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import os
 
-from stabilization import generate_frames
+from utils import generate_frames
 
 
 def moving_average(curve, radius):

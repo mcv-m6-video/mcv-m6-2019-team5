@@ -17,9 +17,9 @@ def overlap_flow_tracking(optical_flow_method,
                           minDistance=7,
                           blockSize=7)
     if im1 is not None:
-        mask = np.zeros((im1.shape[0], im1.shape[1]), dtype=np.uint8)
+        mask = np.zeros((im1.shape[0], im1.shape[1]), dtype=np.uint8) + 255
         for det in det1:
-            mask[det.top_left[1]:det.top_left[1] + det.height, det.top_left[0]:det.top_left[0] + det.width] = 255
+            mask[det.top_left[1]:det.top_left[1] + det.height, det.top_left[0]:det.top_left[0] + det.width] = 0
 
         p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), mask=mask, **feature_params)
         flow = optical_flow_method(im1, im2, p0)

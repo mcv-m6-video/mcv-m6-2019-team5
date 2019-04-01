@@ -44,7 +44,7 @@ class BlockMatching:
             specific_pixels = specific_pixels.reshape(-1, 2).astype(int)
             for i, j in specific_pixels:
                 if (min(i, self.img_shape[1] - i) < self.window_size // 2 + self.block_size // 2 or
-                        min(j, self.img_shape[0] - i) < self.window_size // 2 + self.block_size // 2):
+                        min(j, self.img_shape[0] - j) < self.window_size // 2 + self.block_size // 2):
                     continue
                 box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
                            i - self.block_size // 2:i + self.block_size // 2 + 1, :]

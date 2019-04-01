@@ -15,10 +15,11 @@ class LucasKanade:
                               maxLevel=max_level,
                               criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
-    def __call__(self, im1: np.ndarray, im2: np.ndarray) -> np.ndarray:
+    def __call__(self, im1: np.ndarray, im2: np.ndarray, p0: np.ndarray = None) -> np.ndarray:
         of = np.zeros((im1.shape[0], im1.shape[1], 2))
         old_gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
-        p0 = cv2.goodFeaturesToTrack(old_gray, mask=None, **self.feature_params)
+        if p0 is None:
+            p0 = cv2.goodFeaturesToTrack(old_gray, mask=None, **self.feature_params)
         frame_gray = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
         # calculate optical flow
         p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **self.lk_params)

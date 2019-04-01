@@ -11,7 +11,7 @@ class Detection(Rectangle):
 
     def __init__(self, id: int, label: str, top_left=(0, 0), width=0, height=0, confidence: float = None):
         super().__init__(top_left, width, height)
-        self.id = id
+        self.id = int(id)
         self.label = label
         self.confidence = confidence
 

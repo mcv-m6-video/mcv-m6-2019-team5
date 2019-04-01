@@ -29,5 +29,5 @@ class LucasKanade:
         for i, (new, old) in enumerate(zip(good_new, good_old)):
             b, a = new.ravel()
             d, c = old.ravel()
-            of[int(a), int(b), :] = (b - d, a - c)
+            of[int(a), int(b), :] = (d - b, c - a)
         return of

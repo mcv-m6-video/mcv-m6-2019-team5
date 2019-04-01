@@ -2,7 +2,8 @@ import argparse
 
 import tracking
 from methods import optical_flow, stabilization, off_the_shelf_stabilization
-from optical_flow import lucas_kanade, BlockMatching, pyflow_optical_flow
+from optical_flow import LucasKanade, BlockMatching, pyflow_optical_flow, lucas_kanade_dense, horn_schunck, gunner_farneback
+from stabilization import point_feature_matching, adam_spanbaauer
 from tracking import overlap_flow_tracking
 
 method_refs = {
@@ -14,12 +15,16 @@ method_refs = {
 
 optical_flow_refs = {
     'block_matching': BlockMatching(),
-    'lucas_kanade': lucas_kanade,
+    'lucas_kanade': LucasKanade(),
+    'lucas_kanade_dense': lucas_kanade_dense,
+    'horn_schunck': horn_schunck,
+    'gunner_farneback': gunner_farneback,
     'pyflow': pyflow_optical_flow
 }
 
 off_the_shelf_stabilization_refs = {
-
+    'adam': adam_spanbaauer,
+    'feature': point_feature_matching
 }
 
 tracking_refs = {

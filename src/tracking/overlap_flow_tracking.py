@@ -16,16 +16,18 @@ def overlap_flow_tracking(optical_flow_method,
                           qualityLevel=0.3,
                           minDistance=7,
                           blockSize=7)
+    if im1 is not None:
+        mask = np.zeros((im1.shape[0], im1.shape[1]), dtype=np.uint8)
+        for det in det1:
+            mask[det.top_left[1]:det.top_left[1] + det.height, det.top_left[0]:det.top_left[0] + det.width] = 255
 
-    mask = np.zeros(im1.shape[0], im1.shape[1])
-    for det in det1:
-        mask[det.top_left[1]:det.top_left[1] + det.height, det.top_left[0]:det.top_left[0] + det.width] = 255
-    p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), mask=mask, **feature_params)
-    flow = optical_flow_method(im1, im2, p0)
-    if debug:
-        show_optical_flow_arrows(im1, flow)
-    for det in det1:
-        _find_id(det, det2)
+        p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), mask=mask, **feature_params)
+        flow = optical_flow_method(im1, im2, p0)
+        if debug:
+            show_optical_flow_arrows(im1, flow)
+    for det in det2:
+        if det1 is not None:
+            _find_id(det, det1)
         if det.id == -1:
             det.id = IDGenerator.next()
 

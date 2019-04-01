@@ -11,8 +11,9 @@ def tracking(optical_flow_method, tracking_method, debug, **kwargs):
     detections = read_detections('../datasets/AICity_data/train/S03/c010/det/det_yolo3.txt')
 
     previous_frame = None
-    for i, frame in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout):
+    for i, frame in tqdm(enumerate(video.get_frames(start=500)), total=len(video)-500, file=sys.stdout):
         if i == 0:
-            tracking_method(optical_flow_method, frame, detections[i], None, None)
+            tracking_method(optical_flow_method, None, None, frame, detections[i], debug)
         else:
-            tracking_method(optical_flow_method, frame, detections[i], previous_frame, detections[i - 1])
+            tracking_method(optical_flow_method, previous_frame, detections[i - 1], frame, detections[i], debug)
+        previous_frame = frame

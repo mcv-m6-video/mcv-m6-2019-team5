@@ -1,7 +1,6 @@
 import argparse
 
-import tracking
-from methods import optical_flow, stabilization, off_the_shelf_stabilization
+from methods import optical_flow, stabilization, off_the_shelf_stabilization, tracking
 from optical_flow import LucasKanade, BlockMatching, pyflow_optical_flow, lucas_kanade_dense, horn_schunck, gunner_farneback
 from stabilization import point_feature_matching, adam_spanbaauer
 from tracking import overlap_flow_tracking

@@ -6,6 +6,7 @@ import numpy as np
 from tqdm import tqdm
 
 from model import Video
+from utils import show_optical_flow_arrows
 
 
 def stabilization(optical_flow_method, debug: bool = False, **kwargs):
@@ -18,13 +19,21 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
     :param debug: whether to show debug plots
     """
     video = Video('../datasets/stabilization')
-
+    feature_params = dict(maxCorners=500,
+                          qualityLevel=0.3,
+                          minDistance=7,
+                          blockSize=7)
     previous_frame = None
     accum_flow = np.zeros(2)
     for frame in tqdm(video.get_frames(), total=len(video), file=sys.stdout):
         rows, cols, _ = frame.shape
         if previous_frame is not None:
-            flow = optical_flow_method(previous_frame, frame)
+
+            p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None, **feature_params)
+            flow = optical_flow_method(previous_frame, frame, p0)
+            if debug:
+                show_optical_flow_arrows(previous_frame, flow)
+
             accum_flow += np.mean(flow, axis=(0, 1))
 
             transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])

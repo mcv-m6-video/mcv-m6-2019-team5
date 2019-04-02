@@ -6,7 +6,7 @@ class Mot:
     def __init__(self):
         self.acc = mm.MOTAccumulator(auto_id=True)
 
-    def compute_idf1(self, detections, gts):
+    def update(self, detections, gts):
         detection_bboxes = [(detection.top_left[0], detection.top_left[1], detection.width, detection.height) for
                             detection in detections]
         gt_bboxes = [(gt.top_left[0], gt.top_left[1], gt.width, gt.height) for gt in gts]
@@ -31,5 +31,5 @@ class Mot:
         events = []
         for event in len(det):
             indices.append((frame_id, event))
-            events.append(('MATCH', ))
+            events.append(('MATCH',))
         # self.acc.new_event_dataframe_with_data(indices, )

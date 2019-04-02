@@ -26,7 +26,6 @@ def tracking(optical_flow_method, tracking_method, debug, **kwargs):
             tracking_method(optical_flow_method, previous_frame, detections[i - STRIDE + START], frame,
                             detections[i + START], debug)
             previous_frame = frame
-        mot.compute_idf1(detections[i], gt[i])
 
     idf1 = mot.get_idf1()
     print(idf1)

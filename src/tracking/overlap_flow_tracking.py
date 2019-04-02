@@ -21,48 +21,65 @@ def overlap_flow_tracking(optical_flow_method,
         mask = np.zeros((im1.shape[0], im1.shape[1]), dtype=np.uint8)
         for det in det1:
             mask[det.top_left[0]:det.top_left[0] + det.width, det.top_left[1]:det.top_left[1] + det.height] = 255
-
-        p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), mask=mask, **feature_params)
-        flow = optical_flow_method(im1, im2, p0)
-        if debug:
-            show_optical_flow_arrows(im1, flow)
-
-        for det in det1:
-            det_flow = flow[det.top_left[0]:det.top_left[0] + det.height, det.top_left[1]:det.top_left[1] + det.width,
-                            :]
-            accum_flow = np.mean(det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :], axis=0)
-            if np.isnan(accum_flow):
-                accum_flow = (0, 0)
-            det1_flow.append(
-                Detection(det.id, det.label, (det.top_left[0] + accum_flow[1], det.top_left[1] + accum_flow[0]),
-                          det.width, det.height))
-
-        if debug:
-            plt.figure()
-
-        for det in det2:
-            # if det1 is not None:
-            _find_id(det, det1_flow)
-            if det.id == -1:
-                det.id = IDGenerator.next()
-
-            if debug:
-                rect = patches.Rectangle(det.top_left, det.width, det.height,
-                                         linewidth=2, edgecolor='blue', facecolor='none')
-                plt.gca().add_patch(rect)
-                plt.text(det.top_left[0], det.top_left[1], s='{} ~ {}'.format(det.label, det.id),
-                         color='white', verticalalignment='top',
-                         bbox={'color': 'blue', 'pad': 0})
-        if debug:
-            plt.imshow(im2)
+        if not debug:
+            plt.imshow(mask, 'gray')
             plt.axis('off')
-            # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
             plt.show()
             plt.close()
 
+        p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), mask=mask, **feature_params)
+        flow = optical_flow_method(im1, im2, p0)
+        if not debug:
+            show_optical_flow_arrows(im1, flow)
 
-def _find_id(det_new: Detection, dets_old: List[Detection]) -> None:
+        for det in det1:
+            det_flow = flow[det.top_left[0]:det.top_left[0] + det.width, det.top_left[1]:det.top_left[1] + det.height,
+                       :]
+            accum_flow = np.mean(det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :], axis=0)
+            if np.isnan(accum_flow).any():
+                accum_flow = (0, 0)
+            det1_flow.append(
+                Detection(det.id, det.label, (det.top_left[0] + accum_flow[0], det.top_left[1] + accum_flow[1]),
+                          det.width, det.height))
+
+    if debug:
+        plt.figure()
+
+    for det in det2:
+        if im1 is not None:
+            _find_id(det, det1_flow, im2)
+
+        if det.id == -1:
+            det.id = IDGenerator.next()
+
+        if debug:
+            rect = patches.Rectangle((det.top_left[1], det.top_left[0]), det.height, det.width,
+                                     linewidth=2, edgecolor='blue', facecolor='none')
+            plt.gca().add_patch(rect)
+            plt.text(det.top_left[1], det.top_left[0], s='{} ~ {}'.format(det.label, det.id),
+                     color='white', verticalalignment='top',
+                     bbox={'color': 'blue', 'pad': 0})
+    if debug:
+        plt.imshow(cv2.cvtColor(im2, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
+        plt.show()
+        plt.close()
+
+
+def _find_id(det_new: Detection, dets_old: List[Detection], im2, debug: bool = False) -> None:
     for det in dets_old:
         if det_new.iou(det) > INTERSECTION_THRESHOLD:
+            if debug:
+                plt.figure()
+                rect = patches.Rectangle((det.top_left[1], det.top_left[0]), det.height, det.width,
+                                         linewidth=1, edgecolor='blue', facecolor='none')
+                plt.gca().add_patch(rect)
+                rect = patches.Rectangle((det_new.top_left[1], det_new.top_left[0]), det_new.height, det_new.width,
+                                         linewidth=1, edgecolor='red', facecolor='none')
+                plt.gca().add_patch(rect)
+                plt.imshow(cv2.cvtColor(im2, cv2.COLOR_BGR2RGB))
+                plt.axis('off')
+                plt.show()
+                plt.close()
             det_new.id = det.id
-            return

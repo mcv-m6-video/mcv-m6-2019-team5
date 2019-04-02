@@ -18,23 +18,23 @@ def overlap_flow_tracking(optical_flow_method,
                           blockSize=7)
     det1_flow = []
     if im1 is not None:
-        mask = np.zeros((im1.shape[0], im1.shape[1]), dtype=np.uint8) + 255
+        mask = np.zeros((im1.shape[0], im1.shape[1]), dtype=np.uint8)
         for det in det1:
-            mask[det.top_left[0]:det.top_left[0] + det.height, det.top_left[1]:det.top_left[1] + det.width] = 0
+            mask[det.top_left[0]:det.top_left[0] + det.width, det.top_left[1]:det.top_left[1] + det.height] = 255
 
         p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY), mask=mask, **feature_params)
         flow = optical_flow_method(im1, im2, p0)
-        if not debug:
+        if debug:
             show_optical_flow_arrows(im1, flow)
 
         for det in det1:
             det_flow = flow[det.top_left[0]:det.top_left[0] + det.height, det.top_left[1]:det.top_left[1] + det.width,
-                       :]
-            accum_flow = np.mean(det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0)], axis=(0, 1))
+                            :]
+            accum_flow = np.mean(det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :], axis=0)
             if np.isnan(accum_flow):
                 accum_flow = (0, 0)
             det1_flow.append(
-                Detection(det.id, det.label, (det.top_left[0] + accum_flow[0], det.top_left[1] + accum_flow[1]),
+                Detection(det.id, det.label, (det.top_left[0] + accum_flow[1], det.top_left[1] + accum_flow[0]),
                           det.width, det.height))
 
         if debug:

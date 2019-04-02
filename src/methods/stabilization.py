@@ -18,14 +18,14 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
     :param optical_flow_method: the optical flow method to use
     :param debug: whether to show debug plots
     """
-    video = Video('../datasets/stabilization')
+    video = Video('../datasets/stabilization/fish')
     feature_params = dict(maxCorners=500,
                           qualityLevel=0.3,
                           minDistance=7,
                           blockSize=7)
     previous_frame = None
     accum_flow = np.zeros(2)
-
+    count = 0
     for i, frame in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout):
         rows, cols, _ = frame.shape
         if i % 4 == 0:
@@ -41,10 +41,11 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
                 transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
                 frame2 = cv2.warpAffine(frame, transform, (cols, rows))
 
-                if not debug:
+                if debug:
                     plt.figure()
                     plt.imshow(cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
                     plt.axis('off')
                     plt.show()
-
+                cv2.imwrite("../video/block/frame%d.jpg" % count, frame2)  # save frame as JPEG file
+                count += 1
             previous_frame = frame

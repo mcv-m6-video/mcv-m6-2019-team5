@@ -11,6 +11,7 @@ class Video:
     def __init__(self, video_path: str):
         self.video_path = video_path
         self.files = (seq(os.listdir(video_path))
+                      .filter(lambda f: f.endswith('.jpg'))
                       .map(lambda p: os.path.join(video_path, p))
                       .sorted()
                       .to_list())

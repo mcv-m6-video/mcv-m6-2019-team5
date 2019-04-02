@@ -11,7 +11,9 @@ INTERSECTION_THRESHOLD = 0.75
 
 def overlap_flow_tracking(optical_flow_method,
                           im1: np.ndarray, det1: List[Detection],
-                          im2: np.ndarray, det2: List[Detection], debug: bool = False):
+                          im2: np.ndarray, det2: List[Detection],
+                          debug: bool = False,
+                          mot=None, gt1= None, gt2= None):
     feature_params = dict(maxCorners=500,
                           qualityLevel=0.3,
                           minDistance=7,
@@ -65,6 +67,9 @@ def overlap_flow_tracking(optical_flow_method,
         # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
         plt.show()
         plt.close()
+
+    if mot is not None and gt1 is not None:
+        mot.update(det1_flow, gt1)
 
 
 def _find_id(det_new: Detection, dets_old: List[Detection], im2, debug: bool = False) -> None:

@@ -18,8 +18,7 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
     :param optical_flow_method: the optical flow method to use
     :param debug: whether to show debug plots
     """
-
-    video = Video('../datasets/stabilization/fish')
+    video = Video('../datasets/stabilization/piano')
     feature_params = dict(maxCorners=500,
                           qualityLevel=0.3,
                           minDistance=7,
@@ -30,23 +29,25 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
     for i, frame in tqdm(enumerate(video.get_frames()), total=len(video), file=sys.stdout):
         rows, cols, _ = frame.shape
         if previous_frame is not None:
-            p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None,
-                                         **feature_params)
-            flow = optical_flow_method(previous_frame, frame, p0)
-            if debug:
-                show_optical_flow_arrows(previous_frame, flow)
+            if i % 4 ==0:
+                p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(previous_frame, cv2.COLOR_BGR2GRAY), mask=None,
+                                             **feature_params)
+                flow = optical_flow_method(previous_frame, frame, p0)
+                if debug:
+                    show_optical_flow_arrows(previous_frame, flow)
 
-            accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
+                accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
 
-            transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
-            frame2 = cv2.warpAffine(frame, transform, (cols, rows))
+                transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
+                frame2 = cv2.warpAffine(frame, transform, (cols, rows))
 
-            if debug:
-                plt.figure()
-                plt.imshow(cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
-                plt.axis('off')
-                plt.show()
-            cv2.imwrite("../video/block/frame%d.jpg" % count, frame2)  # save frame as JPEG file
-            cv2.imwrite("../video/block/origFrame%d.jpg" % count, frame)
-            count += 1
+                if debug:
+                    plt.figure()
+                    plt.imshow(cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
+                    plt.axis('off')
+                    plt.show()
+                cv2.imwrite("../video/block/Pframe%04d.jpg" % count, frame2)  # save frame as JPEG file
+                cv2.imwrite("../video/block/Poriginalframe%04d.jpg" % count, frame2)  # save frame as JPEG file
+
+                count += 1
         previous_frame = frame

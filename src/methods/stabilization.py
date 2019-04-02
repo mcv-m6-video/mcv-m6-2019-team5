@@ -46,8 +46,8 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
                     plt.imshow(cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
                     plt.axis('off')
                     plt.show()
-                cv2.imwrite("../video/block/Pframe%04d.jpg" % count, frame2)  # save frame as JPEG file
-                cv2.imwrite("../video/block/Poriginalframe%04d.jpg" % count, frame2)  # save frame as JPEG file
+                cv2.imwrite("../video/block/OrigianlFrame%04d.jpg" % count, frame)  # save frame as JPEG file
+                cv2.imwrite("../video/block/StabilizedFrame%04d.jpg" % count, frame2)  # save frame as JPEG file
 
                 count += 1
         previous_frame = frame

@@ -83,3 +83,4 @@ def _find_id(det_new: Detection, dets_old: List[Detection], im2, debug: bool = F
                 plt.show()
                 plt.close()
             det_new.id = det.id
+            return

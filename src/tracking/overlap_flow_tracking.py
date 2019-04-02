@@ -42,26 +42,29 @@ def overlap_flow_tracking(optical_flow_method,
                 Detection(det.id, det.label, (det.top_left[0] + accum_flow[0], det.top_left[1] + accum_flow[1]),
                           det.width, det.height))
 
-        if debug:
-            plt.figure()
+    if debug:
+        plt.figure()
 
-        for det in det2:
-            # if det1 is not None:
+    for det in det2:
+        if im1 is not None:
             _find_id(det, det1_flow, im2)
 
-            if debug:
-                rect = patches.Rectangle((det.top_left[1], det.top_left[0]), det.height, det.width,
-                                         linewidth=2, edgecolor='blue', facecolor='none')
-                plt.gca().add_patch(rect)
-                plt.text(det.top_left[1], det.top_left[0], s='{} ~ {}'.format(det.label, det.id),
-                         color='white', verticalalignment='top',
-                         bbox={'color': 'blue', 'pad': 0})
+        if det.id == -1:
+            det.id = IDGenerator.next()
+
         if debug:
-            plt.imshow(cv2.cvtColor(im2, cv2.COLOR_BGR2RGB))
-            plt.axis('off')
-            # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
-            plt.show()
-            plt.close()
+            rect = patches.Rectangle((det.top_left[1], det.top_left[0]), det.height, det.width,
+                                     linewidth=2, edgecolor='blue', facecolor='none')
+            plt.gca().add_patch(rect)
+            plt.text(det.top_left[1], det.top_left[0], s='{} ~ {}'.format(det.label, det.id),
+                     color='white', verticalalignment='top',
+                     bbox={'color': 'blue', 'pad': 0})
+    if debug:
+        plt.imshow(cv2.cvtColor(im2, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        # plt.savefig('../video/video_ssd_KalmanID/frame_{:04d}'.format(i))
+        plt.show()
+        plt.close()
 
 
 def _find_id(det_new: Detection, dets_old: List[Detection], im2, debug: bool = False) -> None:
@@ -79,8 +82,4 @@ def _find_id(det_new: Detection, dets_old: List[Detection], im2, debug: bool = F
                 plt.axis('off')
                 plt.show()
                 plt.close()
-            if det.id == -1:
-                det.id = IDGenerator.next()
             det_new.id = det.id
-            print(det.id)
-            return

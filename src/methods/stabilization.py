@@ -36,9 +36,9 @@ def stabilization(optical_flow_method, debug: bool = False, **kwargs):
                 if debug:
                     show_optical_flow_arrows(previous_frame, flow)
 
-                accum_flow += -np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
-                if np.isnan(accum_flow).any():
-                    accum_flow = (0, 0)
+                m = np.mean(flow[np.logical_or(flow[:, :, 0] != 0, flow[:, :, 1] != 0)], axis=(0, 1))
+                if not np.isnan(accum_flow).any():
+                    accum_flow += -m
                 transform = np.float32([[1, 0, accum_flow[0]], [0, 1, accum_flow[1]]])
                 frame2 = cv2.warpAffine(frame, transform, (cols, rows))
 

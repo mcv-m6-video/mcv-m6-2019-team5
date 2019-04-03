@@ -24,7 +24,7 @@ def tracking(optical_flow_method, tracking_method, debug, **kwargs):
             previous_frame = frame
         elif i % STRIDE == 0:
             tracking_method(optical_flow_method, previous_frame, detections[i - STRIDE + START], frame,
-                            detections[i + START], debug, gt1=gt[i - STRIDE + START], mot=mot)
+                            detections[i + START], debug, gt1=gt[i - STRIDE + START], mot=mot, count=i // STRIDE - 1)
             previous_frame = frame
 
     print('Computing idf1...')

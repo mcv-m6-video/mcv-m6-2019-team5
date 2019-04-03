@@ -2,7 +2,7 @@ import cv2
 
 from metrics import msen, pepn
 from utils import show_optical_flow_arrows, read_optical_flow, show_optical_flow
-
+import numpy as np
 
 def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
     """
@@ -12,9 +12,9 @@ def optical_flow(optical_flow_method, debug: bool = False, **kwargs):
     :param debug: whether to show debug plots
     """
 
-    im1 = cv2.imread('../datasets/optical_flow/img/000157_10.png')  # 045
-    im2 = cv2.imread('../datasets/optical_flow/img/000157_11.png')
-    gt = read_optical_flow('../datasets/optical_flow/gt/000157_10.png')
+    im1 = cv2.imread('../datasets/optical_flow/img/000045_10.png')  # 045
+    im2 = cv2.imread('../datasets/optical_flow/img/000045_11.png')
+    gt = read_optical_flow('../datasets/optical_flow/gt/000045_10.png')
 
     flow = optical_flow_method(im1, im2)
 

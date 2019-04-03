@@ -20,7 +20,7 @@ class BlockMatching:
 
         self.criteria = criteria_refs.get(criteria)
 
-    def __call__(self, im1: np.ndarray, im2: np.ndarray, specific_pixels: np.ndarray = None) -> np.ndarray:
+    def __call__(self, im1: np.ndarray, im2: np.ndarray, specific_pixels: np.ndarray = None, progress=True) -> np.ndarray:
         im1 = im1.astype(float) / 255
         im2 = im2.astype(float) / 255
         out = np.zeros((im1.shape[0], im1.shape[1], 2))
@@ -35,7 +35,7 @@ class BlockMatching:
             for j, i in tqdm(itertools.product(
                     range(self.window_size // 2, self.img_shape[0] - self.window_size // 2, self.stride),
                     range(self.window_size // 2, self.img_shape[1] - self.window_size // 2, self.stride)
-            ), total=total, file=sys.stdout):
+            ), total=total, file=sys.stdout, disable=not progress):
                 box1 = im1[j - self.block_size // 2:j + self.block_size // 2 + 1,
                        i - self.block_size // 2:i + self.block_size // 2 + 1, :]
 

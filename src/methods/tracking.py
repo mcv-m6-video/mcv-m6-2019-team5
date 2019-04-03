@@ -7,7 +7,7 @@ from utils import read_detections, read_annotations
 from metrics import Mot
 
 START = 500
-STRIDE = 1
+STRIDE = 4
 
 
 def tracking(optical_flow_method, tracking_method, debug, **kwargs):
@@ -24,10 +24,8 @@ def tracking(optical_flow_method, tracking_method, debug, **kwargs):
             previous_frame = frame
         elif i % STRIDE == 0:
             tracking_method(optical_flow_method, previous_frame, detections[i - STRIDE + START], frame,
-                            detections[i + START], debug)
+                            detections[i + START], debug, gt1=gt[i - STRIDE + START], mot=mot)
             previous_frame = frame
 
-    idf1 = mot.get_idf1()
-    print(idf1)
-    a = mot.get_events()
-    print(a)
+    print('Computing idf1...')
+    print(mot.get_idf1())

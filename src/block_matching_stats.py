@@ -8,7 +8,9 @@ from metrics import pepn, msen
 from optical_flow import BlockMatching
 
 from utils import read_optical_flow
-
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def main():
     im1 = cv2.imread('../datasets/optical_flow/img/000045_10.png')
@@ -22,12 +24,13 @@ def main():
     results = []
 
     for block_size, win_size, cost in tqdm(itertools.product(block_sizes, window_sizes, costs), file=sys.stdout,
-                                           total=6 * 6 * 2):
+                                           total=len(block_sizes) * len(window_sizes) * len(costs)):
         if win_size < block_size // 2:
             continue
+
         bm = BlockMatching(block_size=block_size, window_size=win_size, criteria=cost)
         t0 = time.time()
-        flow = bm(im1, im2)
+        flow = bm(im1, im2, progress=False)
         t1 = time.time()
 
         msen_val = msen(flow, gt)
@@ -36,7 +39,14 @@ def main():
 
         results.append([block_size, win_size, cost, msen_val, pepn_val, time_val])
 
-        print(results)
+    df = pd.DataFrame(results, columns=['block_size', 'win_size', 'cost', 'msen', 'pepn', 'time'])
+    print(df)
+
+    sns.set()
+    plt.figure()
+    ax = sns.scatterplot(x="time", y="msen", hue="cost", size='block_size', style='win_size', data=df)
+    # ax.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
+    plt.show()
 
 
 if __name__ == '__main__':

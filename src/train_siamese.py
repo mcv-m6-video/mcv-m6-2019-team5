@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 
 from nn.dataloader import Dataset, BalancedBatchSampler
 from nn.loss import OnlineTripletLoss
-from nn.main import get_transforms
+from nn import get_transforms, fit
 from nn.network import EmbeddingNet
 
 
@@ -45,7 +45,7 @@ def main():
     optimizer = Adam(model.parameters(), lr=1e-4)
     scheduler = StepLR(optimizer, 8, gamma=0.1, last_epoch=-1)
 
-    fit(train_loader, test_loader, model, criterion, optimizer, scheduler, args.epochs, cuda)
+    fit(train_loader, None, model, criterion, optimizer, scheduler, args.epochs, cuda)
 
 
 if __name__ == '__main__':

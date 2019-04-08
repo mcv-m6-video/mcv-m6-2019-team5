@@ -1,8 +1,10 @@
 from functional import seq
+from matplotlib import patches
+
 from model import Frame, Sequence
 import numpy as np
 import cv2
-
+import matplotlib.pyplot as plt
 from tracking import Sort, associate_detections_to_trackers
 
 
@@ -11,7 +13,7 @@ class KalmanTracking:
     def __init__(self):
         self.mot_tracker = Sort()  # create instance of the SORT tracker
 
-    def __call__(self, frame: Frame, frames=None, debug=False, *args):
+    def __call__(self, frame: Frame, debug=False, *args):
 
         detections = seq(frame.detections).map(lambda d: d.to_sort_format()).to_list()
         detections = np.array(detections)
@@ -23,21 +25,28 @@ class KalmanTracking:
             # print(match[0], " . ", match[1], " . ", frame.detections[match[0]].top_left, " . ", trackers[match[1]])
 
         if debug:
-            grid = np.array(frame.image)
+            plt.figure()
+            plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
             for d in frame.detections:
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                cv2.putText(grid, str(d.id), (int(d.top_left[1]), int(d.top_left[0])), font, 1, (255, 255, 255), 2,
-                            cv2.LINE_AA)
-                cv2.rectangle(grid, (int(d.top_left[1]) + 5, int(d.top_left[0]) + 5),
-                              (int(d.get_bottom_right()[1]), int(d.get_bottom_right()[0])), (0, 0, 255), thickness=5)
-            cv2.imshow('f', grid)
-            cv2.waitKey()
+
+                if d is not None:
+                    text = '{} ~ {}'.format(d.label, d.id)
+                    rect = patches.Rectangle((d.top_left[0], d.top_left[1]), d.width, d.height,
+                                             linewidth=1, edgecolor='blue', facecolor='none')
+                    plt.text(d.top_left[0], d.top_left[1], s=text,
+                             color='white', verticalalignment='top',
+                             bbox={'color': 'blue', 'pad': 0})
+                    plt.gca().add_patch(rect)
+
+            plt.axis('off')
+            plt.show()
+            plt.close()
 
 
-def track_detections():
+def track_detections(debug: bool = False):
 
     kalman = KalmanTracking()
     for video in Sequence("../datasets/AICity_data/train/S03").get_videos():
         for frame in video.get_frames():
-            kalman(frame)
+            kalman(frame, debug)
             print(seq(frame.detections).map(lambda d: d.id).to_list())

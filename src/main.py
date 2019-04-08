@@ -7,8 +7,9 @@ def main():
     parser = argparse.ArgumentParser(description='Week 5 M6')
 
     parser.add_argument('-d', '--debug', action='store_true', help='Show debug plots')
+    args = parser.parse_args()
+    track_detections(args.debug)
 
-    track_detections()
 
 if __name__ == '__main__':
     main()

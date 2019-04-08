@@ -36,11 +36,9 @@ class KalmanTracking:
 def track_detections():
 
     kalman = KalmanTracking()
-    for frame in Sequence("../datasets/AICity_data/train/S03"):
-    for i in range(start_frame, end_frame):
-        f = Frame(i)
-        f.detections = detections[i]
-        f.ground_truth = gt[i]
-        kalman(f)
-        print(seq(f.detections).map(lambda d: d.id).to_list())
+    for video in Sequence("../datasets/AICity_data/train/S03"):
+        for frame in video:
+
+            kalman(frame)
+            print(seq(frame.detections).map(lambda d: d.id).to_list())
 

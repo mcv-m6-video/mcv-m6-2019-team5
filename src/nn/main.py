@@ -21,12 +21,12 @@ from tqdm import tqdm
 
 def get_transforms(args):
     return transforms.Compose([
-        transforms.Resize(args.input_size, interpolation=Image.BICUBIC),
+        transforms.Resize((args.input_size, args.input_size), interpolation=Image.BICUBIC),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ]), transforms.Compose([
-        transforms.Resize(args.input_size, interpolation=Image.BICUBIC),
+        transforms.Resize((args.input_size, args.input_size), interpolation=Image.BICUBIC),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ])
@@ -44,7 +44,7 @@ def parse_args():
 
 
 def fit(train_loader, test_loader, model, criterion, optimizer, scheduler, n_epochs, cuda):
-    for epoch in range(1, n_epochs + 1):
+    for epoch in tqdm(range(1, n_epochs + 1), total=n_epochs, file=sys.stdout, desc='Training'):
         scheduler.step()
 
         train_loss = train_epoch(train_loader, model, criterion, optimizer, cuda)
@@ -59,7 +59,7 @@ def train_epoch(train_loader, model, criterion, optimizer, cuda):
     model.train()
 
     losses = []
-    for batch_idx, data in tqdm(enumerate(train_loader), total=len(train_loader), desc='Training', file=sys.stdout):
+    for batch_idx, data in tqdm(enumerate(train_loader), total=len(train_loader), desc='Epoch', file=sys.stdout):
         samples, targets = data
         if cuda:
             samples = samples.cuda()
@@ -130,7 +130,7 @@ def predict(train_loader, predict_loader, model, cuda):
     return predicted
 
 
-def main():
+"""def main():
     args = parse_args()
     print(vars(args))
 
@@ -186,4 +186,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main()"""

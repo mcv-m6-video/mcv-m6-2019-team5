@@ -1,16 +1,18 @@
 import argparse
-import os
 
 import torch
+from PIL import ImageFile
 from torch import cuda
 from torch.optim import Adam
 from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader
 
+from nn import get_transforms, fit
 from nn.dataloader import Dataset, BalancedBatchSampler
 from nn.loss import OnlineTripletLoss
-from nn import get_transforms, fit
 from nn.network import EmbeddingNet
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def parse_args():

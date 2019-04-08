@@ -7,6 +7,16 @@
 #SBATCH --gres gpu:1
 #SBATCH --chdir /home/grupo06/.mcv-m6-2019-team5
 #SBATCH --output ../logs/%x_%j.out
+#SBATCH --array 1-3
 
-source ../venv/bin/activate
-python src/train_siamese datasets/siamese_crops/S03_out
+source venv/bin/activate
+
+if [[ $SLURM_ARRAY_TASK_ID -eq 1 ]]; then
+    PATH = datasets/siamese_crops/S01_out
+elif [[ $SLURM_ARRAY_TASK_ID -eq 2 ]]; then
+    PATH = datasets/siamese_crops/S03_out
+elif [[ $SLURM_ARRAY_TASK_ID -eq 3 ]]; then
+    PATH = datasets/siamese_crops/S04_out
+fi
+
+python src/train_siamese $PATH

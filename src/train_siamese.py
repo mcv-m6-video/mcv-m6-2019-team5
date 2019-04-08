@@ -19,7 +19,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('dataset_dir', type=str)
     parser.add_argument('--min-images', type=int, default=10)
-    parser.add_argument('--epochs', type=int, default=20)
+    parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--input-size', type=int, default=224)
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--dims', type=int, default=32)

@@ -1,5 +1,5 @@
 from functional import seq
-from model import Frame
+from model import Frame, Sequence
 from tracking import Sort, associate_detections_to_trackers
 import numpy as np
 import cv2

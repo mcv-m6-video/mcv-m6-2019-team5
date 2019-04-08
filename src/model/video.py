@@ -12,13 +12,13 @@ class Video():
     def get_frames(self):
         video = cv2.VideoCapture(os.path.join(self.video_path, "vdo.avi"))
         full_detections = read_detections(os.path.join(self.video_path, "det/det_yolo3.txt"))
-        full_GT = read_detections(os.path.join(self.video_path, "gt/gt.txt"))
+        full_ground_truth = read_detections(os.path.join(self.video_path, "gt/gt.txt"))
 
         count = 0
         while video.isOpened():
             ret, frame = video.read()
             if ret:
-                yield full_detections[count], full_GT[count], frame
+                yield full_detections[count], full_ground_truth[count], frame
                 count +=1
             else:
                 video.release()

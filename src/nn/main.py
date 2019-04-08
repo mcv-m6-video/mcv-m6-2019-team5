@@ -44,7 +44,7 @@ def parse_args():
 
 
 def fit(train_loader, test_loader, model, criterion, optimizer, scheduler, n_epochs, cuda):
-    for epoch in tqdm(range(1, n_epochs + 1), total=n_epochs, file=sys.stdout, desc='Training'):
+    for epoch in range(1, n_epochs + 1):
         scheduler.step()
 
         train_loss = train_epoch(train_loader, model, criterion, optimizer, cuda)
@@ -59,7 +59,7 @@ def train_epoch(train_loader, model, criterion, optimizer, cuda):
     model.train()
 
     losses = []
-    for batch_idx, data in tqdm(enumerate(train_loader), total=len(train_loader), desc='Epoch', file=sys.stdout):
+    for batch_idx, data in tqdm(enumerate(train_loader), total=len(train_loader), desc='Training', file=sys.stdout):
         samples, targets = data
         if cuda:
             samples = samples.cuda()

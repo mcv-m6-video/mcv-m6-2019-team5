@@ -48,7 +48,6 @@ class Frame:
         for det in self.detections:
             if seq(out).find(lambda p: p[0] == det) is None:
                 out.append((det, None))
-
         return out
 
 

@@ -1,2 +1,6 @@
+import numpy as np
+
+
 class SiameseDB:
-    pass
+    def __init__(self, dimensions: int):
+        self.db = np.empty((0, dimensions))

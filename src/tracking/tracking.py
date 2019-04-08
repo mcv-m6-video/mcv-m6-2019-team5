@@ -1,10 +1,10 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
 from functional import seq
 from matplotlib import patches
 
-from model import Frame, Sequence
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
+from model import Frame
 from tracking import Sort, associate_detections_to_trackers
 
 
@@ -42,11 +42,3 @@ class KalmanTracking:
             plt.show()
             plt.close()
 
-
-def track_detections(debug: bool = False):
-
-    kalman = KalmanTracking()
-    for video in Sequence("../datasets/AICity_data/train/S03").get_videos():
-        for frame in video.get_frames():
-            kalman(frame, debug)
-            print(seq(frame.detections).map(lambda d: d.id).to_list())

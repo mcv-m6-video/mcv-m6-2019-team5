@@ -114,3 +114,4 @@ build
 *.tmp
 logs
 pyflow
+**/siamese_crops

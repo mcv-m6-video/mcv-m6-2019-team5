@@ -32,7 +32,7 @@ def main():
 
     train_transform, test_transform = get_transforms(args)
 
-    train_set = Dataset(os.path.join(args.dataset_dir, 'train'), train_transform, min_images=args.min_images)
+    train_set = Dataset(args.dataset_dir, train_transform, min_images=args.min_images)
     train_batch_sampler = BalancedBatchSampler(train_set.targets, n_classes=10, n_samples=10)
     train_loader = DataLoader(train_set, batch_sampler=train_batch_sampler, num_workers=4)
     print(train_set)

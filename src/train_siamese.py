@@ -1,6 +1,7 @@
 import argparse
 import os
 
+import torch
 from torch import cuda
 from torch.optim import Adam
 from torch.optim.lr_scheduler import StepLR
@@ -46,6 +47,8 @@ def main():
     scheduler = StepLR(optimizer, 8, gamma=0.1, last_epoch=-1)
 
     fit(train_loader, None, model, criterion, optimizer, scheduler, args.epochs, cuda)
+
+    torch.save(model.state_dict(), '../weights/siamese_w6.pth')
 
 
 if __name__ == '__main__':

@@ -6,10 +6,11 @@ from model import Detection
 
 class Frame:
 
-    def __init__(self, id: int):
+    def __init__(self, id: int, detections: List, ground_truth: List, image: np.ndarray):
         self.id = id
-        self.detections = []
-        self.ground_truth = []
+        self.detections = detections
+        self.ground_truth = ground_truth
+        self.image = image
         self.cached_result = None
 
     def get_detection_iou(self, ignore_classes=False) -> List[float]:

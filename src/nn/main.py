@@ -5,10 +5,10 @@ import sys
 import numpy as np
 import torch
 from PIL import Image
-from dataloader import Dataset, BalancedBatchSampler
-from loss import OnlineTripletLoss
+from .dataloader import Dataset, BalancedBatchSampler
+from .loss import OnlineTripletLoss
 from matplotlib import pyplot as plt
-from network import EmbeddingNet
+from .network import EmbeddingNet
 from sklearn import metrics
 from sklearn.manifold import TSNE
 from sklearn.neighbors import KNeighborsClassifier, NearestNeighbors

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --job-name m6_siamese
+#SBATCH --array=1-3
 #SBATCH --cpus-per-task 4
 #SBATCH --mem 32G
 #SBATCH --qos masterlow
@@ -7,7 +8,6 @@
 #SBATCH --gres gpu:1
 #SBATCH --chdir /home/grupo06/.mcv-m6-2019-team5
 #SBATCH --output ../logs/%x_%j.out
-#SBATCH --array 1-3
 
 source venv/bin/activate
 
@@ -17,6 +17,9 @@ elif [[ $SLURM_ARRAY_TASK_ID -eq 2 ]]; then
     PATH = datasets/siamese_crops/S03_out
 elif [[ $SLURM_ARRAY_TASK_ID -eq 3 ]]; then
     PATH = datasets/siamese_crops/S04_out
+else
+   echo "Invalid SLURM_ARRAY_TASK_ID"
+   exit 1
 fi
 
 python src/train_siamese $PATH

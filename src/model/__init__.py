@@ -1,3 +1,4 @@
 from .rectangle import Rectangle
 from .detection import Detection
-from .video import Video
+from .frame import Frame
+from .sequence import Sequence

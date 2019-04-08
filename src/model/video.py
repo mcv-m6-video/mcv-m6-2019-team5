@@ -18,7 +18,7 @@ class Video():
         while video.isOpened():
             ret, frame = video.read()
             if ret:
-                yield full_detections[count], frame,
+                yield full_detections[count], full_GT[count], frame
                 count +=1
             else:
                 video.release()

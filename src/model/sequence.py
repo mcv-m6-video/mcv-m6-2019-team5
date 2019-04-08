@@ -14,7 +14,7 @@ class Sequence():
     def get_videos(self) -> Iterator[Video]:
         parent_dir = os.listdir(self.sequence_path)
         for video_path in parent_dir:
-            yield Video(os.path.join(parent_dir, video_path))
+            yield Video(video_path)
 
     def __repr__(self):
         return self.__str__()

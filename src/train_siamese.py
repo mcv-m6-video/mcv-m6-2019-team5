@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import torch
 from PIL import ImageFile
@@ -50,7 +51,7 @@ def main():
 
     fit(train_loader, None, model, criterion, optimizer, scheduler, args.epochs, cuda)
 
-    torch.save(model.state_dict(), '../weights/siamese_w6.pth')
+    torch.save(model.state_dict(), '../weights/siamese_w6_{}.pth'.format(os.path.basename(args.dataset_dir)))
 
 
 if __name__ == '__main__':

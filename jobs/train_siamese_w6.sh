@@ -10,7 +10,6 @@
 #SBATCH --output ../logs/%x_%A_%a.out
 
 source venv/bin/activate
-echo $SLURM_ARRAY_TASK_ID
 
 if [[ $SLURM_ARRAY_TASK_ID -eq 1 ]]; then
     DATASET_PATH=datasets/siamese_crops/S01_out
@@ -23,4 +22,5 @@ else
    exit 1
 fi
 
+echo ${DATASET_PATH}
 python src/train_siamese.py ${DATASET_PATH}

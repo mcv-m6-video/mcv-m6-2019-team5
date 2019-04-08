@@ -19,7 +19,8 @@ class Detection(Rectangle):
         return self.__str__()
 
     def __str__(self):
-        return 'Detection(id={0}, label={1}, confidence=(2), rectangle={3})'.format(self.id, self.label, self.confidence, super().__str__())
+        return 'Detection(id={0}, label={1}, confidence=(2), rectangle={3})'.format(self.id, self.label,
+                                                                                    self.confidence, super().__str__())
 
     def to_sort_format(self) -> Tuple[int, int, int, int]:
         return self.top_left + self.get_bottom_right()

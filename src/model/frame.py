@@ -1,15 +1,15 @@
-from typing import List, Tuple
+from typing import List
+
 import numpy as np
-from functional import seq
-from model import Detection
 
 
 class Frame:
 
-    def __init__(self, id: int):
+    def __init__(self, id: int, detections: List, ground_truth: List, image: np.ndarray):
         self.id = id
-        self.detections = []
-        self.ground_truth = []
+        self.detections = detections
+        self.ground_truth = ground_truth
+        self.image = image
         self.cached_result = None
 
     def get_detection_iou(self, ignore_classes=False) -> List[float]:
@@ -30,24 +30,3 @@ class Frame:
             return float(np.mean(iou_list))
         else:
             return 0
-
-    def get_detection_gt_pairs(self, ignore_classes=False) -> List[Tuple[Detection, Detection]]:
-        out = []
-        for ground_truth in self.ground_truth:
-            found = False
-            for detection in self.detections:
-                if detection.iou(ground_truth) > 0.5 and (ignore_classes or detection.label == ground_truth.label):
-                    out.append((detection, ground_truth))
-                    found = True
-                    break
-
-            if not found:
-                out.append((None, ground_truth))
-
-        for det in self.detections:
-            if seq(out).find(lambda p: p[0] == det) is None:
-                out.append((det, None))
-
-        return out
-
-

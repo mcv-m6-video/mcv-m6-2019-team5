@@ -4,7 +4,7 @@ from collections import Iterator
 from model import Video
 
 
-class Sequence():
+class Sequence:
 
     def __init__(self, sequence_path: str):
         self.sequence_path = sequence_path
@@ -16,9 +16,3 @@ class Sequence():
 
     def __repr__(self):
         return self.__str__()
-
-    def __len__(self):
-        return len(self.files)
-
-    def __str__(self):
-        return 'Video(path={})'.format(self.video_path)

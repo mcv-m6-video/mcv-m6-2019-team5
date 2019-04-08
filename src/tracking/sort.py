@@ -119,11 +119,11 @@ class KalmanBoxTracker(object):
         """
         Advances the state vector and returns the predicted bounding box estimate.
         """
-        if ((self.kf.x[6] + self.kf.x[2]) <= 0):
+        if (self.kf.x[6] + self.kf.x[2]) <= 0:
             self.kf.x[6] *= 0.0
         self.kf.predict()
         self.age += 1
-        if (self.time_since_update > 0):
+        if self.time_since_update > 0:
             self.hit_streak = 0
         self.time_since_update += 1
         self.history.append(convert_x_to_bbox(self.kf.x))
@@ -141,7 +141,7 @@ def associate_detections_to_trackers(detections, trackers, iou_threshold=0.3):
     Assigns detections to tracked object (both represented as bounding boxes)
     Returns 3 lists of matches, unmatched_detections and unmatched_trackers
     """
-    if (len(trackers) == 0):
+    if len(trackers) == 0:
         return np.empty((0, 2), dtype=int), np.arange(len(detections)), np.empty((0, 5), dtype=int)
     iou_matrix = np.zeros((len(detections), len(trackers)), dtype=np.float32)
 
@@ -152,22 +152,22 @@ def associate_detections_to_trackers(detections, trackers, iou_threshold=0.3):
 
     unmatched_detections = []
     for d, det in enumerate(detections):
-        if (d not in matched_indices[:, 0]):
+        if d not in matched_indices[:, 0]:
             unmatched_detections.append(d)
     unmatched_trackers = []
     for t, trk in enumerate(trackers):
-        if (t not in matched_indices[:, 1]):
+        if t not in matched_indices[:, 1]:
             unmatched_trackers.append(t)
 
     # filter out matched with low IOU
     matches = []
     for m in matched_indices:
-        if (iou_matrix[m[0], m[1]] < iou_threshold):
+        if iou_matrix[m[0], m[1]] < iou_threshold:
             unmatched_detections.append(m[0])
             unmatched_trackers.append(m[1])
         else:
             matches.append(m.reshape(1, 2))
-    if (len(matches) == 0):
+    if len(matches) == 0:
         matches = np.empty((0, 2), dtype=int)
     else:
         matches = np.concatenate(matches, axis=0)
@@ -201,7 +201,7 @@ class Sort(object):
         for t, trk in enumerate(trks):
             pos = self.trackers[t].predict()[0]
             trk[:] = [pos[0], pos[1], pos[2], pos[3], 0]
-            if (np.any(np.isnan(pos))):
+            if np.any(np.isnan(pos)):
                 to_del.append(t)
         trks = np.ma.compress_rows(np.ma.masked_invalid(trks))
         for t in reversed(to_del):
@@ -210,7 +210,7 @@ class Sort(object):
 
         # update matched trackers with assigned detections
         for t, trk in enumerate(self.trackers):
-            if (t not in unmatched_trks):
+            if t not in unmatched_trks:
                 d = matched[np.where(matched[:, 1] == t)[0], 0]
                 trk.update(dets[d, :][0])
 
@@ -221,13 +221,13 @@ class Sort(object):
         i = len(self.trackers)
         for trk in reversed(self.trackers):
             d = trk.get_state()[0]
-            if ((trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits)):
+            if (trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits):
                 ret.append(np.concatenate((d, [trk.id + 1])).reshape(1, -1))  # +1 as MOT benchmark requires positive
             i -= 1
             # remove dead tracklet
-            if (trk.time_since_update > self.max_age):
+            if trk.time_since_update > self.max_age:
                 self.trackers.pop(i)
-        if (len(ret) > 0):
+        if len(ret) > 0:
             return np.concatenate(ret)
         return np.empty((0, 5))
 
@@ -251,7 +251,7 @@ if __name__ == '__main__':
     total_time = 0.0
     total_frames = 0
     colours = np.random.rand(32, 3)  # used only for display
-    if (display):
+    if display:
         if not os.path.exists('mot_benchmark'):
             print(
                 '\n\tERROR: mot_benchmark link not found!\n\n    Create a symbolic link to the MOT benchmark\n    (https://motchallenge.net/data/2D_MOT_2015/#download). E.g.:\n\n    $ ln -s /path/to/MOT2015_challenge/2DMOT2015 mot_benchmark\n\n')
@@ -264,16 +264,16 @@ if __name__ == '__main__':
 
     for seq in sequences:
         mot_tracker = Sort()  # create instance of the SORT tracker
-        seq_dets = np.loadtxt('data/%s/det.txt' % (seq), delimiter=',')  # load detections
-        with open('output/%s.txt' % (seq), 'w') as out_file:
-            print("Processing %s." % (seq))
+        seq_dets = np.loadtxt('data/%s/det.txt' % seq, delimiter=',')  # load detections
+        with open('output/%s.txt' % seq, 'w') as out_file:
+            print("Processing %s." % seq)
             for frame in range(int(seq_dets[:, 0].max())):
                 frame += 1  # detection and frame numbers begin at 1
                 dets = seq_dets[seq_dets[:, 0] == frame, 2:7]
                 dets[:, 2:4] += dets[:, 0:2]  # convert to [x1,y1,w,h] to [x1,y1,x2,y2]
                 total_frames += 1
 
-                if (display):
+                if display:
                     ax1 = fig.add_subplot(111, aspect='equal')
                     fn = 'mot_benchmark/%s/%s/img1/%06d.jpg' % (phase, seq, frame)
                     im = io.imread(fn)
@@ -288,18 +288,17 @@ if __name__ == '__main__':
                 for d in trackers:
                     print('%d,%d,%.2f,%.2f,%.2f,%.2f,1,-1,-1,-1' % (frame, d[4], d[0], d[1], d[2] - d[0], d[3] - d[1]),
                           file=out_file)
-                    if (display):
+                    if display:
                         d = d.astype(np.int32)
                         ax1.add_patch(patches.Rectangle((d[0], d[1]), d[2] - d[0], d[3] - d[1], fill=False, lw=3,
                                                         ec=colours[d[4] % 32, :]))
                         ax1.set_adjustable('box-forced')
 
-                if (display):
+                if display:
                     fig.canvas.flush_events()
                     plt.draw()
                     ax1.cla()
 
     print("Total Tracking took: %.3f for %d frames or %.1f FPS" % (total_time, total_frames, total_frames / total_time))
-    if (display):
+    if display:
         print("Note: to get real runtime results run without the option: --display")
-

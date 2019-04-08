@@ -7,9 +7,10 @@
 #SBATCH --partition mhigh,mlow
 #SBATCH --gres gpu:1
 #SBATCH --chdir /home/grupo06/.mcv-m6-2019-team5
-#SBATCH --output ../logs/%x_%j.out
+#SBATCH --output ../logs/%x_%j_%a.out
 
 source venv/bin/activate
+echo $SLURM_ARRAY_TASK_ID
 
 if [[ $SLURM_ARRAY_TASK_ID -eq 1 ]]; then
     PATH=datasets/siamese_crops/S01_out

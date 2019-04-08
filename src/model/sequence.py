@@ -1,8 +1,6 @@
 import os
 from collections import Iterator
 
-from functional import seq
-
 from model import Video
 
 

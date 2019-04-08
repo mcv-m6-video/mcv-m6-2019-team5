@@ -13,14 +13,14 @@ source venv/bin/activate
 echo $SLURM_ARRAY_TASK_ID
 
 if [[ $SLURM_ARRAY_TASK_ID -eq 1 ]]; then
-    PATH=datasets/siamese_crops/S01_out
+    DATASET_PATH=datasets/siamese_crops/S01_out
 elif [[ $SLURM_ARRAY_TASK_ID -eq 2 ]]; then
-    PATH=datasets/siamese_crops/S03_out
+    DATASET_PATH=datasets/siamese_crops/S03_out
 elif [[ $SLURM_ARRAY_TASK_ID -eq 3 ]]; then
-    PATH=datasets/siamese_crops/S04_out
+    DATASET_PATH=datasets/siamese_crops/S04_out
 else
    echo "Invalid SLURM_ARRAY_TASK_ID"
    exit 1
 fi
 
-python src/train_siamese $PATH
+python src/train_siamese ${DATASET_PATH}

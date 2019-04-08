@@ -23,4 +23,4 @@ else
    exit 1
 fi
 
-python src/train_siamese ${DATASET_PATH}
+python src/train_siamese.py ${DATASET_PATH}

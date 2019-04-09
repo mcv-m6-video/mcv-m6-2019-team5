@@ -3,7 +3,7 @@ import configparser
 
 from functional import seq
 
-from model import Sequence
+from model import Sequence, SiameseDB
 from tracking import KalmanTracking
 
 
@@ -16,14 +16,16 @@ def main():
 
     config = configparser.ConfigParser()
     config.read('configuration/config.ini')
-
+    siamese = SiameseDB(config.get(args.sequence, 'dimensions'), config.get(args.sequence, 'weights_path'))
     if args.tracking_method is 'kalman':
         kalman = KalmanTracking()
     for video in Sequence(config.get(args.sequence, 'sequence_path')).get_videos():
         for frame in video.get_frames():
             if args.tracking_method is 'kalman':
                 kalman(frame, args.debug)
+            siamese.process_frame(frame)
             print(seq(frame.detections).map(lambda d: d.id).to_list())
+        siamese.update_db()
 
 
 if __name__ == '__main__':

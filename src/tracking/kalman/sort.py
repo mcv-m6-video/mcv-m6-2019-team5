@@ -16,7 +16,8 @@
 from __future__ import print_function
 import numpy as np
 
-from tracking import associate_detections_to_trackers, KalmanBoxTracker
+from .data_association import associate_detections_to_trackers
+from .kalman_tracking import KalmanBoxTracker
 
 
 class Sort(object):

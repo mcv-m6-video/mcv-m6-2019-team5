@@ -4,7 +4,7 @@ import numpy as np
 from functional import seq
 from matplotlib import patches
 
-from model import Frame
+from model import Frame, SiameseDB
 from tracking import Sort, associate_detections_to_trackers
 
 
@@ -13,7 +13,7 @@ class KalmanTracking:
     def __init__(self):
         self.mot_tracker = Sort()  # create instance of the SORT tracker
 
-    def __call__(self, frame: Frame, debug=False, *args):
+    def __call__(self, frame: Frame, siamese: SiameseDB, debug=False, *args):
 
         detections = seq(frame.detections).map(lambda d: d.to_sort_format()).to_list()
         detections = np.array(detections)
@@ -23,6 +23,10 @@ class KalmanTracking:
         for match in matched:
             frame.detections[match[0]].id = int(trackers[match[1], 4])
             # print(match[0], " . ", match[1], " . ", frame.detections[match[0]].top_left, " . ", trackers[match[1]])
+        for unmatched in unmatched_dets:
+            new_id = siamese.query(frame.image, frame.detections[unmatched[0]])
+            if new_id != -1:
+                frame.detections[unmatched[0]].id = new_id
 
         if debug:
             plt.figure()

@@ -64,11 +64,11 @@ def main():
     fit(train_loader, test_loader, model, criterion, optimizer, scheduler, args.epochs, cuda, writer=writer)
 
     train_embeddings, train_targets = extract_embeddings(train_loader, model, cuda)
-    writer.add_embedding(train_embeddings, label_img=train_targets, tag='Train embeddings')
+    writer.add_embedding(train_embeddings, label_img=torch.tensor(train_targets, dtype=torch.long), tag='Train embeddings')
 
     if test_loader is not None:
         test_embeddings, test_targets = extract_embeddings(test_loader, model, cuda)
-        writer.add_embedding(test_embeddings, label_img=test_targets, tag='Test embeddings')
+        writer.add_embedding(test_embeddings, label_img=torch.tensor(test_targets, dtype=torch.long), tag='Test embeddings')
 
     torch.save(model.state_dict(),
                '../weights/siamese_w6_{}_epochs_{}.pth'.format(os.path.basename(args.dataset_dir), args.epochs))

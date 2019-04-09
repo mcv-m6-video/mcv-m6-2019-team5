@@ -81,7 +81,6 @@ def test_epoch(test_loader, model, cuda):
 
     nbrs = NearestNeighbors(n_neighbors=2, n_jobs=4).fit(test_embeddings)
     dist, ind = nbrs.kneighbors(test_embeddings)
-    print(ind.shape)
     accuracy = metrics.accuracy_score(test_targets, test_targets[ind[:, 1]])
 
     return accuracy

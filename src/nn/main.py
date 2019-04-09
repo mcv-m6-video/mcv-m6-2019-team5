@@ -7,7 +7,7 @@ from PIL import Image
 from matplotlib import pyplot as plt
 from sklearn import metrics
 from sklearn.manifold import TSNE
-from sklearn.neighbors import KNeighborsClassifier, NearestNeighbors
+from sklearn.neighbors import NearestNeighbors
 from tensorboardX import SummaryWriter
 from torchvision.transforms import transforms
 from tqdm import tqdm
@@ -79,8 +79,8 @@ def train_epoch(train_loader, model, criterion, optimizer, cuda):
 def test_epoch(test_loader, model, cuda):
     test_embeddings, test_targets = extract_embeddings(test_loader, model, cuda)
 
-    knn = NearestNeighbors(n_neighbors=2, n_jobs=4).fit(test_embeddings, test_targets)
-    predicted = knn.predict(test_embeddings)
+    nbrs = NearestNeighbors(n_neighbors=2, n_jobs=4).fit(test_embeddings)
+    predicted = nbrs.kneighbors(test_embeddings)
     print(predicted.shape)
     accuracy = metrics.accuracy_score(test_targets, test_targets[predicted[:, 1]])
 

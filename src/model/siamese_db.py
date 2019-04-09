@@ -8,7 +8,7 @@ from nn.network import EmbeddingNet
 
 
 class SiameseDB:
-    def __init__(self, dimensions: int, weights_path):
+    def __init__(self, dimensions: int, weights_path: str):
         self.dimensions = dimensions
         self.classes = []
         self.db = np.empty((0, dimensions))

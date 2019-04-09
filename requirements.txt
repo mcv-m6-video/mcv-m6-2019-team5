@@ -21,3 +21,4 @@ seaborn
 cython
 vidstab[cv2]
 motmetrics
+tensorboardX

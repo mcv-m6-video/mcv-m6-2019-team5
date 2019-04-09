@@ -33,4 +33,4 @@ class OverlapTracking:
         for detection2 in self.prev_det:
             if detection.iou(detection2) > INTERSECTION_THRESHOLD:
                 detection.id = detection2.id
-                return
+                break

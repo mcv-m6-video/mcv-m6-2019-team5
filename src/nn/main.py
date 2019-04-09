@@ -48,10 +48,11 @@ def fit(train_loader, test_loader, model, criterion, optimizer, scheduler, n_epo
         print('Epoch: {}/{}, Average train loss: {:.4f}'.format(epoch, n_epochs, train_loss))
 
         if test_loader is not None:
-            accuracy = test_epoch(test_loader, model, cuda)
+            accuracy, accuracy2 = test_epoch(train_loader, test_loader, model, cuda)
             print('Epoch: {}/{}, Accuracy: {:.4f}'.format(epoch, n_epochs, accuracy))
             if writer is not None:
-                writer.add_scalar('val_acc', accuracy, global_step=epoch)
+                writer.add_scalar('nearest_neighbor_same_class_acc', accuracy, global_step=epoch)
+                writer.add_scalar('negative_classification_acc', accuracy2, global_step=epoch)
 
 
 def train_epoch(train_loader, model, criterion, optimizer, cuda):
@@ -76,14 +77,19 @@ def train_epoch(train_loader, model, criterion, optimizer, cuda):
     return np.mean(losses)
 
 
-def test_epoch(test_loader, model, cuda):
+def test_epoch(train_loader, test_loader, model, cuda):
+    train_embeddings, train_targets = extract_embeddings(train_loader, model, cuda)
     test_embeddings, test_targets = extract_embeddings(test_loader, model, cuda)
 
     nbrs = NearestNeighbors(n_neighbors=2, n_jobs=4).fit(test_embeddings)
     dist, ind = nbrs.kneighbors(test_embeddings)
     accuracy = metrics.accuracy_score(test_targets, test_targets[ind[:, 1]])
 
-    return accuracy
+    nbrs = NearestNeighbors(n_neighbors=1, n_jobs=4).fit(train_embeddings)
+    dist, ind = nbrs.kneighbors(test_embeddings)
+    accuracy2 = dist[dist[:, 0] > 1].size / dist.size
+
+    return accuracy, accuracy2
 
 
 def extract_embeddings(loader, model, cuda):

@@ -70,8 +70,10 @@ def main():
         test_embeddings, test_targets = extract_embeddings(test_loader, model, cuda)
         writer.add_embedding(test_embeddings, metadata=test_targets, tag='Test embeddings')
 
+    print('Saving model...')
     torch.save(model.state_dict(),
                '../weights/siamese_w6_{}_epochs_{}.pth'.format(os.path.basename(args.dataset_dir), args.epochs))
+    print('Finished')
 
 
 if __name__ == '__main__':

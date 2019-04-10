@@ -30,7 +30,7 @@ class SiameseDB:
         if len(frame.detections) == 0:
             return
 
-        cropped_images = []
+        cropped_images_list = []
         for detection in frame.detections:
             xtl, ytl = detection.top_left
             w = detection.width
@@ -38,15 +38,17 @@ class SiameseDB:
             self.temp_classes.append(detection.id)
             cropped_image = frame.image[ytl:ytl + h, xtl:xtl + w]
             cropped_image = self.test_transform(Image.fromarray(cropped_image))
-            cropped_images.append(cropped_image)
+            cropped_images_list.append(cropped_image)
+        cropped_images_tensor = torch.stack(tuple(cropped_images_list), 0)
         if cuda.is_available():
-            cropped_images = torch.cat(cropped_images, 0)
-            cropped_images = cropped_images.cuda()
-        embedding = self.model(cropped_images)
-        self.temp_db = np.vstack(self.temp_db, embedding)
+            cropped_images_tensor = cropped_images_tensor.cuda()
+
+        with torch.no_grad():
+            embedding = self.model(cropped_images_tensor)
+        self.temp_db = np.vstack((self.temp_db, embedding.cpu().numpy()))
 
     def update_db(self):
-        self.db = np.vstack(self.db, self.temp_db)
+        self.db = np.vstack((self.db, self.temp_db))
         self.classes.append(self.temp_classes)
         self.temp_db = np.empty((0, self.dimensions))
         self.temp_classes = []
@@ -57,14 +59,18 @@ class SiameseDB:
         h = detection.height
         cropped_image = image[ytl:ytl + h, xtl:xtl + w]
         cropped_image = self.test_transform(Image.fromarray(cropped_image))
+        cropped_image = torch.stack((cropped_image,), 0)
         if cuda.is_available():
-            cropped_image = torch.cat(cropped_image, 0)
             cropped_image = cropped_image.cuda()
-        embedding = self.model(cropped_image)
+
+        with torch.no_grad():
+            embedding = self.model(cropped_image)
 
         return self._get_class(embedding)
 
     def _get_class(self, embedding, k: int = 1) -> int:
+        if self.db.shape[0] == 0:
+            return -1
         embedding = embedding.cpu().numpy()
         neighbors = NearestNeighbors(n_neighbors=k, algorithm='ball_tree').fit(self.db)
         distances, indices = neighbors.kneighbors(embedding)

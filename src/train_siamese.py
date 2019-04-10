@@ -32,14 +32,15 @@ def parse_args():
 
 def main():
     args = parse_args()
+    identification = 'siamese_w6_{}_epochs_{}_dims_{}_{}'.format(os.path.basename(args.dataset_dir), args.epochs,
+                                                                 args.dims, time.time())
     writer = SummaryWriter(
-        log_dir='../runs/siamese_w6_{}_epochs_{}_dims_{}_{}'.format(os.path.basename(args.dataset_dir), args.epochs,
-                                                                    args.dims, time.time()))
+        log_dir='../runs/{}'.format(identification))
 
     if cuda.is_available():
         print('Device: {}'.format(cuda.get_device_name(0)))
 
-    train_transform, test_transform = get_transforms(args)
+    train_transform, test_transform = get_transforms(args.input_size)
 
     train_set = Dataset(args.dataset_dir, train_transform, min_images=args.min_images)
     train_batch_sampler = BalancedBatchSampler(train_set.targets, n_classes=10, n_samples=10)
@@ -71,11 +72,8 @@ def main():
         writer.add_embedding(test_embeddings, metadata=test_targets, tag='Test embeddings')
 
     print('Saving model...')
-    torch.save(model.state_dict(),
-               '../weights/siamese_w6_{}_epochs_{}_dims_{}.pth'.format(os.path.basename(args.dataset_dir), args.epochs,
-                                                                       args.dims))
+    torch.save(model.state_dict(), '../weights/{}.pth'.format(identification))
     print('Finished')
 
-
-if __name__ == '__main__':
-    main()
+    if __name__ == '__main__':
+        main()

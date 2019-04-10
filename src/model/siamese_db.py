@@ -27,6 +27,9 @@ class SiameseDB:
         _, self.test_transform = get_transforms(dimensions)
 
     def process_frame(self, frame: Frame):
+        if len(frame.detections) == 0:
+            return
+
         cropped_images = []
         for detection in frame.detections:
             xtl, ytl = detection.top_left
@@ -68,6 +71,3 @@ class SiameseDB:
         if distances[0, 0] > THRESHOLD:
             return -1
         return self.classes[indices[0, 0]]
-
-
-

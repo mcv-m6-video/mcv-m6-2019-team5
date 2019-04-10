@@ -11,6 +11,7 @@ from sklearn.neighbors import NearestNeighbors
 from tensorboardX import SummaryWriter
 from torchvision.transforms import transforms
 from tqdm import tqdm
+from model.siamese_db import THRESHOLD
 
 
 def get_transforms(args):
@@ -87,7 +88,7 @@ def test_epoch(train_loader, test_loader, model, cuda):
 
     nbrs = NearestNeighbors(n_neighbors=1, n_jobs=4).fit(train_embeddings)
     dist, ind = nbrs.kneighbors(test_embeddings)
-    accuracy2 = dist[dist[:, 0] > 1].size / dist.size
+    accuracy2 = dist[dist > THRESHOLD].size / dist.size
 
     return accuracy, accuracy2
 

@@ -5,7 +5,7 @@
 #SBATCH --mem 32G
 #SBATCH --qos masterlow
 #SBATCH --partition mhigh,mlow
-#SBATCH --gres gpu:Pascal:1
+#SBATCH --gres gpu:1
 #SBATCH --chdir /home/grupo06/.mcv-m6-2019-team5
 #SBATCH --output ../logs/%x_%A_%a.out
 

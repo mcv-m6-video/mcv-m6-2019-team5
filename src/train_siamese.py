@@ -72,7 +72,8 @@ def main():
 
     print('Saving model...')
     torch.save(model.state_dict(),
-               '../weights/siamese_w6_{}_epochs_{}.pth'.format(os.path.basename(args.dataset_dir), args.epochs))
+               '../weights/siamese_w6_{}_epochs_{}_dims_{}.pth'.format(os.path.basename(args.dataset_dir), args.epochs,
+                                                                       args.dims))
     print('Finished')
 
 

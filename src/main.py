@@ -62,9 +62,6 @@ def main():
 
         i += 1
 
-        if i == 2:
-            break
-
     if args.tracking_type == 'multiple':
         idf1, idp, idr, precision, recall = mot.get_metrics()
         print('Metrics:', idf1, idp, idr, precision, recall)

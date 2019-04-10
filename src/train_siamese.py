@@ -75,5 +75,6 @@ def main():
     torch.save(model.state_dict(), '../weights/{}_{}.pth'.format(identification, time.time()))
     print('Finished')
 
-    if __name__ == '__main__':
-        main()
+
+if __name__ == '__main__':
+    main()

@@ -46,13 +46,15 @@ class OpticalFlowTracking:
 
         for detection in frame.detections:
             self._find_id(detection, det1_flow)
-            if siamese is not None:
-                if detection.id == -1:
+            if detection.id == -1:
+                if siamese is not None:
                     new_id = siamese.query(frame.image, detection)
                     if new_id != -1:
                         detection.id = new_id
                     else:
                         detection.id = IDGenerator.next()
+                else:
+                    detection.id = IDGenerator.next()
         self.prev_det = frame.detections
         self.prev_img = frame.image
 
@@ -65,7 +67,7 @@ class OpticalFlowTracking:
                                          linewidth=1, edgecolor='blue', facecolor='none')
                 plt.gca().add_patch(rect)
 
-                plt.text(det.top_left[0], det.top_left[1], s='{} ~ {}'.format(det.label, det.id),
+                plt.text(det.top_left[0] - 0, det.top_left[1] - 50, s='{}'.format(det.id),
                          color='white', verticalalignment='top',
                          bbox={'color': 'blue', 'pad': 0})
                 plt.gca().add_patch(rect)

@@ -31,19 +31,22 @@ class KalmanTracking:
                     frame.detections[unmatched].id = new_id
 
         if debug:
-            plt.figure()
-            plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
-            for d in frame.detections:
+            self.plot_tracking(frame)
 
-                if d is not None:
-                    text = '{}'.format(d.id)
-                    rect = patches.Rectangle((d.top_left[0], d.top_left[1]), d.width, d.height,
-                                             linewidth=1, edgecolor='blue', facecolor='none')
-                    plt.text(d.top_left[0], d.top_left[1], s=text,
-                             color='white', verticalalignment='top',
-                             bbox={'color': 'blue', 'pad': 0})
-                    plt.gca().add_patch(rect)
+    @staticmethod
+    def plot_tracking(frame: Frame):
+        plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        for det in frame.detections:
+            rect = patches.Rectangle((det.top_left[0], det.top_left[1]), det.width, det.height,
+                                     linewidth=1, edgecolor='blue', facecolor='none')
+            plt.gca().add_patch(rect)
 
-            plt.axis('off')
-            plt.show()
-            plt.close()
+            plt.text(det.top_left[0] - 0, det.top_left[1] - 50, s='{}'.format(det.id),
+                     color='white', verticalalignment='top',
+                     bbox={'color': 'blue', 'pad': 0})
+            plt.gca().add_patch(rect)
+        plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        plt.show()
+        plt.close()

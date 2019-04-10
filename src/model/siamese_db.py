@@ -5,6 +5,7 @@ from sklearn.neighbors import NearestNeighbors
 from model import Frame, Detection
 from nn import get_transforms
 from nn.network import EmbeddingNet
+from PIL import Image
 
 THRESHOLD = 1
 
@@ -32,9 +33,11 @@ class SiameseDB:
             w = detection.width
             h = detection.height
             self.temp_classes.append(detection.id)
-            cropped_images.append(frame.image[ytl:ytl + h, xtl:xtl + w])
-        cropped_images = self.test_transform(cropped_images)
+            cropped_image = frame.image[ytl:ytl + h, xtl:xtl + w]
+            cropped_image = self.test_transform(Image.fromarray(cropped_image))
+            cropped_images.append(cropped_image)
         if cuda.is_available():
+            cropped_images = torch.cat(cropped_images, 0)
             cropped_images = cropped_images.cuda()
         embedding = self.model(cropped_images)
         self.temp_db = np.vstack(self.temp_db, embedding)
@@ -50,8 +53,9 @@ class SiameseDB:
         w = detection.width
         h = detection.height
         cropped_image = image[ytl:ytl + h, xtl:xtl + w]
-        cropped_image = self.test_transform(cropped_image)
+        cropped_image = self.test_transform(Image.fromarray(cropped_image))
         if cuda.is_available():
+            cropped_image = torch.cat(cropped_image, 0)
             cropped_image = cropped_image.cuda()
         embedding = self.model(cropped_image)
 

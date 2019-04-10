@@ -13,14 +13,14 @@ from torchvision.transforms import transforms
 from tqdm import tqdm
 
 
-def get_transforms(args):
+def get_transforms(input_size):
     return transforms.Compose([
-        transforms.Resize((args.input_size, args.input_size), interpolation=Image.BICUBIC),
+        transforms.Resize((input_size, input_size), interpolation=Image.BICUBIC),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ]), transforms.Compose([
-        transforms.Resize((args.input_size, args.input_size), interpolation=Image.BICUBIC),
+        transforms.Resize((input_size, input_size), interpolation=Image.BICUBIC),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ])

@@ -21,8 +21,8 @@ def main():
     args = parser.parse_args()
 
     config = configparser.ConfigParser()
-    config.read('configuration/config.ini')
-    siamese = SiameseDB(config.get(args.sequence, 'dimensions'), config.get(args.sequence, 'weights_path'))
+    config.read('../config/config.ini')
+    siamese = SiameseDB(int(config.get(args.sequence, 'dimensions')), config.get(args.sequence, 'weights_path'))
     method = methods.get(args.tracking_method)
     for video in Sequence(config.get(args.sequence, 'sequence_path')).get_videos():
         for frame in video.get_frames():

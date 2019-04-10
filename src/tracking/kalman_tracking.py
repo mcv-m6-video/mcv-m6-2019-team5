@@ -31,8 +31,6 @@ class KalmanTracking:
                 new_id = siamese.query(frame.image, frame.detections[unmatched])
                 if new_id != -1:
                     frame.detections[unmatched].id = new_id
-            else:
-                frame.detections[unmatched].id = IDGenerator.next()
 
         if debug:
             self.plot_tracking_color(frame, plot_number)

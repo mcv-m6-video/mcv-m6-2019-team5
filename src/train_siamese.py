@@ -1,6 +1,6 @@
 import argparse
+import datetime
 import os
-import time
 
 import torch
 from PIL import ImageFile
@@ -33,7 +33,7 @@ def parse_args():
 def main():
     args = parse_args()
     identification = 'siamese_w6_{}_epochs_{}_dims_{}_{}'.format(os.path.basename(args.dataset_dir), args.epochs,
-                                                                 args.dims, time.time())
+                                                                 args.dims, datetime.datetime.now())
     writer = SummaryWriter(
         log_dir='../runs/{}'.format(identification))
 
@@ -72,7 +72,7 @@ def main():
         writer.add_embedding(test_embeddings, metadata=test_targets, tag='Test embeddings')
 
     print('Saving model...')
-    torch.save(model.state_dict(), '../weights/{}_{}.pth'.format(identification, time.time()))
+    torch.save(model.state_dict(), '../weights/{}_{}.pth'.format(identification, datetime.datetime.now()))
     print('Finished')
 
 

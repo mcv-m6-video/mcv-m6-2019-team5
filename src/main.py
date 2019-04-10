@@ -7,6 +7,7 @@ from tqdm import tqdm
 from metrics.mot import Mot
 from model import Sequence, SiameseDB
 from tracking import KalmanTracking, OverlapTracking, OpticalFlowTracking
+from tracking.remove_parked_cars import RemoveParkedCars
 
 methods = {
     'kalman': KalmanTracking(),
@@ -35,13 +36,17 @@ def main():
     mot = Mot()
 
     for video in Sequence(config.get(args.sequence, 'sequence_path')).get_videos():
+        remove_parked_cars = RemoveParkedCars()
+
         for frame in tqdm(video.get_frames(), file=sys.stdout, desc='Video {}'.format(video.get_name()),
                           total=len(video)):
             method(frame, siamese, args.debug)
             if 'multiple' in args.tracking_type:
                 siamese.process_frame(frame)
 
-            mot.update(frame.detections, frame.ground_truth)
+            mot_detections = remove_parked_cars(frame)
+
+            mot.update(mot_detections, frame.ground_truth)
             # print(seq(frame.detections).map(lambda d: d.id).to_list())
         if 'multiple' in args.tracking_type:
             siamese.update_db()

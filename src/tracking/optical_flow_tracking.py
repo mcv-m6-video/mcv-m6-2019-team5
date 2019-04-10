@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import patches
 
 from model import Frame, Detection, SiameseDB
-from utils import IDGenerator
+from utils import IDGenerator, show_optical_flow_arrows
 
 INTERSECTION_THRESHOLD = 0.5
 
@@ -30,6 +30,8 @@ class OpticalFlowTracking:
         det1_flow = []
         if self.prev_img is not None:
             flow = self._optical_flow(frame.image)
+            if debug:
+                show_optical_flow_arrows(frame.image, flow)
             for det in self.prev_det:
                 det_flow = flow[det.top_left[0]:det.top_left[0] + det.width,
                            det.top_left[1]:det.top_left[1] + det.height, :]
@@ -99,5 +101,6 @@ class OpticalFlowTracking:
         mask = np.zeros((self.prev_img.shape[0], self.prev_img.shape[1]), dtype=np.uint8)
         for det in self.prev_det:
             mask[det.top_left[0]:det.top_left[0] + det.width, det.top_left[1]:det.top_left[1] + det.height] = 255
+
         p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(self.prev_img, cv2.COLOR_BGR2GRAY), mask=mask, **self.feature_params)
         return p0

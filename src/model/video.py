@@ -24,7 +24,9 @@ class Video:
         while video.isOpened():
             ret, frame = video.read()
             if ret:
-                yield Frame(count, full_detections[count], full_ground_truth[count], frame)
+                det = full_detections[count] if count < len(full_detections) else []
+                gt = full_ground_truth[count] if count < len(full_ground_truth) else []
+                yield Frame(count, det, gt, frame)
                 count += 1
             else:
                 video.release()

@@ -32,6 +32,8 @@ class SiameseDB:
 
         cropped_images_list = []
         for detection in frame.detections:
+            if detection.id == -1:
+                continue
             xtl, ytl = detection.top_left
             w = detection.width
             h = detection.height

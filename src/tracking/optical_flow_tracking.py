@@ -34,11 +34,12 @@ class OpticalFlowTracking:
             if not debug:
                 show_optical_flow_arrows(frame.image, flow)
             for det in self.prev_det:
-                det_flow = flow[det.top_left[0]:det.top_left[0] + det.width,
-                           det.top_left[1]:det.top_left[1] + det.height, :]
-                accum_flow = np.mean(det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :], axis=0)
-                if np.isnan(accum_flow).any():
-                    accum_flow = (0, 0)
+                det_flow = flow[det.top_left[1]:det.top_left[1] + det.height,
+                           det.top_left[0]:det.top_left[0] + det.width, :]
+                accum_flow = (0, 0)
+                non_zero_values = det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :]
+                if non_zero_values.size() > 0:
+                    accum_flow = np.mean(non_zero_values, axis=0)
                 det1_flow.append(
                     Detection(det.id, det.label,
                               (int(det.top_left[0] + accum_flow[1]), int(det.top_left[1] + accum_flow[0])),

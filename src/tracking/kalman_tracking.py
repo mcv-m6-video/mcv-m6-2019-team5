@@ -6,7 +6,7 @@ from matplotlib import patches
 
 from model import Frame, SiameseDB
 from .kalman import Sort, associate_detections_to_trackers
-from utils import IDGenerator
+
 
 class KalmanTracking:
 
@@ -29,8 +29,6 @@ class KalmanTracking:
                 new_id = siamese.query(frame.image, frame.detections[unmatched])
                 if new_id != -1:
                     frame.detections[unmatched].id = new_id
-            else:
-                frame.detections[unmatched].id = IDGenerator.next()
 
         if debug:
             plt.figure()
@@ -49,4 +47,3 @@ class KalmanTracking:
             plt.axis('off')
             plt.show()
             plt.close()
-

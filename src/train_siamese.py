@@ -33,8 +33,8 @@ def parse_args():
 def main():
     args = parse_args()
     writer = SummaryWriter(
-        log_dir='../runs/siamese_w6_{}_epochs_{}_{}'.format(os.path.basename(args.dataset_dir), args.epochs,
-                                                            time.time()))
+        log_dir='../runs/siamese_w6_{}_epochs_{}_dims_{}_{}'.format(os.path.basename(args.dataset_dir), args.epochs,
+                                                                    args.dims, time.time()))
 
     if cuda.is_available():
         print('Device: {}'.format(cuda.get_device_name(0)))

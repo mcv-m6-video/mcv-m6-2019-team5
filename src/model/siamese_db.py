@@ -49,7 +49,7 @@ class SiameseDB:
 
     def update_db(self):
         self.db = np.vstack((self.db, self.temp_db))
-        self.classes.append(self.temp_classes)
+        self.classes += self.temp_classes
         self.temp_db = np.empty((0, self.dimensions))
         self.temp_classes = []
 

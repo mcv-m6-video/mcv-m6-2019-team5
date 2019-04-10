@@ -11,6 +11,7 @@ class Sequence:
 
     def get_videos(self) -> Iterable[Video]:
         parent_dir = os.listdir(self.sequence_path)
+        parent_dir.sort()
         for video_path in parent_dir:
             yield Video(os.path.join(self.sequence_path, video_path))
 

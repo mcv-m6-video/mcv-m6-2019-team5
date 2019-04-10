@@ -31,14 +31,14 @@ class OpticalFlowTracking:
         det1_flow = []
         if self.prev_img is not None:
             flow = self._optical_flow(frame.image)
-            if not debug:
+            if debug:
                 show_optical_flow_arrows(frame.image, flow)
             for det in self.prev_det:
                 det_flow = flow[det.top_left[1]:det.top_left[1] + det.height,
                            det.top_left[0]:det.top_left[0] + det.width, :]
                 accum_flow = (0, 0)
                 non_zero_values = det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :]
-                if non_zero_values.size() > 0:
+                if non_zero_values.size > 0:
                     accum_flow = np.mean(non_zero_values, axis=0)
                 det1_flow.append(
                     Detection(det.id, det.label,
@@ -106,7 +106,7 @@ class OpticalFlowTracking:
         mask = np.zeros((self.prev_img.shape[0], self.prev_img.shape[1]), dtype=np.uint8)
         for det in self.prev_det:
             mask[det.top_left[1]:det.top_left[1] + det.height, det.top_left[0]:det.top_left[0] + det.width] = 255
-        if not self.debug:
+        if self.debug:
             plt.imshow(mask)
             plt.show()
             plt.close()

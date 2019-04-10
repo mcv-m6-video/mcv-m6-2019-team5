@@ -7,7 +7,7 @@ sns.set()
 
 def main():
     nearest_neighbor_same_class_acc_s03_out = pd.read_csv(
-        '../datasets/siamese_train_data/run_siamese_w6_S03_out_epochs_100_1554855902.809297-tag-nearest_neighbor_same_class_acc.csv'
+        '../datasets/siamese_train_data/run_siamese_w6_S03_out_epochs_100_dims_32_1554919571.788267-tag-nearest_neighbor_same_class_acc.csv'
     )
     nearest_neighbor_same_class_acc_s03_out = nearest_neighbor_same_class_acc_s03_out.assign(Name='S03_out')
     negative_classification_acc_s03_out = pd.read_csv(
@@ -20,7 +20,7 @@ def main():
     train_loss_s03_out = train_loss_s03_out.assign(Name='S03_out')
 
     nearest_neighbor_same_class_acc_s01_out = pd.read_csv(
-        '../datasets/siamese_train_data/run_siamese_w6_S01_out_epochs_100_1554854160.5032706-tag-nearest_neighbor_same_class_acc.csv'
+        '../datasets/siamese_train_data/run_siamese_w6_S01_out_epochs_100_dims_32_1554919140.2864127-tag-nearest_neighbor_same_class_acc.csv'
     )
     nearest_neighbor_same_class_acc_s01_out = nearest_neighbor_same_class_acc_s01_out.assign(Name='S01_out')
     negative_classification_acc_s01_out = pd.read_csv(
@@ -33,7 +33,7 @@ def main():
     train_loss_s01_out = train_loss_s01_out.assign(Name='S01_out')
 
     nearest_neighbor_same_class_acc_s04_out = pd.read_csv(
-        '../datasets/siamese_train_data/run_siamese_w6_S04_out_epochs_100_1554855902.8494158-tag-nearest_neighbor_same_class_acc.csv'
+        '../datasets/siamese_train_data/run_siamese_w6_S04_out_epochs_100_dims_32_1554919140.1815646-tag-nearest_neighbor_same_class_acc.csv'
     )
     nearest_neighbor_same_class_acc_s04_out = nearest_neighbor_same_class_acc_s04_out.assign(Name='S04_out')
     negative_classification_acc_s04_out = pd.read_csv(
@@ -62,7 +62,6 @@ def main():
 
     sns.lineplot(x="Step", y="Train loss", hue='Name',
                  data=train_loss[train_loss.Step <= 25])
-    plt.title('Train loss')
     plt.show()
 
     sns.lineplot(x="Step", y="Value", hue='Name',

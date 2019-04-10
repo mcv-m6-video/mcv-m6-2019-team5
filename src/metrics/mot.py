@@ -22,10 +22,10 @@ class Mot:
 
         self.acc.update(gt_ids, detection_ids, distances_matrix)
 
-    def get_idf1(self):
+    def get_metrics(self):
         mh = mm.metrics.create()
-        idf1 = mh.compute(self.acc, metrics=['idf1'], name='acc')
-        return float(idf1.iloc[0])
+        m = mh.compute(self.acc, metrics=['idf1', 'idp', 'idr', 'precision', 'recall'], name='acc')
+        return m.iloc[0, 0], m.iloc[0, 1], m.iloc[0, 2], m.iloc[0, 3], m.iloc[0, 4]
 
     def get_events(self):
         return self.acc.mot_events

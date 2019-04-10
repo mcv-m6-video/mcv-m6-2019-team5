@@ -12,17 +12,25 @@ class KalmanTracking:
 
     def __init__(self):
         self.mot_tracker = Sort()  # create instance of the SORT tracker
+        self.max_id = 0
+        self.reid_dict = {}
 
     def __call__(self, frame: Frame, siamese: SiameseDB, debug=False):
-
         detections = seq(frame.detections).map(lambda d: d.to_sort_format()).to_list()
         detections = np.array(detections)
         trackers = self.mot_tracker.update(detections)
         matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(detections, trackers)
 
         for match in matched:
-            frame.detections[match[0]].id = int(trackers[match[1], 4])
-            # print(match[0], " . ", match[1], " . ", frame.detections[match[0]].top_left, " . ", trackers[match[1]])
+            det_id = int(trackers[match[1], 4])
+            if det_id > self.max_id:
+                new_id = siamese.query(frame.image, frame.detections[match[0]])
+                if new_id != -1:
+                    self.reid_dict[det_id] = new_id
+                self.max_id = det_id
+            if det_id in self.reid_dict:
+                det_id = self.reid_dict[det_id]
+            frame.detections[match[0]].id = det_id
 
         for unmatched in unmatched_dets:
             if siamese is not None:

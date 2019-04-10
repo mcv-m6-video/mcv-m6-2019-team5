@@ -2,6 +2,7 @@ import argparse
 import configparser
 import sys
 
+import numpy as np
 from tqdm import tqdm
 
 from metrics.mot import Mot
@@ -10,9 +11,9 @@ from tracking import KalmanTracking, OverlapTracking, OpticalFlowTracking
 from tracking.remove_parked_cars import RemoveParkedCars
 
 methods = {
-    'kalman': KalmanTracking(),
-    'overlap': OverlapTracking(),
-    'optical_flow': OpticalFlowTracking()
+    'kalman': KalmanTracking,
+    'overlap': OverlapTracking,
+    'optical_flow': OpticalFlowTracking
 }
 
 
@@ -31,33 +32,46 @@ def main():
     siamese = None
     if 'multiple' in args.tracking_type:
         siamese = SiameseDB(int(config.get(args.sequence, 'dimensions')), config.get(args.sequence, 'weights_path'))
-    method = methods.get(args.tracking_method)
 
     mot = Mot()
+    i = 0
+
+    idf1_list = []
 
     for video in Sequence(config.get(args.sequence, 'sequence_path')).get_videos():
         remove_parked_cars = RemoveParkedCars()
+        method = methods.get(args.tracking_method)()
 
         for frame in tqdm(video.get_frames(), file=sys.stdout, desc='Video {}'.format(video.get_name()),
                           total=len(video)):
             method(frame, siamese, args.debug)
-            if 'multiple' in args.tracking_type:
-                siamese.process_frame(frame)
-
             mot_detections = remove_parked_cars(frame)
+
+            if 'multiple' in args.tracking_type:
+                siamese.process_frame(frame, mot_detections)
 
             mot.update(mot_detections, frame.ground_truth)
             # print(seq(frame.detections).map(lambda d: d.id).to_list())
         if 'multiple' in args.tracking_type:
             siamese.update_db()
         elif 'single' in args.tracking_type:
-            idf1 = mot.get_idf1()
-            print('Video {} IDF1: {}'.format(video.get_name(), idf1))
+            idf1, idp, idr, precision, recall = mot.get_metrics()
+            idf1_list.append(idf1)
+            print('Video {}:'.format(video.get_name()), idf1, idp, idr, precision, recall)
             mot = Mot()
 
-    if 'multiple' in args.tracking_type:
-        idf1 = mot.get_idf1()
-        print('IDF1: {}'.format(idf1))
+        i += 1
+
+        if i == 2:
+            break
+
+    if args.tracking_type == 'multiple':
+        idf1, idp, idr, precision, recall = mot.get_metrics()
+        print('Metrics:', idf1, idp, idr, precision, recall)
+    elif args.tracking_type == 'single':
+        print('Mean idf1:', np.mean(idf1_list))
+
+    print(args.tracking_type, args.sequence, args.tracking_method)
 
 
 if __name__ == '__main__':

@@ -20,11 +20,12 @@ class OverlapTracking:
         for detection in frame.detections:
             self._find_id(detection)
             if detection.id == -1:
-                new_id = siamese.query(frame.image, detection)
-                if new_id != -1:
-                    detection.id = new_id
-                else:
-                    detection.id = IDGenerator.next()
+                if siamese is not None:
+                    new_id = siamese.query(frame.image, detection)
+                    if new_id != -1:
+                        detection.id = new_id
+                    else:
+                        detection.id = IDGenerator.next()
         self.prev_det = frame.detections
 
     def _find_id(self, detection: Detection) -> None:

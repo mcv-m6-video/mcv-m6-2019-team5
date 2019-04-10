@@ -23,10 +23,11 @@ class KalmanTracking:
         for match in matched:
             frame.detections[match[0]].id = int(trackers[match[1], 4])
             # print(match[0], " . ", match[1], " . ", frame.detections[match[0]].top_left, " . ", trackers[match[1]])
-        for unmatched in unmatched_dets:
-            new_id = siamese.query(frame.image, frame.detections[unmatched])
-            if new_id != -1:
-                frame.detections[unmatched].id = new_id
+        if siamese is not None:
+            for unmatched in unmatched_dets:
+                new_id = siamese.query(frame.image, frame.detections[unmatched])
+                if new_id != -1:
+                    frame.detections[unmatched].id = new_id
 
         if debug:
             plt.figure()

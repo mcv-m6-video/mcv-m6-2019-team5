@@ -4,6 +4,7 @@ import sys
 
 from tqdm import tqdm
 
+from metrics.mot import Mot
 from model import Sequence, SiameseDB
 from tracking import KalmanTracking, OverlapTracking, OpticalFlowTracking
 
@@ -26,13 +27,20 @@ def main():
     config.read('../config/config.ini')
     siamese = SiameseDB(int(config.get(args.sequence, 'dimensions')), config.get(args.sequence, 'weights_path'))
     method = methods.get(args.tracking_method)
+
+    mot = Mot()
+
     for video in Sequence(config.get(args.sequence, 'sequence_path')).get_videos():
         for frame in tqdm(video.get_frames(), file=sys.stdout, desc='Video {}'.format(video.get_name()),
                           total=len(video)):
             method(frame, siamese, args.debug)
             siamese.process_frame(frame)
+            mot.update(frame.detections, frame.ground_truth)
             # print(seq(frame.detections).map(lambda d: d.id).to_list())
         siamese.update_db()
+
+    idf1 = mot.get_idf1()
+    print('IDF1: {}'.format(idf1))
 
 
 if __name__ == '__main__':

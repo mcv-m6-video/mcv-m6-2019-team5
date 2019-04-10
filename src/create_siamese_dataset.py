@@ -1,4 +1,4 @@
-from utils import read_detections
+from utils import read_detections, generate_frames
 import cv2
 import os
 
@@ -33,14 +33,27 @@ def create_siamese_dataset(sequence, camera):
             code.interact(local=dict(globals(), **locals()))
 
 
+def get_frames_dataset(video_path, folder):
+    out = cv2.VideoCapture(folder + video_path)
+    generate_frames(out, 'frames')
+
+
 def main():
-    S01_paths = os.listdir('../datasets/AICity_data/train/S01')
-    S03_paths = os.listdir('../datasets/AICity_data/train/S03')
-    S04_paths = os.listdir('../datasets/AICity_data/train/S04')
+
+    generated_frames = True
+
+    dataset_folder = '../datasets/AICity_data/train/'
+    S01_paths = os.listdir(dataset_folder + 'S01')
+    S03_paths = os.listdir(dataset_folder + 'S03')
+    S04_paths = os.listdir(dataset_folder + 'S04')
     sequences_path = ['S01'] * len(S01_paths) + ['S03'] * len(S03_paths) + ['S04'] * len(S04_paths)
 
+    if not generated_frames:
+        for folder in zip(S01_paths + S03_paths + S04_paths):
+            get_frames_dataset(dataset_folder, folder)
+
     for path, sequence in zip(S01_paths + S03_paths + S04_paths, sequences_path):
-        create_siamese_dataset(sequence, path)
+            create_siamese_dataset(sequence, path)
 
 
 if __name__ == '__main__':

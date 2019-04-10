@@ -21,7 +21,7 @@ class Mot:
     def get_idf1(self):
         mh = mm.metrics.create()
         idf1 = mh.compute(self.acc, metrics=['idf1'], name='acc')
-        return idf1
+        return float(idf1.iloc[0])
 
     def get_events(self):
         return self.acc.mot_events

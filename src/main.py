@@ -28,7 +28,7 @@ def main():
     config = configparser.ConfigParser()
     config.read('../config/config.ini')
     siamese = None
-    if args.tracking_type is 'multiple':
+    if 'multiple' in args.tracking_type:
         siamese = SiameseDB(int(config.get(args.sequence, 'dimensions')), config.get(args.sequence, 'weights_path'))
     method = methods.get(args.tracking_method)
 
@@ -38,19 +38,19 @@ def main():
         for frame in tqdm(video.get_frames(), file=sys.stdout, desc='Video {}'.format(video.get_name()),
                           total=len(video)):
             method(frame, siamese, args.debug)
-            if args.tracking_type is 'multiple':
+            if 'multiple' in args.tracking_type:
                 siamese.process_frame(frame)
 
             mot.update(frame.detections, frame.ground_truth)
             # print(seq(frame.detections).map(lambda d: d.id).to_list())
-        if args.tracking_type is 'multiple':
+        if 'multiple' in args.tracking_type:
             siamese.update_db()
-        elif args.tracking_type is 'single':
+        elif 'single' in args.tracking_type:
             idf1 = mot.get_idf1()
             print('Video {} IDF1: {}'.format(video.get_name(), idf1))
             mot = Mot()
 
-    if args.tracking_type is 'multiple':
+    if 'multiple' in args.tracking_type:
         idf1 = mot.get_idf1()
         print('IDF1: {}'.format(idf1))
 

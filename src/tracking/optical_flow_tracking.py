@@ -27,10 +27,11 @@ class OpticalFlowTracking:
                               criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
     def __call__(self, frame: Frame, siamese: SiameseDB, debug=False) -> None:
+        self.debug = debug
         det1_flow = []
         if self.prev_img is not None:
             flow = self._optical_flow(frame.image)
-            if debug:
+            if not debug:
                 show_optical_flow_arrows(frame.image, flow)
             for det in self.prev_det:
                 det_flow = flow[det.top_left[0]:det.top_left[0] + det.width,
@@ -61,7 +62,7 @@ class OpticalFlowTracking:
 
             plt.subplot(1, 2, 1)
             for det in frame.detections:
-                rect = patches.Rectangle((det.top_left[1], det.top_left[0]), det.height, det.width,
+                rect = patches.Rectangle((det.top_left[0], det.top_left[1]), det.width, det.height,
                                          linewidth=1, edgecolor='blue', facecolor='none')
                 plt.gca().add_patch(rect)
 
@@ -100,7 +101,10 @@ class OpticalFlowTracking:
     def _get_features(self):
         mask = np.zeros((self.prev_img.shape[0], self.prev_img.shape[1]), dtype=np.uint8)
         for det in self.prev_det:
-            mask[det.top_left[0]:det.top_left[0] + det.width, det.top_left[1]:det.top_left[1] + det.height] = 255
-
+            mask[det.top_left[1]:det.top_left[1] + det.height, det.top_left[0]:det.top_left[0] + det.width] = 255
+        if not self.debug:
+            plt.imshow(mask)
+            plt.show()
+            plt.close()
         p0 = cv2.goodFeaturesToTrack(cv2.cvtColor(self.prev_img, cv2.COLOR_BGR2GRAY), mask=mask, **self.feature_params)
         return p0

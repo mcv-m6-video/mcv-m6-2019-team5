@@ -60,7 +60,6 @@ class OpticalFlowTracking:
             plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
             plt.axis('off')
 
-            plt.subplot(1, 2, 1)
             for det in frame.detections:
                 rect = patches.Rectangle((det.top_left[0], det.top_left[1]), det.width, det.height,
                                          linewidth=1, edgecolor='blue', facecolor='none')

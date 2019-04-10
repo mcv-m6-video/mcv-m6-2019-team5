@@ -114,5 +114,5 @@ build
 *.tmp
 logs
 pyflow
-
-datasets/AICity_data
+**/siamese_crops
+runs

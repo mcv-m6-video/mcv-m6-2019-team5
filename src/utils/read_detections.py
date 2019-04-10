@@ -10,7 +10,6 @@ def read_detections(path: str) -> List[List[Detection]]:
         for line in f.readlines():
             parts = line.split(',')
 
-            print(parts)
             frame_id = int(parts[0])
             while frame_id > len(frame_detections):
                 frame_detections.append([])

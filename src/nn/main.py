@@ -1,32 +1,26 @@
 import argparse
-import os
 import sys
 
 import numpy as np
 import torch
 from PIL import Image
-from dataloader import Dataset, BalancedBatchSampler
-from loss import OnlineTripletLoss
 from matplotlib import pyplot as plt
-from network import EmbeddingNet
 from sklearn import metrics
 from sklearn.manifold import TSNE
-from sklearn.neighbors import KNeighborsClassifier, NearestNeighbors
-from torch.optim import Adam
-from torch.optim.lr_scheduler import StepLR
-from torch.utils.data import DataLoader
+from sklearn.neighbors import NearestNeighbors
+from tensorboardX import SummaryWriter
 from torchvision.transforms import transforms
 from tqdm import tqdm
 
 
-def get_transforms(args):
+def get_transforms(input_size):
     return transforms.Compose([
-        transforms.Resize(args.input_size, interpolation=Image.BICUBIC),
+        transforms.Resize((input_size, input_size), interpolation=Image.BICUBIC),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ]), transforms.Compose([
-        transforms.Resize(args.input_size, interpolation=Image.BICUBIC),
+        transforms.Resize((input_size, input_size), interpolation=Image.BICUBIC),
         transforms.ToTensor(),
         transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ])
@@ -43,16 +37,22 @@ def parse_args():
     return parser.parse_args()
 
 
-def fit(train_loader, test_loader, model, criterion, optimizer, scheduler, n_epochs, cuda):
+def fit(train_loader, test_loader, model, criterion, optimizer, scheduler, n_epochs, cuda,
+        writer: SummaryWriter = None):
     for epoch in range(1, n_epochs + 1):
         scheduler.step()
 
         train_loss = train_epoch(train_loader, model, criterion, optimizer, cuda)
+        if writer is not None:
+            writer.add_scalar('train_loss', train_loss, global_step=epoch)
         print('Epoch: {}/{}, Average train loss: {:.4f}'.format(epoch, n_epochs, train_loss))
 
         if test_loader is not None:
-            accuracy = test_epoch(train_loader, test_loader, model, cuda)
+            accuracy, accuracy2 = test_epoch(train_loader, test_loader, model, cuda)
             print('Epoch: {}/{}, Accuracy: {:.4f}'.format(epoch, n_epochs, accuracy))
+            if writer is not None:
+                writer.add_scalar('nearest_neighbor_same_class_acc', accuracy, global_step=epoch)
+                writer.add_scalar('negative_classification_acc', accuracy2, global_step=epoch)
 
 
 def train_epoch(train_loader, model, criterion, optimizer, cuda):
@@ -81,11 +81,15 @@ def test_epoch(train_loader, test_loader, model, cuda):
     train_embeddings, train_targets = extract_embeddings(train_loader, model, cuda)
     test_embeddings, test_targets = extract_embeddings(test_loader, model, cuda)
 
-    knn = KNeighborsClassifier(n_neighbors=5, n_jobs=4).fit(train_embeddings, train_targets)
-    predicted = knn.predict(test_embeddings)
-    accuracy = metrics.accuracy_score(test_targets, predicted)
+    nbrs = NearestNeighbors(n_neighbors=2, n_jobs=4).fit(test_embeddings)
+    dist, ind = nbrs.kneighbors(test_embeddings)
+    accuracy = metrics.accuracy_score(test_targets, test_targets[ind[:, 1]])
 
-    return accuracy
+    nbrs = NearestNeighbors(n_neighbors=1, n_jobs=4).fit(train_embeddings)
+    dist, ind = nbrs.kneighbors(test_embeddings)
+    accuracy2 = dist[dist > 1].size / dist.size
+
+    return accuracy, accuracy2
 
 
 def extract_embeddings(loader, model, cuda):
@@ -130,7 +134,7 @@ def predict(train_loader, predict_loader, model, cuda):
     return predicted
 
 
-def main():
+"""def main():
     args = parse_args()
     print(vars(args))
 
@@ -186,4 +190,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main()"""

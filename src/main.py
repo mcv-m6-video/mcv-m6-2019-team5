@@ -45,9 +45,14 @@ def main():
             # print(seq(frame.detections).map(lambda d: d.id).to_list())
         if args.tracking_type is 'multiple':
             siamese.update_db()
+        elif args.tracking_type is 'single':
+            idf1 = mot.get_idf1()
+            print('Video {} IDF1: {}'.format(video.get_name(), idf1))
+            mot = Mot()
 
-    idf1 = mot.get_idf1()
-    print('IDF1: {}'.format(idf1))
+    if args.tracking_type is 'multiple':
+        idf1 = mot.get_idf1()
+        print('IDF1: {}'.format(idf1))
 
 
 if __name__ == '__main__':

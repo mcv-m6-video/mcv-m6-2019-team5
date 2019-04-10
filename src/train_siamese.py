@@ -72,7 +72,7 @@ def main():
         writer.add_embedding(test_embeddings, metadata=test_targets, tag='Test embeddings')
 
     print('Saving model...')
-    torch.save(model.state_dict(), '../weights/{}.pth'.format(identification))
+    torch.save(model.state_dict(), '../weights/{}_{}.pth'.format(identification, time.time()))
     print('Finished')
 
     if __name__ == '__main__':

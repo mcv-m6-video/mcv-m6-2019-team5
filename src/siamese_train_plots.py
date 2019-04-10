@@ -62,14 +62,17 @@ def main():
 
     sns.lineplot(x="Step", y="Train loss", hue='Name',
                  data=train_loss[train_loss.Step <= 25])
+    plt.title('Train loss')
     plt.show()
 
     sns.lineplot(x="Step", y="Value", hue='Name',
                  data=nearest_neighbor_same_class_acc[nearest_neighbor_same_class_acc.Step < 50])
+    plt.title('Nearest neighbor has same class')
     plt.show()
 
     sns.lineplot(x="Step", y="Value", hue='Name',
                  data=negative_classification_acc[negative_classification_acc.Step < 50])
+    plt.title('Different class classified differently')
     plt.show()
 
 

@@ -33,7 +33,7 @@ class RemoveParkedCars:
                     continue
 
                 det_flow = flow[det.top_left[1]:det.top_left[1] + det.height,
-                                det.top_left[0]:det.top_left[0] + det.width, :]
+                           det.top_left[0]:det.top_left[0] + det.width, :]
                 mean_flow = (0, 0)
                 non_zero_values = det_flow[np.logical_or(det_flow[:, :, 0] != 0, det_flow[:, :, 1] != 0), :]
                 if non_zero_values.size > 0:
@@ -48,6 +48,8 @@ class RemoveParkedCars:
     def _optical_flow(self, image) -> np.ndarray:
         of = np.zeros((image.shape[0], image.shape[1], 2))
         p0 = self._get_features()
+        if p0.size == 0:
+            return of
         p1, st, err = cv2.calcOpticalFlowPyrLK(cv2.cvtColor(self.prev_frame.image, cv2.COLOR_BGR2GRAY),
                                                cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), p0, None, **self.lk_params)
         # Select good points

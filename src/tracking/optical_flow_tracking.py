@@ -3,7 +3,7 @@ from typing import List
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import patches
+from matplotlib import patches, colors
 
 from model import Frame, Detection, SiameseDB
 from utils import IDGenerator, show_optical_flow_arrows
@@ -25,8 +25,10 @@ class OpticalFlowTracking:
         # Parameters for lucas kanade optical flow
         self.lk_params = dict(winSize=(win_size, win_size), maxLevel=max_level,
                               criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
+        viridis = colors.ListedColormap(np.random.rand(256, 3))
+        self.new_color = viridis(np.linspace(0, 1, 256))
 
-    def __call__(self, frame: Frame, siamese: SiameseDB, debug=False) -> None:
+    def __call__(self, frame: Frame, siamese: SiameseDB, debug=False, plot_number=False) -> None:
         self.debug = debug
         det1_flow = []
         if self.prev_img is not None:
@@ -60,7 +62,7 @@ class OpticalFlowTracking:
         self.prev_img = frame.image
 
         if debug:
-            self.plot_tracking(frame)
+            self.plot_tracking_color(frame, plot_number)
 
     @staticmethod
     def plot_tracking(frame: Frame):
@@ -75,6 +77,26 @@ class OpticalFlowTracking:
                      color='white', verticalalignment='top',
                      bbox={'color': 'blue', 'pad': 0})
             plt.gca().add_patch(rect)
+        plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        plt.show()
+        plt.close()
+
+    def plot_tracking_color(self, frame: Frame, plot_number):
+        plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+
+        for det in frame.detections:
+            if det.id != -1:
+                rect = patches.Rectangle((det.top_left[0], det.top_left[1]), det.width, det.height,
+                                         linewidth=2, edgecolor=self.new_color[det.id, :], facecolor='none')
+                plt.gca().add_patch(rect)
+                if plot_number:
+                    plt.text(det.top_left[0] - 0, det.top_left[1] - 50, s='{}'.format(det.id),
+                             color='white', verticalalignment='top',
+                             bbox={'color': 'blue', 'pad': 0})
+
+                plt.gca().add_patch(rect)
         plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
         plt.axis('off')
         plt.show()

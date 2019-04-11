@@ -3,8 +3,8 @@ from typing import List
 from model import Detection
 
 
-def write_detections(det: List[List[Detection]]):
-    file = open("detections.txt", "w")
+def write_detections(path: str, det: List[List[Detection]]):
+    file = open(path, "w")
     frame_id = 0
     for det1 in det:
         frame_id += 1

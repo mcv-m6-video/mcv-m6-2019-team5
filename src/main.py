@@ -77,7 +77,7 @@ def main():
         elif args.tracking_type == 'single':
             print('Mean idf1:', np.mean(idf1_list))
     elif 'test' in args.sequence:
-        write_detections(test_det_list)
+        write_detections('../{}.txt'.format(args.sequence), test_det_list)
     print(args.tracking_type, args.sequence, args.tracking_method)
 
 

@@ -48,7 +48,7 @@ class RemoveParkedCars:
     def _optical_flow(self, image) -> np.ndarray:
         of = np.zeros((image.shape[0], image.shape[1], 2))
         p0 = self._get_features()
-        if p0.size == 0:
+        if p0 is None or p0.size == 0:
             return of
         p1, st, err = cv2.calcOpticalFlowPyrLK(cv2.cvtColor(self.prev_frame.image, cv2.COLOR_BGR2GRAY),
                                                cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), p0, None, **self.lk_params)

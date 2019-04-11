@@ -27,7 +27,7 @@ class KalmanTracking:
 
         for match in matched:
             det_id = int(trackers[match[1], 4])
-            if det_id > self.max_id:
+            if det_id > self.max_id and siamese is not None:
                 new_id = siamese.query(frame.image, frame.detections[match[0]])
                 if new_id != -1:
                     self.reid_dict[det_id] = new_id

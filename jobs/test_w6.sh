@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #SBATCH --job-name m6_siamese
-#SBATCH --array=0-6
+#SBATCH --array=0-5
 #SBATCH --cpus-per-task 4
 #SBATCH --mem 32G
 #SBATCH --qos masterlow

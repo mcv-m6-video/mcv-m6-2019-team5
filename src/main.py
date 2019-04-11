@@ -20,7 +20,7 @@ methods = {
 
 def main():
     parser = argparse.ArgumentParser(description='Week 5 M6')
-    parser.add_argument('tracking_type', type=str, choices=('single', 'multiple', 'test'), default='multiple',
+    parser.add_argument('tracking_type', type=str, choices=('single', 'multiple'), default='multiple',
                         nargs='?')
     parser.add_argument('sequence', type=str,
                         choices=('train_seq1', 'train_seq3', 'train_seq4', 'test_seq2', 'test_seq5'),

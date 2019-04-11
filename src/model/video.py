@@ -18,7 +18,10 @@ class Video:
     def get_frames(self) -> Iterable[Frame]:
         video = cv2.VideoCapture(os.path.join(self.video_path, "vdo.avi"))
         full_detections = read_detections(os.path.join(self.video_path, "det/det_yolo3.txt"))
-        full_ground_truth = read_detections(os.path.join(self.video_path, "gt/gt.txt"))
+        if os.path.exists(os.path.join(self.video_path, "gt/gt.txt")):
+            full_ground_truth = read_detections(os.path.join(self.video_path, "gt/gt.txt"))
+        else:
+            full_ground_truth = []
 
         count = 0
         while video.isOpened():

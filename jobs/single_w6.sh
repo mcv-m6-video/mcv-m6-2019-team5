@@ -11,25 +11,25 @@
 
 source venv/bin/activate
 
-if [[ ($SLURM_ARRAY_TASK_ID / 9) -eq 0 ]]; then
+if [[ $(($SLURM_ARRAY_TASK_ID / 9)) -eq 0 ]]; then
     TRACKING_TYPE=single
-elif [[ ($SLURM_ARRAY_TASK_ID / 9) -eq 1 ]]; then
+elif [[ $(($SLURM_ARRAY_TASK_ID / 9)) -eq 1 ]]; then
     TRACKING_TYPE=multiple
 fi
 
-if [[ ($SLURM_ARRAY_TASK_ID % 3) -eq 0 ]]; then
+if [[ $(($SLURM_ARRAY_TASK_ID % 3)) -eq 0 ]]; then
     SEQUENCE=train_seq1
-elif [[ ($SLURM_ARRAY_TASK_ID % 3)  -eq 1 ]]; then
+elif [[ $(($SLURM_ARRAY_TASK_ID % 3))  -eq 1 ]]; then
     SEQUENCE=train_seq3
-elif [[ ($SLURM_ARRAY_TASK_ID % 3)  -eq 2 ]]; then
+elif [[ $(($SLURM_ARRAY_TASK_ID % 3))  -eq 2 ]]; then
     SEQUENCE=train_seq4
 fi
 
-if [[ (($SLURM_ARRAY_TASK_ID / 3) % 3) -eq 0 ]]; then
+if [[ $(($SLURM_ARRAY_TASK_ID / 3 % 3)) -eq 0 ]]; then
     METHOD=kalman
-elif [[ (($SLURM_ARRAY_TASK_ID / 3) % 3)  -eq 1 ]]; then
+elif [[ $(($SLURM_ARRAY_TASK_ID / 3 % 3))  -eq 1 ]]; then
     METHOD=overlap
-elif [[ (($SLURM_ARRAY_TASK_ID / 3) % 3)  -eq 2 ]]; then
+elif [[ $(($SLURM_ARRAY_TASK_ID / 3 % 3))  -eq 2 ]]; then
     METHOD=optical_flow
 fi
 

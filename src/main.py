@@ -53,28 +53,6 @@ def main():
                           total=len(video)):
             method(frame, siamese, args.debug)
             mot_detections = remove_parked_cars(frame)
-            if frame.id > 300:
-                break
-
-            if frame.id == 250 or frame.id == 190 or frame.id == 200 or frame.id == 210 or frame.id == 220 or frame.id == 230:
-                viridis = colors.ListedColormap(np.random.rand(256, 3))
-                new_color = viridis(np.linspace(0, 1, 256))
-                plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
-                plt.axis('off')
-
-                for det in mot_detections:
-                    if det.id != -1:
-                        rect = patches.Rectangle((det.top_left[0], det.top_left[1]), det.width, det.height,
-                                                 linewidth=2, edgecolor=new_color[det.id, :], facecolor='none')
-                        plt.gca().add_patch(rect)
-                        plt.text(det.top_left[0] - 0, det.top_left[1] - 50, s='{}'.format(61),
-                                 color='white', verticalalignment='top',
-                                 bbox={'color': 'blue', 'pad': 0})
-                        plt.gca().add_patch(rect)
-                plt.imshow(cv2.cvtColor(frame.image, cv2.COLOR_BGR2RGB))
-                plt.axis('off')
-                plt.show()
-                plt.close()
 
             if 'multiple' in args.tracking_type:
                 siamese.process_frame(frame, mot_detections)

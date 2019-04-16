@@ -8,7 +8,7 @@
 - Marc Núñez Ubach
 
 ## Report
--  {Link}[Docs/Report.pdf]
+-  [Link](docs/M6_report.pdf)
 
 ## Running the code
 

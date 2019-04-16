@@ -7,6 +7,9 @@
 - Nilai Sallent Ruiz
 - Marc Núñez Ubach
 
+## Report
+-  {Link}[Docs/Report.pdf]
+
 ## Running the code
 
 To run this code you will need at least:
